@@ -62,6 +62,31 @@ public class StudentProfile {
 					break;
 			}
 		}
+		
+		TableColumnModelListener tableColumnModelListener = new TableColumnModelListener() {
+      public void columnAdded(TableColumnModelEvent e) {
+        System.out.println("Added");
+      }
+
+      public void columnMarginChanged(ChangeEvent e) {
+        System.out.println("Margin");
+      }
+
+      public void columnMoved(TableColumnModelEvent e) {
+        System.out.println("Moved");
+      }
+
+      public void columnRemoved(TableColumnModelEvent e) {
+        System.out.println("Removed");
+      }
+
+      public void columnSelectionChanged(ListSelectionEvent e) {
+        System.out.println("Selection Changed");
+      }
+    };
+		
+		TableColumnModel gradableTableModel = gradableTable.getColumnModel();
+		gradableTableModel.addColumnModelListener(tableColumnModelListener);
 
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
@@ -106,7 +131,7 @@ public class StudentProfile {
 		// END Layout
 		
 		// START Action Listeners
-					ActionListener backListener = new ActionListener(){
+			ActionListener backListener = new ActionListener(){
 			   public void actionPerformed(ActionEvent e){
 				   mainframe.remove(mainPanel);
 				   mainframe.setTitle(data.getLoadedClass());
