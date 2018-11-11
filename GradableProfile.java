@@ -23,40 +23,44 @@ public class GradableProfile {
 		System.out.println();
 		
 		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new GridLayout(5,2));
+		infoPanel.setLayout(new GridLayout(2,6));
 		
 		infoPanel.add(new JLabel("Title: "));
-		infoPanel.add(new JLabel(g.getName()));
-		infoPanel.add(new JLabel("Type: "));
-		infoPanel.add(new JLabel(g.getType()));
+		infoPanel.add(new JLabel("Category: "));
+		infoPanel.add(new JLabel("Category Weight:"));
 		infoPanel.add(new JLabel("Total Points: "));
+		infoPanel.add(new JLabel("Gradable Weight: "));
+		infoPanel.add(new JLabel("Average: "));
+		infoPanel.add(new JLabel(g.getName()));
+		infoPanel.add(new JLabel(g.getType().getType()));
+		
+		infoPanel.add(new JLabel(String.valueOf(g.getCategoryWeight())));
+		
+		// JTextField categoryWeight = new JTextField();
+		// categoryWeight.setText(String.valueOf(g.getCategoryWeight()));
+		// infoPanel.add(categoryWeight);
+		
 		JTextField gradablePoints = new JTextField();
 		gradablePoints.setText(String.valueOf(g.getPoints()));
 		infoPanel.add(gradablePoints);
-		infoPanel.add(new JLabel("Weight: "));
+		
 		JTextField gradableWeight = new JTextField();
-		gradableWeight.setText(String.valueOf(g.getWeight()));
+		gradableWeight.setText(String.valueOf(g.getGradableWeight()));
 		infoPanel.add(gradableWeight);
-		infoPanel.add(new JLabel("Average: "));
 		infoPanel.add(new JLabel("90"));
 
+		DefaultTableModel studentModel = new DefaultTableModel() {
+			public boolean isCellEditable(int rowIndex, int colIndex) {
+				if (colIndex == 0){
+				return false;
+				} 
+				else {
+					return true;
+					}
+			}
+		};
 		
-		// START Gradable Table
-		
-		// String[] studentColumnNames = {"Student","Points Lost","Notes"};
-		
-		// Object[][] studentData = {
-			
-        // {"Blackjack", 8,20},
-        // {"TreintaEna", 10,20},
-        // {"Midterm 1", 9,30},
-        // {"Grading System", 5,30}
-		// };
-		
-		// JTable studentTable = new JTable(studentData, studentColumnNames);
-		// JScrollPane studentTablePane = new JScrollPane(studentTable);
-		
-		DefaultTableModel studentModel = new DefaultTableModel(); 
+		// indexTableModel studentModel = new indexTableModel(); 
 		JTable studentTable = new JTable(studentModel); 
 
 		studentModel.addColumn("Student"); 
@@ -91,31 +95,16 @@ public class GradableProfile {
 		// END Gradable Table
 		
 		JButton backButton = new JButton("Back");
-		
-		// START Layout 
+		// START Layout 				
+		JPanel botPanel = new JPanel();
+		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
+		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
+		botPanel.add(backButton);
+
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-		
-		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new GridLayout(2,0));
-		leftPanel.add(new JLabel(""));
-		leftPanel.add(infoPanel);
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(1,2));
-
-		topPanel.add(leftPanel);
-		topPanel.add(studentTablePane);
-		
-		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new GridLayout(0,5));
-		botPanel.add(new JLabel(""));
-		botPanel.add(new JLabel(""));
-		botPanel.add(new JLabel(""));
-		botPanel.add(new JLabel(""));
-		botPanel.add(backButton);
-		
-		mainPanel.add(topPanel);
+		mainPanel.add(infoPanel);
+		mainPanel.add(studentTablePane);
 		mainPanel.add(botPanel);
 		
 		mainframe.add(mainPanel);

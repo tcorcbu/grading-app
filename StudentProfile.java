@@ -7,9 +7,9 @@ import javax.swing.table.*;
 
 public class StudentProfile {
 		
-		public StudentProfile(JFrame mainframe,Data data, Student s) {
-			drawStudentProfile(mainframe,data,s);
-		}
+	public StudentProfile(JFrame mainframe,Data data, Student s) {
+		drawStudentProfile(mainframe,data,s);
+	}
 	
 	private void drawStudentProfile(JFrame mainframe,Data data,Student s) {
 		System.out.println("StudentProfile to do list:");
@@ -34,7 +34,18 @@ public class StudentProfile {
 		
 		// START Gradable Table
 		
-		DefaultTableModel gradableModel = new DefaultTableModel(); 
+		DefaultTableModel gradableModel = new DefaultTableModel() {
+			public boolean isCellEditable(int rowIndex, int colIndex) {
+				if (colIndex == 0){
+				return false;
+				} 
+				else {
+					return true;
+					}
+			}
+		};
+		
+		// indexTableModel gradableModel = new indexTableModel(); 
 		JTable gradableTable = new JTable(gradableModel); 
 
 		gradableModel.addColumn("Gradable"); 
@@ -42,58 +53,40 @@ public class StudentProfile {
 		gradableModel.addColumn("Weight");
 		gradableModel.addColumn("Notes");
 		
-		gradableTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-		for (int i=0; i<3; i++) {
+		gradableTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		for (int i=0; i<4; i++) {
 			TableColumn column = gradableTable.getColumnModel().getColumn(i);
 			switch (i) {
 				case 0:
 					column.setMaxWidth(300);
 					column.setPreferredWidth(150);
+					column.setMinWidth(100);
 					break;
 				case 1:
 					column.setMaxWidth(200);
 					column.setPreferredWidth(80);
+					column.setMinWidth(50);
 					break;
 				case 2:
 					column.setMaxWidth(200);
 					column.setPreferredWidth(50);
+					column.setMinWidth(50);
+					break;
+				case 3:
+					column.setPreferredWidth(450);
+					column.setMinWidth(100);
 					break;
 				default:
 					break;
 			}
 		}
 		
-		TableColumnModelListener tableColumnModelListener = new TableColumnModelListener() {
-      public void columnAdded(TableColumnModelEvent e) {
-        System.out.println("Added");
-      }
-
-      public void columnMarginChanged(ChangeEvent e) {
-        System.out.println("Margin");
-      }
-
-      public void columnMoved(TableColumnModelEvent e) {
-        System.out.println("Moved");
-      }
-
-      public void columnRemoved(TableColumnModelEvent e) {
-        System.out.println("Removed");
-      }
-
-      public void columnSelectionChanged(ListSelectionEvent e) {
-        System.out.println("Selection Changed");
-      }
-    };
-		
-		TableColumnModel gradableTableModel = gradableTable.getColumnModel();
-		gradableTableModel.addColumnModelListener(tableColumnModelListener);
-
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getWeight(),g.getNote()});
+			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getGradableWeight(),g.getNote()});
 		}
 
-		JScrollPane gradableTablePane = new JScrollPane(gradableTable);
+		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// END Gradable Table
 		
 		JButton backButton = new JButton("Back");
@@ -102,10 +95,6 @@ public class StudentProfile {
 		// START Layout 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-
-		mainPanel.add(infoPanel);
-		mainPanel.add(Box.createHorizontalStrut(50));
-		mainPanel.add(gradableTablePane);
 
 		JPanel gradePanel = new JPanel();
 		gradePanel.setLayout(new GridLayout(0,2));
@@ -121,6 +110,9 @@ public class StudentProfile {
 		botPanel.add(backButton);
 		
 		// mainPanel.add(upperPanel);
+		mainPanel.add(infoPanel);
+		mainPanel.add(Box.createHorizontalStrut(50));
+		mainPanel.add(gradableTablePane);
 		mainPanel.add(botPanel);
 		
 		mainframe.add(mainPanel);
@@ -140,6 +132,19 @@ public class StudentProfile {
 				};
 
 		backButton.addActionListener(backListener);
+		
+		
+		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				Point clickPoint = e.getPoint();
+				int column = gradableTable.columnAtPoint(clickPoint);
+				System.out.println(gradableTable.getColumnName(column));
+			}
+		};
+		
+		JTableHeader gradableHeader = gradableTable.getTableHeader();
+		gradableHeader.addMouseListener(TableHeaderMouseListener);
+		
 		// END Action Listeners
 		
 	}

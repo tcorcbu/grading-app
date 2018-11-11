@@ -1,28 +1,28 @@
 
 public class Gradable {
 	private String name;
-	private int weight;
 	private int total;
-	private String type;
+	private GradableType type;
 	private int pointsLost;
+	private int weight;
 	private String note;
 	
 	public Gradable() {
 		
 	}
 	
-	public Gradable(String name, int weight, int total, String type) {
+	public Gradable(String name, int total, GradableType type,int weight) {
 		this.name = name;
-		this.weight = weight;
 		this.total = total;
 		this.type = type;
+		this.weight = weight;
 	}
 		
-	public Gradable(String name, int weight, int total, String type,int pointsLost,String note) {
+	public Gradable(String name, int total, GradableType type,int weight,int pointsLost,String note) {
 		this.name = name;
-		this.weight = weight;
 		this.total = total;
 		this.type = type;
+		this.weight = weight;
 		this.pointsLost = pointsLost;
 		this.note = note;
 	}
@@ -43,7 +43,11 @@ public class Gradable {
 		return name;
 	}
 	
-	public int getWeight() {
+	public int getCategoryWeight() {
+		return type.getWeight();
+	}
+	
+	public int getGradableWeight() {
 		return weight;
 	}
 	
@@ -51,7 +55,7 @@ public class Gradable {
 		return total;
 	}
 	
-	public String getType() {
+	public GradableType getType() {
 		return type;
 	}
 
@@ -64,9 +68,12 @@ public class Gradable {
 		return name;
 	}
 
+	public int getPercentage() {
+		return (total-pointsLost)*100/total;
+	}
 	
-	public boolean is(String type) {
-		return this.type.equals(type);
+	public boolean isType(String type) {
+		return this.type.getType().equals(type);
 	}	
 	
 }

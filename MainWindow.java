@@ -46,14 +46,14 @@ public class MainWindow {
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.gradableTypes().size(); i++) {
-				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i)));
+				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i).getType()));
 			}
 			
 			for (int i=0;i<data.nGradables();i++) {
 				
 				for (int j=0; j<gradableCategories.size(); j++) {
 					
-					if (data.getGradable(i).is(gradableCategories.get(j).toString())) {
+					if (data.getGradable(i).isType(gradableCategories.get(j).toString())) {
 						gradableCategories.get(j).add(new DefaultMutableTreeNode(data.getGradable(i)));
 					}
 				}
@@ -82,6 +82,7 @@ public class MainWindow {
 			// END Gradables tree 
 			
 			// START Students tree
+			
 			DefaultMutableTreeNode topStudents = new DefaultMutableTreeNode("Students");
 					
 			ArrayList<DefaultMutableTreeNode> studentCategories = new ArrayList<DefaultMutableTreeNode>();
@@ -122,6 +123,11 @@ public class MainWindow {
 			JButton dropGradable = new JButton("Drop Gradable");
 			JButton dropStudent = new JButton("Drop Student");
 			
+			JButton classSummary = new JButton("Class Summary");
+			JPanel classSummaryPanel = new JPanel();
+			classSummaryPanel.setLayout(new GridLayout(1,1));
+			classSummaryPanel.add(classSummary);
+			
 			// END Buttons
 			
 			// START layout
@@ -138,8 +144,9 @@ public class MainWindow {
 			buttonPanel.add(addGradable);
 			buttonPanel.add(addStudent);
 			buttonPanel.add(dropGradable);
-			buttonPanel.add(dropStudent);
+			buttonPanel.add(dropStudent);			
 			
+			mainPanel.add(classSummaryPanel);
 			mainPanel.add(treePanel);
 			mainPanel.add(buttonPanel);
 			
@@ -170,7 +177,7 @@ public class MainWindow {
 					if (e.getClickCount() == 2) {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();
 						
-						System.out.println(node.getUserObject().getClass());
+						// System.out.println(node.getUserObject().getClass());
 						if (node.getUserObject() instanceof Student) {
 							mainframe.remove(mainPanel);
 							mainframe.setTitle("Student Profile");
@@ -197,7 +204,28 @@ public class MainWindow {
 			
 			ActionListener AddStudentListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Add Student");
+					// System.out.println("Add Student");
+					NewStudentDialog nsd = new NewStudentDialog(data);
+					nsd.setModal(true);
+					nsd.showDialog();
+					ArrayList<Student> addedStudents = nsd.getStudents();
+					
+					DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
+					DefaultMutableTreeNode studentsRoot = (DefaultMutableTreeNode)studentsModel.getRoot();
+					
+					Student addedStudent;
+					
+					for (int s=0; s<addedStudents.size(); s++) {
+					
+					addedStudent = addedStudents.get(s);
+					String sYear = addedStudent.getYear();
+					for (int i=0; i<studentsRoot.getChildCount();i++) {
+						if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
+							DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
+							studentsModel.insertNodeInto(new DefaultMutableTreeNode(addedStudent), yearBranch, yearBranch.getChildCount());
+						}
+					}
+					}
 				}
 			};
 			addStudent.addActionListener(AddStudentListener);
@@ -205,24 +233,66 @@ public class MainWindow {
 			ActionListener AddGradableListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Add Gradable");
+					
+					NewGradableDialog ngd = new NewGradableDialog(data);
+					ngd.setModal(true);
+					ngd.showDialog();
+					ArrayList<Gradable> addedGradables = ngd.getGradables();
+					
+					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
+					DefaultMutableTreeNode gradablesRoot = (DefaultMutableTreeNode)gradablesModel.getRoot();
+					
+					Gradable addedGradable;
+					
+					for (int s=0; s<addedGradables.size(); s++) {
+					
+					addedGradable = addedGradables.get(s);
+					String gCategory = addedGradable.getType().getType();
+					for (int i=0; i<gradablesRoot.getChildCount();i++) {
+						if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
+							DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
+							gradablesModel.insertNodeInto(new DefaultMutableTreeNode(addedGradable), categoryBranch, categoryBranch.getChildCount());
+						}
+					}
+					}
 				}
 			};
 			addGradable.addActionListener(AddGradableListener);
 			
 			ActionListener DropStudentListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				System.out.println("Drop Student");
+				// System.out.println("Drop Student");
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();
+				// System.out.println((Student)node.getUserObject());
+				
+				if (node.getUserObject() instanceof Student) {
+					data.dropStudent((Student)node.getUserObject());
+					DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
+					studentsModel.removeNodeFromParent(node);
+				}
 				}
 			};
 			dropStudent.addActionListener(DropStudentListener);
 			
 			ActionListener DropGradableListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				System.out.println("Drop Gradable");
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent();
+				
+				if (node.getUserObject() instanceof Gradable) {
+					data.dropGradable((Gradable)node.getUserObject());
+					// NEED TO DROP IT FROM EVERY STUDENT TOO
+					for (int i = 0; i < data.nStudents(); i++) {
+						data.getStudent(i).dropGradable((Gradable)node.getUserObject());
+					}
+					
+					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
+					gradablesModel.removeNodeFromParent(node);
+				}
 				}
 			};
 			dropGradable.addActionListener(DropGradableListener);
 			
+			classSummary.addActionListener(ClassProfileListener);
 			// END Action Listeners 
 			
 		}
