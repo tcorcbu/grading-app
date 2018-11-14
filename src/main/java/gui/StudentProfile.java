@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -11,7 +13,7 @@ public class StudentProfile {
 		drawStudentProfile(mainframe,data,s);
 	}
 	
-	private void drawStudentProfile(JFrame mainframe,Data data,Student s) {
+	private void drawStudentProfile(final JFrame mainframe,final Data data,Student s) {
 		System.out.println("StudentProfile to do list:");
 		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
 		System.out.println("> Consider making the fields mutable");
@@ -46,7 +48,7 @@ public class StudentProfile {
 		};
 		
 		// indexTableModel gradableModel = new indexTableModel(); 
-		JTable gradableTable = new JTable(gradableModel); 
+		final JTable gradableTable = new JTable(gradableModel);
 
 		gradableModel.addColumn("Gradable"); 
 		gradableModel.addColumn("Points Lost"); 
@@ -93,7 +95,7 @@ public class StudentProfile {
 		
 		
 		// START Layout 
-		JPanel mainPanel = new JPanel();
+		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		JPanel gradePanel = new JPanel();

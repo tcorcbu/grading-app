@@ -1,7 +1,15 @@
+package gui;
+
+import db.ClassService;
+import db.StudentClassService;
+import db.StudentService;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class Data {
 	private String LoadedClass;
+	private int classId;
 	private ArrayList<Student> studentList = new ArrayList<Student>();
 	private ArrayList<Gradable> gradableList = new ArrayList<Gradable>();
 	private ArrayList<String> studentTypes = new ArrayList<String>();
@@ -13,7 +21,7 @@ public class Data {
 	
 	public Data(String LoadedClass) {
 		this.LoadedClass = LoadedClass;
-		
+        classId = ClassService.getId(LoadedClass);
 		// construct the list of gradables
 		gradableTypes.add(new GradableType("Midterm",20));
 		gradableTypes.add(new GradableType("Homework",35));
@@ -31,12 +39,8 @@ public class Data {
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
 		// construct the list of students
-		studentList.add(new Student("Joe","O'Donnell","U08447737","Graduate"));
-		studentList.add(new Student("Tom","Corcoran","U08447739","Undergraduate"));
-		studentList.add(new Student("Yize","Liu","U08447740","Undergraduate"));
-		
+		getStudents();
 
-		
 	}
 
 	// Loaded Class accessors and mutators
@@ -58,12 +62,28 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
-		studentList.add(newStudent);
+        int studentId = StudentService.insertStudent(newStudent);
+        StudentClassService.insertStudentClass(classId, studentId);
+        getStudents();
 	}
 	
 	public void dropStudent(Student s) {
-		studentList.remove(s);
+	    int studentId = StudentService.getId(s);
+        StudentClassService.deleteStudentClass(classId,studentId);
+	    getStudents();
 	}
+
+	public void getStudents(){
+        List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
+        List<Student>students = new ArrayList<Student>();
+        for (Integer id : studentIds) {
+            students.add(StudentService.getStudentById(id));
+        }
+        this.studentList.clear();
+        for (Student student : students) {
+            this.studentList.add(student);
+        }
+    }
 	
 	public int nStudents() {
 		return studentList.size();

@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -19,7 +21,7 @@ public class LogIn{
 		}
 		
 	
-	private void drawLogIn(JFrame mainframe) {
+	private void drawLogIn(final JFrame mainframe) {
 		System.out.println("LogIn to do list:");
 		System.out.println("> Change password getter to getPassword");
 		System.out.println("> Figure out how to set up a user profile");
@@ -34,14 +36,14 @@ public class LogIn{
 		int y = (int) ((dimension.getHeight() - mainframe.getHeight()) / 2);
 		mainframe.setLocation(x, y);
 		
-		JPanel panel = new JPanel();
+		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		JLabel usernameLabel = new JLabel("Username");
-		JTextField usernameField = new JTextField(10);
+		final JTextField usernameField = new JTextField(10);
 		
 		JLabel passwordLabel = new JLabel("Password");
-		JPasswordField passwordField = new JPasswordField(10);
+		final JPasswordField passwordField = new JPasswordField(10);
 		
 		JButton jbtLogIn = new JButton("Log In");
 		jbtLogIn.setAlignmentX(panel.CENTER_ALIGNMENT);
@@ -57,7 +59,7 @@ public class LogIn{
 		pwordPanel.add(passwordLabel);
 		pwordPanel.add(passwordField);
 		
-		JLabel wrongpwd = new JLabel();
+		final JLabel wrongpwd = new JLabel();
 		wrongpwd.setForeground (Color.red);
 		wrongpwd.setAlignmentX(panel.CENTER_ALIGNMENT);
 		

@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 
 public class ClassProfile {
 		
-	public ClassProfile(JFrame mainframe,Data data) {
+	public ClassProfile(final JFrame mainframe,final Data data) {
 		System.out.println("ClassProfile to do list:");
 		System.out.println("> Fix layout");
 		System.out.println("> Add functinality to addPercent");
@@ -17,9 +19,7 @@ public class ClassProfile {
 		System.out.println("> Add actual values into summary table");
 		System.out.println("> Add in a histogram if we're feeling good");
 		System.out.println();
-		
-		
-		
+
 		mainframe.setTitle(mainframe.getTitle() + " Profile");
 		
 		// START Menu toolbar
@@ -41,7 +41,7 @@ public class ClassProfile {
 		// END Menu Toolbar
 		
 		// START Panel Setup
-		JPanel mainPanel = new JPanel();
+		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		JPanel topPanel = new JPanel();
@@ -70,7 +70,7 @@ public class ClassProfile {
 		}
 		
 		myTableModel gradeTableModel = new myTableModel(); 
-		JTable gradeTable = new JTable(gradeTableModel); 
+		final JTable gradeTable = new JTable(gradeTableModel);
 		
 		// gradeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		// for (int i=0; i<gradeTable.getColumnCount(); i++) {
@@ -124,8 +124,8 @@ public class ClassProfile {
 		
 		// START Breakout Table
 		
-		myTableModel breakoutTableModel = new myTableModel(); 
-		JTable breakoutTable = new JTable(breakoutTableModel); 
+		final myTableModel breakoutTableModel = new myTableModel();
+		final JTable breakoutTable = new JTable(breakoutTableModel);
 		breakoutTable.setFocusable(false);
 		
 		

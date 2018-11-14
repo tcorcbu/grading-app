@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.tree.DefaultMutableTreeNode.*;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 
 public class MainWindow {
 		
-		public MainWindow(JFrame mainframe,Data data) {
+		public MainWindow(final JFrame mainframe,final Data data) {
 			System.out.println("MainWindow to do list:");
 			System.out.println("> Add popup for addGradable");
 			System.out.println("> Add functionality to dropGradable");
@@ -63,7 +65,7 @@ public class MainWindow {
 				topGradables.add(gradableCategories.get(i));
 			}
 
-			JTree gradablesTree = new JTree(topGradables);
+			final JTree gradablesTree = new JTree(topGradables);
 			gradablesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 			JScrollPane gradableView = new JScrollPane(gradablesTree);
 			
@@ -106,7 +108,7 @@ public class MainWindow {
 			}
 			
 			
-			JTree studentsTree = new JTree(topStudents);
+			final JTree studentsTree = new JTree(topStudents);
 			studentsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 			JScrollPane studentView = new JScrollPane(studentsTree);
 			
@@ -131,7 +133,7 @@ public class MainWindow {
 			// END Buttons
 			
 			// START layout
-			JPanel mainPanel = new JPanel();
+			final JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 			
 			JPanel treePanel = new JPanel();

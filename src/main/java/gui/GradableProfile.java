@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -11,7 +13,7 @@ public class GradableProfile {
 		drawGradableProfile(mainframe,data,g);
 	}
 	
-	private void drawGradableProfile(JFrame mainframe,Data data,Gradable g) {
+	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
 		System.out.println("GradableProfile to do list:");
 		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
 		System.out.println("> Add histogram if we figure out how");
@@ -101,7 +103,7 @@ public class GradableProfile {
 		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
 		botPanel.add(backButton);
 
-		JPanel mainPanel = new JPanel();
+		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainPanel.add(infoPanel);
 		mainPanel.add(studentTablePane);

@@ -1,3 +1,4 @@
+package gui;
 public class GradableType {
 	private String type;
 	private int weight;
@@ -18,5 +19,5 @@ public class GradableType {
 	public String toString() {
 		return type;
 	}
-		
-	}
+
+}
