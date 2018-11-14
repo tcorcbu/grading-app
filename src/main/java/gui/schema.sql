@@ -27,10 +27,9 @@ CREATE TABLE Categories (
 
 CREATE TABLE Students (
   student_id int4 AUTO_INCREMENT,
+  school_id varchar(255),
   name varchar(255),
   type varchar(255),
-  major varchar(255),
-  grad_year int,
   CONSTRAINT students_pk PRIMARY KEY (student_id)
 );
 
