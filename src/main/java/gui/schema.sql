@@ -1,3 +1,6 @@
+CREATE DATABASE gradingapp;
+USE gradingapp;
+
 CREATE TABLE Classes (
   class_id int4 AUTO_INCREMENT,
   name varchar(255) UNIQUE,
