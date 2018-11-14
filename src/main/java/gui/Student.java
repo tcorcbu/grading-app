@@ -1,3 +1,5 @@
+package gui;
+
 import java.util.ArrayList;
 import java.util.Random; // for making fake data
 
@@ -12,7 +14,6 @@ public class Student {
 	public Student() {
 		
 	}
-	
 	public Student(String firstName, String lastName, String schoolID, String year) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -53,16 +54,30 @@ public class Student {
 	public String getYear() {
 		return year;
 	}
-	
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setSchoolID(String schoolID) {
+		this.schoolID = schoolID;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	public void setGradableList(ArrayList<Gradable> gradableList) {
+		this.gradableList = gradableList;
+	}
+
 	public void dropGradable(Gradable g) {
 		for (int i = 0; i<gradableList.size(); i++) {
 			if(gradableList.get(i).getName().equals(g.getName())) {
 				gradableList.remove(gradableList.get(i));
 			}
 		}
-		
-		
-		
+
 	}
 	
 	

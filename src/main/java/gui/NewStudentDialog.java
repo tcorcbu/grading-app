@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
@@ -9,7 +11,7 @@ public class NewStudentDialog extends JDialog{
 	private Student newStudent;
 	private ArrayList<Student> newStudents = new ArrayList<Student>();
 				
-	public NewStudentDialog(Data data) {
+	public NewStudentDialog(final Data data) {
 		
 		this.setTitle("New Student");
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,10 +41,10 @@ public class NewStudentDialog extends JDialog{
 		// END setup layout
 		Object[] yearOptions = data.getStudentTypes().toArray();
 		
-		JTextField fnameTextField = new JTextField(10);
-		JTextField lnameTextField = new JTextField(10);
-		JTextField sidTextField = new JTextField(10);
-		JComboBox<Object> yearCombo = new JComboBox<Object>(yearOptions);
+		final JTextField fnameTextField = new JTextField(10);
+		final JTextField lnameTextField = new JTextField(10);
+		final JTextField sidTextField = new JTextField(10);
+		final JComboBox<Object> yearCombo = new JComboBox<Object>(yearOptions);
 		
 		fnameInputPanel.add(fnameTextField);
 		lnameInputPanel.add(lnameTextField);

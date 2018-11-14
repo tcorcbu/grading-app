@@ -1,3 +1,5 @@
+package gui;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
@@ -10,7 +12,7 @@ public class NewGradableDialog extends JDialog{
 	private Gradable newGradable;
 	private ArrayList<Gradable> newGradables = new ArrayList<Gradable>();
 				
-	public NewGradableDialog(Data data) {
+	public NewGradableDialog(final Data data) {
 		
 		this.setTitle("New Gradable");
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,22 +43,22 @@ public class NewGradableDialog extends JDialog{
 		Object[] categoryOptions = data.gradableTypes().toArray();
 		
 		// NEEDS TO BE FIXED
-		JTextField nameTextField = new JTextField(10);
+		final JTextField nameTextField = new JTextField(10);
 		NumberFormat pointsFormat;
 		pointsFormat = NumberFormat.getNumberInstance();
-		JFormattedTextField pointsTextField = new JFormattedTextField(pointsFormat);
+		final JFormattedTextField pointsTextField = new JFormattedTextField(pointsFormat);
 		pointsTextField.setValue(new Integer(100));
 		pointsTextField.setColumns(10);
 		// JTextField pointsTextField = new JTextField(10);
 		NumberFormat weightFormat;
 		weightFormat = NumberFormat.getNumberInstance();
-		JFormattedTextField weightTextField = new JFormattedTextField(weightFormat);
+		final JFormattedTextField weightTextField = new JFormattedTextField(weightFormat);
 		weightTextField.setValue(new Integer(100));
 		weightTextField.setColumns(10);
 		weightTextField.setValue(new Integer(100));
 		// JTextField weightTextField = new JTextField(10);
 		
-		JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
+		final JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
 		
 		nameInputPanel.add(nameTextField);
 		pointsInputPanel.add(pointsTextField);

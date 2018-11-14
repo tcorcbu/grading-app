@@ -1,3 +1,7 @@
+package gui;
+
+import db.ClassService;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
@@ -8,10 +12,20 @@ import javax.swing.table.DefaultTableModel;
 
 public class NewClassDialog extends JDialog{
 		
-		private String[] classList = {"Empty Class","CS 591 Fall 2018","CS 591 Sprint 2017","CS 112 Fall 2018","CS 112 Spring 2018"};
-		
-		public NewClassDialog(Data data) {
-			
+		private String[] classList;
+
+		private void intitalClassList(){
+			java.util.List<String>classNames = ClassService.getClassNames();
+			classNames.add(0,"Empty Class");
+			classList = new String[classNames.size()];
+			int count = 0;
+			for (String str : classNames) {
+				classList[count++] = str;
+			}
+		}
+
+		public NewClassDialog(final Data data) {
+			intitalClassList();
 			this.setTitle("Create Class");
 			// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.setSize( 275, 150 );
@@ -27,9 +41,9 @@ public class NewClassDialog extends JDialog{
 			JPanel useTemplatePanel = new JPanel();
 
 			JLabel classNameLabel = new JLabel("Class Name");
-			JTextField classNameTextField = new JTextField(10);
+			final JTextField classNameTextField = new JTextField(10);
 			JLabel useTemplateLabel = new JLabel("Use Template");
-			JComboBox<String> useTemplateCombo = new JComboBox<String>(classList);
+			final JComboBox<String> useTemplateCombo = new JComboBox<String>(classList);
 			JButton createButton = new JButton("Create");
 			
 			classNamePanel.add(classNameLabel);
@@ -48,7 +62,7 @@ public class NewClassDialog extends JDialog{
 			ActionListener createListener = new ActionListener(){
 				public void actionPerformed(ActionEvent e){
 					if (((String)useTemplateCombo.getSelectedItem()).equals("Empty Class")) {
-					data.setLoadedClass(classNameTextField.getText());
+						data.setLoadedClass(classNameTextField.getText());
 					// close box
 					} else {
 						System.out.println((String)useTemplateCombo.getSelectedItem());
@@ -58,7 +72,8 @@ public class NewClassDialog extends JDialog{
 						data.setLoadedClass((String)classNameTextField.getText());
 						data.clone(copyClass);
 					}
-					
+					//save class to db
+					ClassService.insertClass(classNameTextField.getText());
 					setVisible(false);
 				}
 			};
