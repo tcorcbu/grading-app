@@ -36,7 +36,7 @@ public class GradableProfile {
 		infoPanel.add(new JLabel(g.getName()));
 		infoPanel.add(new JLabel(g.getType().getType()));
 		
-		infoPanel.add(new JLabel(String.valueOf(g.getCategoryWeight())));
+		infoPanel.add(new JLabel(String.valueOf(g.getIntraCategoryWeight())));
 		
 		// JTextField categoryWeight = new JTextField();
 		// categoryWeight.setText(String.valueOf(g.getCategoryWeight()));
@@ -47,7 +47,7 @@ public class GradableProfile {
 		infoPanel.add(gradablePoints);
 		
 		JTextField gradableWeight = new JTextField();
-		gradableWeight.setText(String.valueOf(g.getGradableWeight()));
+		gradableWeight.setText(String.valueOf(g.getIntraCategoryWeight()));
 		infoPanel.add(gradableWeight);
 		infoPanel.add(new JLabel("90"));
 

@@ -145,11 +145,15 @@ public class ClassProfile {
 		};
 		
 		categoryTableModel.addColumn("Category");
-		categoryTableModel.addColumn("Weight");
+		categoryTableModel.addColumn("Graduate Weight");
+		categoryTableModel.addColumn("Undergraduate Weight");
 		
 		for (int i=0; i<data.gradableTypes().size(); i++) {
-			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),String.valueOf(data.gradableTypes(i).getWeight())+"%"});
+			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),
+										String.valueOf(data.gradableTypes(i).getWeight("Graduate"))+"%",
+										String.valueOf(data.gradableTypes(i).getWeight("Undergraduate"))+"%"});
 		}
+		
 		
 		JTable categoryTable = new JTable(categoryTableModel);
 		

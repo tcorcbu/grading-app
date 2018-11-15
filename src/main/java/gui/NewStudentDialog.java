@@ -39,7 +39,7 @@ public class NewStudentDialog extends JDialog{
 		
 		
 		// END setup layout
-		Object[] yearOptions = data.getStudentTypes().toArray();
+		Object[] yearOptions = data.studentTypes().toArray();
 		
 		final JTextField fnameTextField = new JTextField(10);
 		final JTextField lnameTextField = new JTextField(10);

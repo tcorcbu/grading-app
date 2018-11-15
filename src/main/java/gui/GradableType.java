@@ -1,19 +1,25 @@
 package gui;
 public class GradableType {
 	private String type;
-	private int weight;
+	private int GraduateWeight;
+	private int UndergradWeight;
 
-	public GradableType(String type, int weight) {
+	public GradableType(String type, int GraduateWeight, int UndergradWeight) {
 		this.type = type;
-		this.weight = weight;
+		this.GraduateWeight = GraduateWeight;
+		this.UndergradWeight = UndergradWeight;
 	}
 		
 	public String getType() {
 		return type;
 	}
 	
-	public int getWeight() {
-		return weight;
+	public int getWeight(String type) {
+		if(type == "Graduate"){
+			return GraduateWeight;}
+		else {
+			return UndergradWeight;
+			}
 	}
 	
 	public String toString() {

@@ -107,7 +107,6 @@ public class MainWindow {
 				topStudents.add(studentCategories.get(i));
 			}
 			
-			
 			final JTree studentsTree = new JTree(topStudents);
 			studentsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 			JScrollPane studentView = new JScrollPane(studentsTree);

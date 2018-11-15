@@ -5,25 +5,27 @@ public class Gradable {
 	private int total;
 	private GradableType type;
 	private int pointsLost;
-	private int weight;
+	private int IntraCategoryWeight;
+	private int StudentWeight;
 	private String note;
 	
 	public Gradable() {
 		
 	}
 	
-	public Gradable(String name, int total, GradableType type,int weight) {
+	public Gradable(String name, int total, GradableType type,int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
-		this.weight = weight;
+		this.IntraCategoryWeight = IntraCategoryWeight;
 	}
 		
-	public Gradable(String name, int total, GradableType type,int weight,int pointsLost,String note) {
+	public Gradable(String name, int total, GradableType type,int IntraCategoryWeight,int pointsLost,int StudentWeight,String note) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
-		this.weight = weight;
+		this.IntraCategoryWeight = IntraCategoryWeight;
+		this.StudentWeight = StudentWeight;
 		this.pointsLost = pointsLost;
 		this.note = note;
 	}
@@ -44,12 +46,24 @@ public class Gradable {
 		return name;
 	}
 	
-	public int getCategoryWeight() {
-		return type.getWeight();
+	public int getCategoryWeight(String studentType) {
+		return type.getWeight(studentType);
 	}
 	
-	public int getGradableWeight() {
-		return weight;
+	public int getIntraCategoryWeight() {
+		return IntraCategoryWeight;
+	}
+	
+	public int getStudentWeight() {
+		return StudentWeight;
+	}
+	
+	public void setIntraCategoryWeight(int weight) {
+		IntraCategoryWeight = weight;
+	}
+	
+	public void setStudentWeight(int weight) {
+		StudentWeight = weight;
 	}
 	
 	public int getPoints() {

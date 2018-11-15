@@ -85,7 +85,7 @@ public class StudentProfile {
 		
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getGradableWeight(),g.getNote()});
+			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getIntraCategoryWeight(),g.getNote()});
 		}
 
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

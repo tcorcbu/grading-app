@@ -21,13 +21,13 @@ public class Student {
 		this.year = year;
 		
 		// query from database using schoolID (already filtered on classID?) and iterate through all gradables.
-		Random rand = new Random();
-		gradableList.add(new Gradable("Midterm 1",117,new GradableType("Midterm",20),100,rand.nextInt(10),firstName +" note for Midterm 1"));
-		gradableList.add(new Gradable("Blackjack",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Blackjack"));
-		gradableList.add(new Gradable("Treinta Ena",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Treinta Ena"));
-		gradableList.add(new Gradable("Grading System",200,new GradableType("Project",20),100,rand.nextInt(10),firstName +" Note for Grading System"));
-		gradableList.add(new Gradable("Participation",10,new GradableType("Participation",5),100,rand.nextInt(10),firstName +" Note for Participation"));
-		gradableList.add(new Gradable("Final",100,new GradableType("Final",20),100,rand.nextInt(10),firstName +" Note for Final"));
+		// Random rand = new Random();
+		// gradableList.add(new Gradable("Midterm 1",117,new GradableType("Midterm",20),100,rand.nextInt(10),firstName +" note for Midterm 1"));
+		// gradableList.add(new Gradable("Blackjack",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Blackjack"));
+		// gradableList.add(new Gradable("Treinta Ena",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Treinta Ena"));
+		// gradableList.add(new Gradable("Grading System",200,new GradableType("Project",20),100,rand.nextInt(10),firstName +" Note for Grading System"));
+		// gradableList.add(new Gradable("Participation",10,new GradableType("Participation",5),100,rand.nextInt(10),firstName +" Note for Participation"));
+		// gradableList.add(new Gradable("Final",100,new GradableType("Final",20),100,rand.nextInt(10),firstName +" Note for Final"));
 		
 	}
 		
@@ -79,7 +79,6 @@ public class Student {
 		}
 
 	}
-	
 	
 	public Gradable getGradable(int i) {
 		return gradableList.get(i);

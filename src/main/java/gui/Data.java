@@ -17,27 +17,36 @@ public class Data {
 
 
 	public Data() {
+		// add default gradable types for new class
+		gradableTypes.add(new GradableType("Homework",25,25));
+		gradableTypes.add(new GradableType("Project",25,25));
+		gradableTypes.add(new GradableType("Participation",25,25));
+		gradableTypes.add(new GradableType("Final",25,25));
+		
+		// add set student types for new class
+		studentTypes.add("Graduate");
+		studentTypes.add("Undergraduate");
 	}
 	
 	public Data(String LoadedClass) {
 		this.LoadedClass = LoadedClass;
         classId = ClassService.getId(LoadedClass);
 		// construct the list of gradables
-		gradableTypes.add(new GradableType("Midterm",20));
-		gradableTypes.add(new GradableType("Homework",35));
-		gradableTypes.add(new GradableType("Project",20));
-		gradableTypes.add(new GradableType("Participation",5));
-		gradableTypes.add(new GradableType("Final",20));
+		// gradableTypes.add(new GradableType("Midterm",20,20));
+		// gradableTypes.add(new GradableType("Homework",35,35));
+		// gradableTypes.add(new GradableType("Project",20,20));
+		// gradableTypes.add(new GradableType("Participation",5,5));
+		// gradableTypes.add(new GradableType("Final",20,20));
 		
-		gradableList.add(new Gradable("Midterm 1",117,gradableTypes.get(0),100));
-		gradableList.add(new Gradable("Blackjack",100,gradableTypes.get(1),100));
-		gradableList.add(new Gradable("Treinta Ena",100,gradableTypes.get(1),100));
-		gradableList.add(new Gradable("Grading System",200,gradableTypes.get(2),100));
-		gradableList.add(new Gradable("Participation",10,gradableTypes.get(3),100));
-		gradableList.add(new Gradable("Final",100,gradableTypes.get(4),100));
+		// gradableList.add(new Gradable("Midterm 1",117,gradableTypes.get(0),100));
+		// gradableList.add(new Gradable("Blackjack",100,gradableTypes.get(1),100));
+		// gradableList.add(new Gradable("Treinta Ena",100,gradableTypes.get(1),100));
+		// gradableList.add(new Gradable("Grading System",200,gradableTypes.get(2),100));
+		// gradableList.add(new Gradable("Participation",10,gradableTypes.get(3),100));
+		// gradableList.add(new Gradable("Final",100,gradableTypes.get(4),100));
 		
-		studentTypes.add("Graduate");
-		studentTypes.add("Undergraduate");
+		// studentTypes.add("Graduate");
+		// studentTypes.add("Undergraduate");
 		// construct the list of students
 		getStudents();
 
@@ -146,7 +155,6 @@ public class Data {
 		this.gradableTypes = data2clone.copyGradableTypes();
 		this.studentTypes = data2clone.copyStudentTypes();
 	}
-	// public getStudent(String fname,String lname)
 	
 	
 	
