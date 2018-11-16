@@ -40,9 +40,10 @@ public class NewGradableDialog extends JDialog{
 		
 		
 		// END setup layout
-		Object[] categoryOptions = data.gradableTypes().toArray();
+		ArrayList<GradableType> gradableTypes = data.copyGradableTypes();
+		gradableTypes.add(new GradableType("New Category",0,0));
+		Object[] categoryOptions = gradableTypes.toArray();
 		
-		// NEEDS TO BE FIXED
 		final JTextField nameTextField = new JTextField(10);
 		NumberFormat pointsFormat;
 		pointsFormat = NumberFormat.getNumberInstance();
@@ -127,6 +128,27 @@ public class NewGradableDialog extends JDialog{
 			}
 		};
 		closeButton.addActionListener(CloseButtonListener);
+		
+		
+		
+		ActionListener categoryListener = new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    GradableType mySelection = (GradableType)categoryCombo.getSelectedItem();
+                    if (mySelection.getType().equals("New Category")){
+						NewCategoryDialog ncd = new NewCategoryDialog(data);
+						ncd.setModal(true);
+						ncd.showDialog();
+						ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
+						for (int i=0;i<addedGradableTypes.size(); i++) {
+						categoryCombo.addItem(addedGradableTypes.get(i));
+						categoryCombo.setSelectedItem(addedGradableTypes.get(i));
+						}
+                    }
+                    }
+                };
+            categoryCombo.addActionListener( categoryListener );
+		
+		
 		
 	}
 	

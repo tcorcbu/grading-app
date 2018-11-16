@@ -50,6 +50,9 @@ public class ClassProfile {
 		JPanel middlePanel = new JPanel();
 		middlePanel.setLayout(new GridLayout(0,2));
 		
+		JPanel categoryTablePanel = new JPanel();
+		categoryTablePanel.setLayout(new BoxLayout(categoryTablePanel, BoxLayout.Y_AXIS));
+		
 		JPanel curvePanel = new JPanel();
 		
 		JPanel buttonPanel = new JPanel();
@@ -176,6 +179,7 @@ public class ClassProfile {
 		JLabel curveLabel = new JLabel("Curve");
 		JTextField curveField = new JTextField(10);
 		// JButton curveApply = new JButton("Add Percent");
+		JButton addCategoryButton = new JButton("Add Category");
 		JButton backButton = new JButton("Back");
 		
 		//END buttons
@@ -186,7 +190,10 @@ public class ClassProfile {
 		topPanel.add(gradeTablePane);
 		topPanel.add(breakoutTablePane);
 
-		middlePanel.add(categoryTablePane);		
+		categoryTablePanel.add(categoryTablePane);
+		categoryTablePanel.add(addCategoryButton);
+		
+		middlePanel.add(categoryTablePanel);		
 		middlePanel.add(gradeBreakdownOuterPanel);		
 		
 		curvePanel.add(curveLabel);
@@ -213,7 +220,23 @@ public class ClassProfile {
 			   MainWindow m = new MainWindow(mainframe,data);
 			   }
 			};
-
+		backButton.addActionListener(backListener);
+		
+		ActionListener addCategoryListener = new ActionListener(){
+		   public void actionPerformed(ActionEvent e){
+				NewCategoryDialog ncd = new NewCategoryDialog(data);
+				ncd.setModal(true);
+				ncd.showDialog();
+				ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
+				for (int i=0;i<addedGradableTypes.size(); i++) {
+				categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
+														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate"))+"%",
+														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))+"%"});
+				}
+			   }
+			};
+		addCategoryButton.addActionListener(addCategoryListener);
+		
 		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				Point clickPoint = e.getPoint();
@@ -260,7 +283,7 @@ public class ClassProfile {
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
 
-		backButton.addActionListener(backListener);
+		
 		// END Action Listeners 
 	}
 
