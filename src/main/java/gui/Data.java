@@ -146,6 +146,10 @@ public class Data {
 		gradableTypes = new ArrayList<GradableType>(gt);
 	}
 	
+	public void addGradableType(GradableType gt) {
+		gradableTypes.add(gt);
+	}
+	
 	public ArrayList<String> copyStudentTypes() {
 		return new ArrayList<String>(studentTypes);
 	}

@@ -218,15 +218,19 @@ public class MainWindow {
 					
 					for (int s=0; s<addedStudents.size(); s++) {
 					
-					addedStudent = addedStudents.get(s);
-					String sYear = addedStudent.getYear();
-					for (int i=0; i<studentsRoot.getChildCount();i++) {
-						if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
-							DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
-							studentsModel.insertNodeInto(new DefaultMutableTreeNode(addedStudent), yearBranch, yearBranch.getChildCount());
+						addedStudent = addedStudents.get(s);
+						String sYear = addedStudent.getYear();
+						for (int i=0; i<studentsRoot.getChildCount();i++) {
+							if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
+								DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
+								studentsModel.insertNodeInto(new DefaultMutableTreeNode(addedStudent), yearBranch, yearBranch.getChildCount());
+							}
 						}
 					}
-					}
+					
+					for(int i=0;i<studentsTree.getRowCount();i++){
+						studentsTree.expandRow(i);
+					}	
 				}
 			};
 			addStudent.addActionListener(AddStudentListener);
@@ -249,12 +253,24 @@ public class MainWindow {
 					
 					addedGradable = addedGradables.get(s);
 					String gCategory = addedGradable.getType().getType();
-					for (int i=0; i<gradablesRoot.getChildCount();i++) {
-						if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
-							DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
+					boolean added = false;
+						for (int i=0; i<gradablesRoot.getChildCount();i++) {
+							if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
+								DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
+								gradablesModel.insertNodeInto(new DefaultMutableTreeNode(addedGradable), categoryBranch, categoryBranch.getChildCount());
+								added = true;
+							}
+						}
+						
+						if (!added){
+							int count = gradablesRoot.getChildCount();
+							gradablesModel.insertNodeInto(new DefaultMutableTreeNode(addedGradable.getType()),gradablesRoot,count);
+							DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,count);
 							gradablesModel.insertNodeInto(new DefaultMutableTreeNode(addedGradable), categoryBranch, categoryBranch.getChildCount());
 						}
 					}
+					for(int i=0;i<gradablesTree.getRowCount();i++){
+						gradablesTree.expandRow(i);
 					}
 				}
 			};
