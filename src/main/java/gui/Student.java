@@ -71,6 +71,10 @@ public class Student {
 		this.gradableList = gradableList;
 	}
 
+	public void addGradable(Gradable g) {
+		gradableList.add(g);
+	}
+	
 	public void dropGradable(Gradable g) {
 		for (int i = 0; i<gradableList.size(); i++) {
 			if(gradableList.get(i).getName().equals(g.getName())) {

@@ -81,6 +81,10 @@ public class NewStudentDialog extends JDialog{
 				
 				// Check student ID against the database and error if there is a conflict
 				newStudent = new Student(firstName,lastName,schoolID,year);
+				for (int i=0; i<data.nGradables(); i++) {
+					newStudent.addGradable(data.getGradable(i));
+				}
+				
 				data.addStudent(newStudent);
 				newStudents.add(newStudent);
 				
@@ -100,6 +104,10 @@ public class NewStudentDialog extends JDialog{
 				
 				// Check student ID against the database and error if there is a conflict
 				newStudent = new Student(firstName,lastName,schoolID,year);
+				for (int i=0; i<data.nGradables(); i++) {
+					newStudent.addGradable(data.getGradable(i));
+				}
+				
 				data.addStudent(newStudent);
 				newStudents.add(newStudent);
 				setVisible(false);

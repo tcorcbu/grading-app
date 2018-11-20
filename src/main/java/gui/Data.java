@@ -78,12 +78,6 @@ public class Data {
         for (Integer id : studentIds) {
             studentList.add(StudentService.getStudentById(id));
         }
-		
-        // this.studentList.clear();
-        // for (Student student : students) {
-            // this.studentList.add(student);
-        // }
-		// System.out.println(students);
     }
 	
 	public int nStudents() {
@@ -140,6 +134,14 @@ public class Data {
 	
 	public void addGradableType(GradableType gt) {
 		gradableTypes.add(gt);
+	}
+	
+	public void removeGradableType(String gt) {
+		for(int i=0; i<gradableTypes.size(); i++) {
+			if(gradableTypes.get(i).getType() == gt){
+				gradableTypes.remove(gradableTypes.get(i));
+			}
+		}
 	}
 	
 	public ArrayList<String> copyStudentTypes() {

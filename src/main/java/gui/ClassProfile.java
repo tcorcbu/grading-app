@@ -53,6 +53,8 @@ public class ClassProfile {
 		JPanel categoryTablePanel = new JPanel();
 		categoryTablePanel.setLayout(new BoxLayout(categoryTablePanel, BoxLayout.Y_AXIS));
 		
+		JPanel addRemoveCategoryPanel = new JPanel();
+		
 		JPanel curvePanel = new JPanel();
 		
 		JPanel buttonPanel = new JPanel();
@@ -74,35 +76,6 @@ public class ClassProfile {
 		
 		myTableModel gradeTableModel = new myTableModel(); 
 		final JTable gradeTable = new JTable(gradeTableModel);
-		
-		// gradeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		// for (int i=0; i<gradeTable.getColumnCount(); i++) {
-			// TableColumn column = gradeTable.getColumnModel().getColumn(i);
-			// switch (i) {
-				// case 0:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(150);
-					// column.setMinWidth(50);
-					// break;
-				// case 1:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// case 2:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// case 3:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// default:
-					// break;
-			// }
-		// }
 		
 		// Add columns
 		gradeTableModel.addColumn("Student"); 
@@ -149,7 +122,7 @@ public class ClassProfile {
 		
 		categoryTableModel.addColumn("Category");
 		categoryTableModel.addColumn("Graduate Weight");
-		categoryTableModel.addColumn("Undergraduate Weight");
+		categoryTableModel.addColumn("Undergrad Weight");
 		
 		for (int i=0; i<data.gradableTypes().size(); i++) {
 			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),
@@ -180,6 +153,7 @@ public class ClassProfile {
 		JTextField curveField = new JTextField(10);
 		// JButton curveApply = new JButton("Add Percent");
 		JButton addCategoryButton = new JButton("Add Category");
+		JButton removeCategoryButton = new JButton("Remove Category");
 		JButton backButton = new JButton("Back");
 		
 		//END buttons
@@ -191,7 +165,11 @@ public class ClassProfile {
 		topPanel.add(breakoutTablePane);
 
 		categoryTablePanel.add(categoryTablePane);
-		categoryTablePanel.add(addCategoryButton);
+		
+		addRemoveCategoryPanel.add(addCategoryButton);
+		addRemoveCategoryPanel.add(removeCategoryButton);
+		
+		categoryTablePanel.add(addRemoveCategoryPanel);
 		
 		middlePanel.add(categoryTablePanel);		
 		middlePanel.add(gradeBreakdownOuterPanel);		
@@ -223,7 +201,7 @@ public class ClassProfile {
 		backButton.addActionListener(backListener);
 		
 		ActionListener addCategoryListener = new ActionListener(){
-		   public void actionPerformed(ActionEvent e){
+			public void actionPerformed(ActionEvent e){
 				NewCategoryDialog ncd = new NewCategoryDialog(data);
 				ncd.setModal(true);
 				ncd.showDialog();
@@ -237,6 +215,16 @@ public class ClassProfile {
 			   }
 			};
 		addCategoryButton.addActionListener(addCategoryListener);
+		
+		ActionListener removeCategoryListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
+
+				data.removeGradableType(gt);
+				categoryTableModel.removeRow(categoryTable.getSelectedRow());
+			   }
+			};
+		removeCategoryButton.addActionListener(removeCategoryListener);
 		
 		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {

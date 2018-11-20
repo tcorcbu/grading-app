@@ -251,9 +251,13 @@ public class MainWindow {
 					
 					for (int s=0; s<addedGradables.size(); s++) {
 					
-					addedGradable = addedGradables.get(s);
-					String gCategory = addedGradable.getType().getType();
-					boolean added = false;
+						addedGradable = addedGradables.get(s);
+						for(int i=0; i<data.nStudents(); i++){
+							data.getStudent(i).addGradable(addedGradable);
+						}
+						
+						String gCategory = addedGradable.getType().getType();
+						boolean added = false;
 						for (int i=0; i<gradablesRoot.getChildCount();i++) {
 							if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
 								DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
