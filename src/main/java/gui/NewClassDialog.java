@@ -62,6 +62,7 @@ public class NewClassDialog extends JDialog{
 			ActionListener createListener = new ActionListener(){
 				public void actionPerformed(ActionEvent e){
 					if (((String)useTemplateCombo.getSelectedItem()).equals("Empty Class")) {
+						ClassService.insertClass(classNameTextField.getText());
 						data.setLoadedClass(classNameTextField.getText());
 					// close box
 					} else {
@@ -69,11 +70,12 @@ public class NewClassDialog extends JDialog{
 						// instantiate new Data using other class
 						// copy assignments over
 						Data copyClass = new Data((String)useTemplateCombo.getSelectedItem());
+						ClassService.insertClass(classNameTextField.getText());
 						data.setLoadedClass((String)classNameTextField.getText());
 						data.clone(copyClass);
 					}
 					//save class to db
-					ClassService.insertClass(classNameTextField.getText());
+					
 					setVisible(false);
 				}
 			};

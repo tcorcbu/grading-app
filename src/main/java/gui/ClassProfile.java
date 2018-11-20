@@ -232,6 +232,7 @@ public class ClassProfile {
 				categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
 														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate"))+"%",
 														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))+"%"});
+				
 				}
 			   }
 			};

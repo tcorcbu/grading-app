@@ -23,7 +23,7 @@ public class Data {
 		gradableTypes.add(new GradableType("Participation",25,25));
 		gradableTypes.add(new GradableType("Final",25,25));
 		
-		// add set student types for new class
+		// add student types for new class
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
 	}
@@ -31,23 +31,10 @@ public class Data {
 	public Data(String LoadedClass) {
 		this.LoadedClass = LoadedClass;
         classId = ClassService.getId(LoadedClass);
-		// construct the list of gradables
-		// gradableTypes.add(new GradableType("Midterm",20,20));
-		// gradableTypes.add(new GradableType("Homework",35,35));
-		// gradableTypes.add(new GradableType("Project",20,20));
-		// gradableTypes.add(new GradableType("Participation",5,5));
-		// gradableTypes.add(new GradableType("Final",20,20));
+				
 		
-		// gradableList.add(new Gradable("Midterm 1",117,gradableTypes.get(0),100));
-		// gradableList.add(new Gradable("Blackjack",100,gradableTypes.get(1),100));
-		// gradableList.add(new Gradable("Treinta Ena",100,gradableTypes.get(1),100));
-		// gradableList.add(new Gradable("Grading System",200,gradableTypes.get(2),100));
-		// gradableList.add(new Gradable("Participation",10,gradableTypes.get(3),100));
-		// gradableList.add(new Gradable("Final",100,gradableTypes.get(4),100));
-		
-		// studentTypes.add("Graduate");
-		// studentTypes.add("Undergraduate");
-		// construct the list of students
+		studentTypes.add("Graduate");
+		studentTypes.add("Undergraduate");
 		getStudents();
 
 	}
@@ -55,6 +42,7 @@ public class Data {
 	// Loaded Class accessors and mutators
 	public void setLoadedClass(String lc) {
 		LoadedClass = lc;
+		classId = ClassService.getId(LoadedClass);
 	}
 	
 	public String getLoadedClass() {
@@ -84,14 +72,18 @@ public class Data {
 
 	public void getStudents(){
         List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
+		
         List<Student>students = new ArrayList<Student>();
+		this.studentList.clear();
         for (Integer id : studentIds) {
-            students.add(StudentService.getStudentById(id));
+            studentList.add(StudentService.getStudentById(id));
         }
-        this.studentList.clear();
-        for (Student student : students) {
-            this.studentList.add(student);
-        }
+		
+        // this.studentList.clear();
+        // for (Student student : students) {
+            // this.studentList.add(student);
+        // }
+		// System.out.println(students);
     }
 	
 	public int nStudents() {
