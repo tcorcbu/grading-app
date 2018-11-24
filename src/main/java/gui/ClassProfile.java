@@ -9,6 +9,8 @@ import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import db.GradableTypeService;
+
 public class ClassProfile {
 		
 	public ClassProfile(final JFrame mainframe,final Data data) {
@@ -20,25 +22,7 @@ public class ClassProfile {
 		System.out.println("> Add in a histogram if we're feeling good");
 		System.out.println();
 
-		mainframe.setTitle(mainframe.getTitle() + " Profile");
-		
-		// START Menu toolbar
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		menu.getAccessibleContext().setAccessibleDescription("File Menu");
-		menuBar.add(menu);
-		
-		JMenuItem menuItem_save = new JMenuItem("Save Class");
-		menu.add(menuItem_save);
-		
-		JMenuItem menuItem_load = new JMenuItem("Load Class");
-		menu.add(menuItem_load);
-		
-		JMenuItem menuItem_exit = new JMenuItem("Exit");
-		menu.add(menuItem_exit);
-		
-		mainframe.setJMenuBar(menuBar);
-		// END Menu Toolbar
+		mainframe.setTitle(data.getLoadedClass() + " Profile");
 		
 		// START Panel Setup
 		final JPanel mainPanel = new JPanel();
@@ -207,7 +191,8 @@ public class ClassProfile {
 				ncd.showDialog();
 				ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
 				for (int i=0;i<addedGradableTypes.size(); i++) {
-				categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
+					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassID());
+					categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
 														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate"))+"%",
 														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))+"%"});
 				
@@ -219,7 +204,7 @@ public class ClassProfile {
 		ActionListener removeCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
-
+				GradableTypeService.dropGradableType(gt,data.getClassID());
 				data.removeGradableType(gt);
 				categoryTableModel.removeRow(categoryTable.getSelectedRow());
 			   }

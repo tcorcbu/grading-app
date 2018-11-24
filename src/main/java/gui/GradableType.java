@@ -4,6 +4,10 @@ public class GradableType {
 	private int GraduateWeight;
 	private int UndergradWeight;
 
+	public GradableType() {
+		
+	}
+	
 	public GradableType(String type, int GraduateWeight, int UndergradWeight) {
 		this.type = type;
 		this.GraduateWeight = GraduateWeight;

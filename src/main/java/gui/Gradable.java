@@ -1,6 +1,7 @@
 package gui;
 
 public class Gradable {
+	private int gradableID;
 	private String name;
 	private int total;
 	private GradableType type;
@@ -77,7 +78,6 @@ public class Gradable {
 	public String getNote() {
 		return note;
 	}
-
 	
 	public String toString() {
 		return name;
@@ -90,5 +90,13 @@ public class Gradable {
 	public boolean isType(String type) {
 		return this.type.getType().equals(type);
 	}	
+	
+	public int getID() {
+		return gradableID;
+	}
+	
+	public void setID(int id) {
+		gradableID = id;
+	}
 	
 }

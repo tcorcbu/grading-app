@@ -3,6 +3,7 @@ package gui;
 import db.ClassService;
 import db.StudentClassService;
 import db.StudentService;
+import db.GradableTypeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Data {
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
 		getStudents();
+		getGradableTypes();
 
 	}
 
@@ -73,10 +75,18 @@ public class Data {
 	public void getStudents(){
         List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
 		
-        List<Student>students = new ArrayList<Student>();
 		this.studentList.clear();
         for (Integer id : studentIds) {
             studentList.add(StudentService.getStudentById(id));
+        }
+    }
+	
+	public void getGradableTypes(){
+        List<Integer>gradableTypeIDs = GradableTypeService.getAllGradableTypeId(classId);
+		
+		this.gradableTypes.clear();
+        for (Integer id : gradableTypeIDs) {
+            gradableTypes.add(GradableTypeService.getGradableTypeById(id));
         }
     }
 	
@@ -154,6 +164,9 @@ public class Data {
 		this.studentTypes = data2clone.copyStudentTypes();
 	}
 	
+	public int getClassID() {
+		return classId;
+	}
 	
 	
 
