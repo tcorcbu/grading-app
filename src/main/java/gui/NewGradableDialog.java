@@ -1,5 +1,7 @@
 package gui;
 
+import db.GradableService;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
@@ -40,7 +42,7 @@ public class NewGradableDialog extends JDialog{
 		
 		
 		// END setup layout
-		ArrayList<GradableType> gradableTypes = data.copyGradableTypes();
+		final ArrayList<GradableType> gradableTypes = data.getGradableTypes();
 		gradableTypes.add(new GradableType("New Category",0,0));
 		Object[] categoryOptions = gradableTypes.toArray();
 		
@@ -96,7 +98,8 @@ public class NewGradableDialog extends JDialog{
 				
 				// Check student ID against the database and error if there is a conflict
 				newGradable = new Gradable(name,points,category,weight);
-				data.addGradable(newGradable);
+				GradableService.insert(newGradable, data.getClassId());
+				data.refreshGradables();
 				newGradables.add(newGradable);
 				
 				nameTextField.setText("");
@@ -115,7 +118,9 @@ public class NewGradableDialog extends JDialog{
 				
 				// Check student ID against the database and error if there is a conflict
 				newGradable = new Gradable(name,points,category,weight);
-				data.addGradable(newGradable);
+				GradableService.insert(newGradable,data.getClassId());
+				data.getCategories();
+				data.refreshGradables();
 				newGradables.add(newGradable);
 				setVisible(false);
 			}
@@ -138,18 +143,17 @@ public class NewGradableDialog extends JDialog{
 						NewCategoryDialog ncd = new NewCategoryDialog(data);
 						ncd.setModal(true);
 						ncd.showDialog();
-						ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
+						ArrayList<GradableType> addedGradableTypes = data.getGradableTypes();
+						categoryCombo.removeAllItems();
 						for (int i=0;i<addedGradableTypes.size(); i++) {
 						categoryCombo.addItem(addedGradableTypes.get(i));
 						categoryCombo.setSelectedItem(addedGradableTypes.get(i));
 						}
+						categoryCombo.addItem(new GradableType("New Category",0,0));
                     }
                     }
                 };
             categoryCombo.addActionListener( categoryListener );
-		
-		
-		
 	}
 	
 	public void showDialog() {

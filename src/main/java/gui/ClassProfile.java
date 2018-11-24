@@ -136,7 +136,7 @@ public class ClassProfile {
 		// END Breakout Table
 		
 		// START Category Table
-		DefaultTableModel categoryTableModel = new DefaultTableModel() {
+		final DefaultTableModel categoryTableModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
 				if (colIndex == 0){
 				return false;

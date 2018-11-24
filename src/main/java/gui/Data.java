@@ -1,8 +1,6 @@
 package gui;
 
-import db.ClassService;
-import db.StudentClassService;
-import db.StudentService;
+import db.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +33,23 @@ public class Data {
 		
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
-		getStudents();
-
+        getCategories();
+        refreshGradables();
+        getStudents();
 	}
 
+
+	public void refreshGradables(){
+        this.gradableList = GradableService.getAll(classId);
+    }
+
+	public void getCategories(){
+	    this.gradableTypes = CategoryService.getAll(classId);
+    }
+
+    public ArrayList<GradableType> getGradableTypes(){
+	    return this.gradableTypes;
+    }
 	// Loaded Class accessors and mutators
 	public void setLoadedClass(String lc) {
 		LoadedClass = lc;
@@ -72,13 +83,15 @@ public class Data {
 
 	public void getStudents(){
         List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
-		
-        List<Student>students = new ArrayList<Student>();
+
 		this.studentList.clear();
         for (Integer id : studentIds) {
             studentList.add(StudentService.getStudentById(id));
         }
-		
+
+        for (Student student : studentList) {
+            student.setGradableList(gradableList);
+        }
         // this.studentList.clear();
         // for (Student student : students) {
             // this.studentList.add(student);
@@ -103,7 +116,8 @@ public class Data {
 	}
 	
 	public void dropGradable(Gradable g) {
-		gradableList.remove(g);
+	    GradableService.drop(g);
+	    refreshGradables();
 	}
 	
 	public int nGradables() {
@@ -151,8 +165,10 @@ public class Data {
 		this.gradableTypes = data2clone.copyGradableTypes();
 		this.studentTypes = data2clone.copyStudentTypes();
 	}
-	
-	
+
+	public int getClassId() {
+		return classId;
+	}
 	
 
 }

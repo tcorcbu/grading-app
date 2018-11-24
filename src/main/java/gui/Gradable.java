@@ -1,6 +1,7 @@
 package gui;
 
 public class Gradable {
+	private int gradableId;
 	private String name;
 	private int total;
 	private GradableType type;
@@ -12,8 +13,32 @@ public class Gradable {
 	public Gradable() {
 		
 	}
-	
-	public Gradable(String name, int total, GradableType type,int IntraCategoryWeight) {
+
+	public int getGradableId() {
+		return gradableId;
+	}
+
+	public void setGradableId(int gradableId) {
+		this.gradableId = gradableId;
+	}
+
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int total) {
+		this.total = total;
+	}
+
+	public void setType(GradableType type) {
+		this.type = type;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Gradable(String name, int total, GradableType type, int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
