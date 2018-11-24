@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.text.*;
 
+import db.GradableService;
+
 public class MainWindow {
 		
 		public MainWindow(final JFrame mainframe,final Data data) {
@@ -33,7 +35,6 @@ public class MainWindow {
 			JMenuItem menuItem_exit = new JMenuItem("Exit");
 			menu.add(menuItem_exit);
 			
-
 			mainframe.setJMenuBar(menuBar);
 			// END Menu Toolbar
 			
@@ -422,6 +423,7 @@ public class MainWindow {
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
+							GradableService.insertGradable(newGradable, data.getClassID());
 								
 							for(int i=0; i<data.nStudents(); i++){
 								data.getStudent(i).addGradable(newGradable);
@@ -460,6 +462,7 @@ public class MainWindow {
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
+							GradableService.insertGradable(newGradable, data.getClassID());
 								
 							for(int i=0; i<data.nStudents(); i++){
 								data.getStudent(i).addGradable(newGradable);
@@ -550,6 +553,13 @@ public class MainWindow {
 			};
 			dropGradable.addActionListener(DropGradableListener);
 			
+			ActionListener menuItem_saveListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					data.saveClass();
+				}
+			};
+			
+			menuItem_save.addActionListener(menuItem_saveListener);
 			
 			// END Action Listeners 
 		}

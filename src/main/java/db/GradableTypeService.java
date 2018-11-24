@@ -14,9 +14,9 @@ public class GradableTypeService {
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			
             statement.setString(1, gradableType.getType());
-			statement.setString(2, String.valueOf(class_id));
-            statement.setString(3, String.valueOf(gradableType.getWeight("Undergraduate")));
-            statement.setString(4, String.valueOf(gradableType.getWeight("Graduate")));
+			statement.setInt(2, class_id);
+            statement.setInt(3, gradableType.getWeight("Undergraduate"));
+            statement.setInt(4, gradableType.getWeight("Graduate"));
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
             while (rs.next()) {
@@ -35,7 +35,7 @@ public class GradableTypeService {
         try{
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, name);
-			statement.setString(2, String.valueOf(class_id));
+			statement.setInt(2, class_id);
             statement.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
@@ -44,15 +44,15 @@ public class GradableTypeService {
 
     public static int getId(GradableType gradableType,int class_id) {
         Connection conn = MySqlConnection.getConnection();
-        String sql = "SELECT gradableType_id FROM categories WHERE name = ? AND class_id = ?";
+        String sql = "SELECT category_id FROM categories WHERE name = ? AND class_id = ?";
         int res = -1;
         try{
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, gradableType.getType());
-			statement.setString(2, String.valueOf(class_id));
+			statement.setInt(2, class_id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                res = rs.getInt("gradableType_id");
+                res = rs.getInt("category_id");
             }
         }catch (SQLException e) {
             e.printStackTrace();

@@ -13,8 +13,7 @@ CREATE TABLE Gradables (
   name varchar(255),
   class_id int4,
   total_points int,
-  ugrad_weight int,
-  grad_weight int,
+  relative_weight int,
   category_id int4,
   CONSTRAINT gradables_pk PRIMARY KEY (gradable_id)
 );

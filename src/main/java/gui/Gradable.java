@@ -71,10 +71,18 @@ public class Gradable {
 		return total;
 	}
 	
+	public void setPoints(int p) {
+		total = p;
+	}
+	
 	public GradableType getType() {
 		return type;
 	}
 
+	public void setType(GradableType gt) {
+		type = gt;
+	}
+	
 	public String getNote() {
 		return note;
 	}

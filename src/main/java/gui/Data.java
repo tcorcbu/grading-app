@@ -4,6 +4,7 @@ import db.ClassService;
 import db.StudentClassService;
 import db.StudentService;
 import db.GradableTypeService;
+import db.GradableService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,9 @@ public class Data {
 		
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
-		getStudents();
-		getGradableTypes();
+		loadStudents();
+		loadGradableTypes();
+		loadGradables();
 
 	}
 
@@ -63,16 +65,16 @@ public class Data {
 	public void addStudent(Student newStudent) {
         int studentId = StudentService.insertStudent(newStudent);
         StudentClassService.insertStudentClass(classId, studentId);
-        getStudents();
+        loadStudents();
 	}
 	
 	public void dropStudent(Student s) {
 	    int studentId = StudentService.getId(s);
         StudentClassService.deleteStudentClass(classId,studentId);
-	    getStudents();
+	    loadStudents();
 	}
 
-	public void getStudents(){
+	public void loadStudents(){
         List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
 		
 		this.studentList.clear();
@@ -81,12 +83,21 @@ public class Data {
         }
     }
 	
-	public void getGradableTypes(){
+	public void loadGradableTypes(){
         List<Integer>gradableTypeIDs = GradableTypeService.getAllGradableTypeId(classId);
 		
 		this.gradableTypes.clear();
         for (Integer id : gradableTypeIDs) {
             gradableTypes.add(GradableTypeService.getGradableTypeById(id));
+        }
+    }
+	
+	public void loadGradables(){
+        List<Integer>gradableIDs = GradableService.getAllGradableId(classId);
+		
+		this.gradableList.clear();
+        for (Integer id : gradableIDs) {
+            gradableList.add(GradableService.getGradableById(id));
         }
     }
 	
@@ -168,6 +179,8 @@ public class Data {
 		return classId;
 	}
 	
-	
+	public void saveClass() {
+		System.out.println("save class");
+	}
 
 }
