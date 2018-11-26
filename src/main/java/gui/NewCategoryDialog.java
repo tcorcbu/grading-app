@@ -1,5 +1,7 @@
 package gui;
 
+import db.CategoryService;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
@@ -84,9 +86,9 @@ public class NewCategoryDialog extends JDialog{
 				
 				// Check student ID against the database and error if there is a conflict
 				newGradableType = new GradableType(name,gWeight,uWeight);
-				data.addGradableType(newGradableType);
+				CategoryService.insert(newGradableType, data.getClassId());
 				newGradableTypes.add(newGradableType);
-				
+				data.getCategories();
 				nameTextField.setText("");
 				// gWeightTextField.setText("");
 				// uWeightTextField.setText("");
@@ -99,10 +101,10 @@ public class NewCategoryDialog extends JDialog{
 				String name = nameTextField.getText();
 				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
-				
 				// Check student ID against the database and error if there is a conflict
 				newGradableType = new GradableType(name,gWeight,uWeight);
-				data.addGradableType(newGradableType);
+				CategoryService.insert(newGradableType, data.getClassId());
+				data.getCategories();
 				newGradableTypes.add(newGradableType);
 				setVisible(false);
 			}
