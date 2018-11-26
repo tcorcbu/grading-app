@@ -115,7 +115,7 @@ public class ClassProfile {
 		}
 		
 		
-		JTable categoryTable = new JTable(categoryTableModel);
+		final JTable categoryTable = new JTable(categoryTableModel);
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		// END Category Table
@@ -191,7 +191,7 @@ public class ClassProfile {
 				ncd.showDialog();
 				ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
 				for (int i=0;i<addedGradableTypes.size(); i++) {
-					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassID());
+					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassId());
 					categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
 														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate"))+"%",
 														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))+"%"});
@@ -204,7 +204,7 @@ public class ClassProfile {
 		ActionListener removeCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
-				GradableTypeService.dropGradableType(gt,data.getClassID());
+				GradableTypeService.dropGradableType(gt,data.getClassId());
 				data.removeGradableType(gt);
 				categoryTableModel.removeRow(categoryTable.getSelectedRow());
 			   }

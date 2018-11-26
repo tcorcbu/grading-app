@@ -41,8 +41,8 @@ public class MainWindow {
 			// START Layout
 			final JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-			
-			JPanel treePanel = new JPanel();
+
+			final JPanel treePanel = new JPanel();
 			treePanel.setLayout(new GridLayout(1,0));
 			JPanel buttonPanel = new JPanel();
 			buttonPanel.setLayout(new GridLayout(2,2));
@@ -73,9 +73,9 @@ public class MainWindow {
 
 			final JTree gradablesTree = new JTree(topGradables);
 			gradablesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-			DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
-			DefaultMutableTreeNode gradablesRoot = (DefaultMutableTreeNode)gradablesModel.getRoot();
-			JScrollPane gradableView = new JScrollPane(gradablesTree);
+			final DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
+			final DefaultMutableTreeNode gradablesRoot = (DefaultMutableTreeNode)gradablesModel.getRoot();
+			final JScrollPane gradableView = new JScrollPane(gradablesTree);
 			
 			for(int i=0;i<gradablesTree.getRowCount();i++){
 				gradablesTree.expandRow(i);
@@ -108,10 +108,10 @@ public class MainWindow {
 			
 			final JTree studentsTree = new JTree(topStudents);
 			studentsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-			DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
-			DefaultMutableTreeNode studentsRoot = (DefaultMutableTreeNode)studentsModel.getRoot();
+			final DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
+			final DefaultMutableTreeNode studentsRoot = (DefaultMutableTreeNode)studentsModel.getRoot();
 				
-			JScrollPane studentView = new JScrollPane(studentsTree);
+			final JScrollPane studentView = new JScrollPane(studentsTree);
 			
 			for(int i=0;i<studentsTree.getRowCount();i++){
 				studentsTree.expandRow(i);
@@ -423,7 +423,7 @@ public class MainWindow {
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
-							GradableService.insertGradable(newGradable, data.getClassID());
+							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
 								data.getStudent(i).addGradable(newGradable);
@@ -462,7 +462,7 @@ public class MainWindow {
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
-							GradableService.insertGradable(newGradable, data.getClassID());
+							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
 								data.getStudent(i).addGradable(newGradable);
