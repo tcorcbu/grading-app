@@ -90,7 +90,7 @@ public class Data {
         }
 
         for (Student student : studentList) {
-            student.setGradableList(gradableList);
+            student.setGradableList(GradeService.getAllGradablesForStudent(student,classId));
         }
         // this.studentList.clear();
         // for (Student student : students) {

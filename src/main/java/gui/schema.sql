@@ -45,7 +45,7 @@ CREATE TABLE StudentsClasses (
 CREATE TABLE Grades (
   student_id int4,
   gradable_id int4,
-  points_earned int,
+  points_lost int,
   student_weight int,
   comment varchar(255),
   CONSTRAINT grades_pk PRIMARY KEY (student_id, gradable_id)
