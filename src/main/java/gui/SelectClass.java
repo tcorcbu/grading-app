@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class SelectClass {
 		
 		private String[] classList;
+        private String[] oldClassList;
 
 		public SelectClass(JFrame mainframe) {
 			intitalClassList();
@@ -21,12 +22,21 @@ public class SelectClass {
 
 		private void intitalClassList(){
 		    java.util.List<String>classNames = ClassService.getClassNames();
+            java.util.List<String>oldClassNames = ClassService.getOldClassNames();
             classNames.add(0,"Select a class");
             classNames.add("New Class");
+            oldClassNames.add(0,"Select an old class");
+
             classList = new String[classNames.size()];
             int count = 0;
             for (String str : classNames) {
                 classList[count++] = str;
+            }
+
+            oldClassList = new String[oldClassNames.size()];
+            int old_count = 0;
+            for (String old_str : oldClassNames) {
+                oldClassList[old_count++] = old_str;
             }
         }
 
@@ -51,6 +61,14 @@ public class SelectClass {
             JPanel classComboPanel = new JPanel();
             classComboPanel.add(classCombo);
 
+            // old classes
+
+            final JComboBox<String> oldClassCombo = new JComboBox<String>(oldClassList);
+            JPanel oldClassComboPanel = new JPanel();
+            oldClassComboPanel.add(oldClassCombo);
+
+            // old classes
+
             // JButton jbtLoad = new JButton("Load Class");
             // jbtLoad.setAlignmentX(panel.CENTER_ALIGNMENT);
 
@@ -73,6 +91,8 @@ public class SelectClass {
             mainPanel.add(classLabelPanel);
             mainPanel.add(Box.createHorizontalStrut(10));
             mainPanel.add(classComboPanel);
+            mainPanel.add(Box.createHorizontalStrut(10));
+            mainPanel.add(oldClassComboPanel);
             // panel.add(Box.createHorizontalStrut(10));
             // panel.add(newButtonsPanel);
             // panel.add(Box.createHorizontalStrut(10));

@@ -12,7 +12,23 @@ public class ClassService {
     //get All class names
     public static List<String> getClassNames(){
         Connection conn = MySqlConnection.getConnection();
-        String query = "SELECT name FROM Classes";
+        String query = "SELECT name FROM Classes WHERE status='open'";
+        List<String>res = new ArrayList<String>();
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res.add(rs.getString("name"));
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static List<String> getOldClassNames(){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT name FROM Classes WHERE status='closed'";
         List<String>res = new ArrayList<String>();
         try {
             PreparedStatement statement = conn.prepareStatement(query);
