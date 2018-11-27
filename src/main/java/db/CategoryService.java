@@ -72,4 +72,39 @@ public class CategoryService {
         }
         return gradableType;
     }
-}
+
+	public static void updateUgradWeight(GradableType gt, int uw) {
+		Connection conn = MySqlConnection.getConnection();
+		String query = "UPDATE Categories SET ugrad_weight = ? WHERE category_id = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, uw);
+			statement.setInt(2,gt.getId());
+			statement.executeUpdate();
+			ResultSet rs = statement.getGeneratedKeys();
+			while (rs.next()) {
+				gt.setId(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}	
+	
+	public static void updateGradWeight(GradableType gt, int gw) {
+		Connection conn = MySqlConnection.getConnection();
+		String query = "UPDATE Categories SET grad_weight = ? WHERE category_id = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement.setInt(1, gw);
+			statement.setInt(2,gt.getId());
+			statement.executeUpdate();
+			ResultSet rs = statement.getGeneratedKeys();
+			while (rs.next()) {
+				gt.setId(rs.getInt(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}	
+	
+	}

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 import db.GradableTypeService;
+import db.CategoryService;
 
 public class ClassProfile {
 		
@@ -105,13 +106,13 @@ public class ClassProfile {
 		};
 		
 		categoryTableModel.addColumn("Category");
-		categoryTableModel.addColumn("Graduate Weight");
-		categoryTableModel.addColumn("Undergrad Weight");
+		categoryTableModel.addColumn("Graduate Weight (%)");
+		categoryTableModel.addColumn("Undergrad Weight (%)");
 		
 		for (int i=0; i<data.gradableTypes().size(); i++) {
 			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),
-										String.valueOf(data.gradableTypes(i).getWeight("Graduate"))+"%",
-										String.valueOf(data.gradableTypes(i).getWeight("Undergraduate"))+"%"});
+										String.valueOf(data.gradableTypes(i).getWeight("Graduate")),
+										String.valueOf(data.gradableTypes(i).getWeight("Undergraduate"))});
 		}
 		
 		
@@ -257,6 +258,29 @@ public class ClassProfile {
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
 
+		////////////////////////////////////////////////////
+		
+		categoryTableModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int row = categoryTable.getSelectedRow();
+				int column = categoryTable.getSelectedColumn();
+				String categoryType = categoryTable.getValueAt(row,0).toString();
+				Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
+				GradableType gt = data.getGradableTypeByName(categoryType);
+				if (column == 1) {
+					gt.setGraduateWeight(tableValue);
+					CategoryService.updateUgradWeight(gt,tableValue);
+					
+				} else {
+					gt.setUndergradWeight(tableValue);
+					CategoryService.updateGradWeight(gt,tableValue);
+				}
+				System.out.println(categoryType);
+				System.out.println(tableValue);
+				
+				
+		  }
+		});
 		
 		// END Action Listeners 
 	}
