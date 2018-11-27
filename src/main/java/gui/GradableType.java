@@ -58,7 +58,7 @@ public class GradableType {
 
 
 	public String toString() {
-		return type;
+		return type + " (" + String.valueOf(UndergradWeight) + "%, " + String.valueOf(GraduateWeight) + "%)";
 	}
 
 }

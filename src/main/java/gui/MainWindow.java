@@ -32,6 +32,12 @@ public class MainWindow {
 			JMenuItem menuItem_load = new JMenuItem("Load Class");
 			menu.add(menuItem_load);
 			
+			JMenuItem menuItem_new = new JMenuItem("New Class");
+			menu.add(menuItem_new);
+			
+			JMenuItem menuItem_close = new JMenuItem("Close Class");
+			menu.add(menuItem_close);
+			
 			JMenuItem menuItem_exit = new JMenuItem("Exit");
 			menu.add(menuItem_exit);
 			
@@ -50,21 +56,25 @@ public class MainWindow {
 			// END Layout
 			
 			// START Gradables tree
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables");
+			int mysumU = 0;
+			int mysumG = 0;
+			for(int i=0; i<data.gradableTypes().size(); i++) {
+				mysumU += data.gradableTypes().get(i).getWeight("Undergraduate");
+				mysumG += data.gradableTypes().get(i).getWeight("Graduate");
+			}
+			
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(mysumU)+"%, "+String.valueOf(mysumG)+"%)");
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.gradableTypes().size(); i++) {
-				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i).getType()));
-			}
-			
-			for (int i=0;i<data.nGradables();i++) {
+				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i)));
 				
-				for (int j=0; j<gradableCategories.size(); j++) {
-					
-					if (data.getGradable(i).isType(gradableCategories.get(j).toString())) {
-						gradableCategories.get(j).add(new DefaultMutableTreeNode(data.getGradable(i)));
+				for (int j=0;j<data.nGradables();j++) {
+					if (data.getGradable(j).isType(data.gradableTypes().get(i).getType())) {
+						gradableCategories.get(i).add(new DefaultMutableTreeNode(data.getGradable(j)));
 					}
 				}
+				
 			}
 			
 			for (int i=0; i<gradableCategories.size(); i++) {
@@ -564,8 +574,28 @@ public class MainWindow {
 					data.saveClass();
 				}
 			};
-			
 			menuItem_save.addActionListener(menuItem_saveListener);
+			
+			ActionListener menuItem_loadListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Load Class");
+				}
+			};
+			menuItem_load.addActionListener(menuItem_loadListener);
+			
+			ActionListener menuItem_newListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("New Class");
+				}
+			};
+			menuItem_new.addActionListener(menuItem_newListener);
+			
+			ActionListener menuItem_closeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Close Class");
+				}
+			};
+			menuItem_close.addActionListener(menuItem_closeListener);
 			
 			// END Action Listeners 
 		}
