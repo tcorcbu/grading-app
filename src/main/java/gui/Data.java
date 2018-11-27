@@ -16,10 +16,11 @@ public class Data {
 
 	public Data() {
 		// add default gradable types for new class
-		gradableTypes.add(new GradableType("Homework",25,25));
-		gradableTypes.add(new GradableType("Project",25,25));
-		gradableTypes.add(new GradableType("Participation",25,25));
-		gradableTypes.add(new GradableType("Final",25,25));
+		
+		// gradableTypes.add(new GradableType("Homework",25,25));
+		// gradableTypes.add(new GradableType("Project",25,25));
+		// gradableTypes.add(new GradableType("Participation",25,25));
+		// gradableTypes.add(new GradableType("Final",25,25));
 		
 		// add student types for new class
 		studentTypes.add("Graduate");
@@ -130,6 +131,16 @@ public class Data {
 	
 	public GradableType gradableTypes(int i) {
 		return gradableTypes.get(i);
+	}
+	
+	public GradableType getGradableTypeByName(String name) {
+		GradableType gt = new GradableType();
+		for (int i = 0; i<gradableTypes.size(); i++) {
+			if(gradableTypes.get(i).getType().equals(name)) {
+				gt =  gradableTypes.get(i);
+			}
+		}
+		return gt;
 	}
 	
 	public ArrayList<Gradable> copyGradables() {
