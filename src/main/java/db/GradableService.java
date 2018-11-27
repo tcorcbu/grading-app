@@ -69,4 +69,39 @@ public class GradableService {
             e.printStackTrace();
         }
     }
+	
+	public static void updatePoints(Gradable gradable, int tp) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Gradables SET total_points = ? WHERE gradable_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, tp);
+            statement.setInt(2,gradable.getGradableId());
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            while (rs.next()) {
+                gradable.setGradableId(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void updateWeight(Gradable gradable, int rw) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Gradables SET relative_weight = ? WHERE gradable_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, rw);
+            statement.setInt(2,gradable.getGradableId());
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            while (rs.next()) {
+                gradable.setGradableId(rs.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+	
 }
