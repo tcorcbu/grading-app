@@ -203,7 +203,7 @@ public class MainWindow {
 			ActionListener AddStudentListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					
-					treePanel.remove(1);
+					treePanel.remove(0);
 					
 					// START setup layout
 					JPanel newStudentPanel = new JPanel();		
@@ -253,7 +253,7 @@ public class MainWindow {
 					newStudentPanel.add(gridPanel);
 					newStudentPanel.add(botPanel);
 					
-					treePanel.add(newStudentPanel,0,1);
+					treePanel.add(newStudentPanel,0,0);
 					mainframe.revalidate();
 					mainframe.repaint();
 					
@@ -314,8 +314,8 @@ public class MainWindow {
 								}
 							}
 								
-							treePanel.remove(1);
-							treePanel.add(studentView,0,1);
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
 							mainframe.revalidate();
 							mainframe.repaint();
 						}
@@ -324,8 +324,8 @@ public class MainWindow {
 					
 					ActionListener CloseAddStudentButtonListener = new ActionListener(){
 						public void actionPerformed(ActionEvent e) {
-							treePanel.remove(1);
-							treePanel.add(studentView,0,1);
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
 							mainframe.revalidate();
 							mainframe.repaint();
 							
@@ -343,6 +343,7 @@ public class MainWindow {
 			ActionListener AddGradableListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					
+					treePanel.remove(0);
 					treePanel.remove(0);
 					// START Setup Layout
 					JPanel newGradablePanel = new JPanel();
@@ -407,6 +408,7 @@ public class MainWindow {
 					newGradablePanel.add(botPanel);
 					
 					treePanel.add(newGradablePanel,0,0);
+					treePanel.add(gradableView,0,1);
 					mainframe.revalidate();
 					mainframe.repaint();
 					
@@ -447,8 +449,8 @@ public class MainWindow {
 								}
 
 							nameTextField.setText("");
-							pointsTextField.setText("");
-							weightTextField.setText("");
+							// pointsTextField.setText("");
+							// weightTextField.setText("");
 						}
 					};
 					addButton.addActionListener(addGradableButtonListener);
@@ -486,7 +488,9 @@ public class MainWindow {
 							}
 									
 							treePanel.remove(0);
+							treePanel.remove(0);
 							treePanel.add(gradableView,0,0);
+							treePanel.add(studentView,0,1);
 							mainframe.revalidate();
 							mainframe.repaint();
 									
@@ -497,7 +501,9 @@ public class MainWindow {
 					ActionListener CloseAddGradableButtonListener = new ActionListener(){
 						public void actionPerformed(ActionEvent e) {
 							treePanel.remove(0);
+							treePanel.remove(0);
 							treePanel.add(gradableView,0,0);
+							treePanel.add(studentView,0,1);
 							mainframe.revalidate();
 							mainframe.repaint();
 						}
