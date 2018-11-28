@@ -219,7 +219,6 @@ public class ClassProfile {
 				TableColumnModel columnModel = gradeTable.getColumnModel();
 				
 				String category = gradeTable.getColumnName(column);
-				System.out.println(category);
 				int nColumns = gradeTable.getColumnCount();
 				
 				TableColumnModel breakoutModel = breakoutTable.getColumnModel();
@@ -257,8 +256,6 @@ public class ClassProfile {
 		
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
-
-		////////////////////////////////////////////////////
 		
 		categoryTableModel.addTableModelListener(new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
@@ -274,11 +271,7 @@ public class ClassProfile {
 				} else {
 					gt.setUndergradWeight(tableValue);
 					CategoryService.updateGradWeight(gt,tableValue);
-				}
-				System.out.println(categoryType);
-				System.out.println(tableValue);
-				
-				
+				}	
 		  }
 		});
 		

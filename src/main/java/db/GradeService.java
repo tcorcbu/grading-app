@@ -32,7 +32,6 @@ public class GradeService {
         }
     }
 
-
     public static ArrayList<Gradable> getAllGradablesForStudent(Student student, int classId) {
         int studentId = StudentService.getId(student);
         ArrayList<Gradable>res = GradableService.getAll(classId);
@@ -56,6 +55,47 @@ public class GradeService {
         return res;
     }
 
-
+	public static void updatePointsLost(int gradable_id, int student_id, int pl) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Grades SET points_lost = ? WHERE gradable_id = ? AND student_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, pl);
+            statement.setInt(2,gradable_id);
+			statement.setInt(3,student_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void updateStudentWeight(int gradable_id, int student_id, int sw) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Grades SET student_weight = ? WHERE gradable_id = ? AND student_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, sw);
+            statement.setInt(2,gradable_id);
+			statement.setInt(3,student_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void updateComment(int gradable_id, int student_id, String c) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Grades SET comment = ? WHERE gradable_id = ? AND student_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, c);
+            statement.setInt(2,gradable_id);
+			statement.setInt(3,student_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+	
 
 }

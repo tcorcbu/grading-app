@@ -7,6 +7,9 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.*;
 
+import db.GradeService;
+import db.StudentService;
+
 public class StudentProfile {
 		
 	public StudentProfile(JFrame mainframe,Data data, Student s) {
@@ -146,6 +149,33 @@ public class StudentProfile {
 		
 		JTableHeader gradableHeader = gradableTable.getTableHeader();
 		gradableHeader.addMouseListener(TableHeaderMouseListener);
+		
+		gradableModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int row = gradableTable.getSelectedRow();
+				int column = gradableTable.getSelectedColumn();
+				String gradableName = gradableTable.getValueAt(row,0).toString();
+				
+				Gradable g = s.getGradable(gradableName);
+				switch(column) {
+				case 1:
+					Integer tablePoints = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
+					g.setPointsLost(tablePoints);
+					GradeService.updatePointsLost(g.getID(), StudentService.getId(s),tablePoints);
+					break;
+				case 2:
+					Integer tableWeight = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
+					g.setStudentWeight(tableWeight);
+					GradeService.updateStudentWeight(g.getID(),StudentService.getId(s),tableWeight);
+					break;
+				case 3:
+					String tableNote = gradableTable.getValueAt(row,column).toString();
+					g.setNote(tableNote);
+					GradeService.updateComment(g.getID(),StudentService.getId(s),tableNote);
+					break;
+				}	
+		  }
+		});
 		
 		// END Action Listeners
 		

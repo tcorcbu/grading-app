@@ -34,10 +34,6 @@ public class Gradable {
 		this.type = type;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
-	}
-
 	public Gradable(String name, int total, GradableType type, int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
@@ -103,9 +99,12 @@ public class Gradable {
 		return type;
 	}
 
-
 	public String getNote() {
 		return note;
+	}
+	
+	public void setNote(String n) {
+		note = n;
 	}
 	
 	public String toString() {

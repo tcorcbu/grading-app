@@ -29,7 +29,6 @@ public class GradableService {
         }
     }
 
-
     public static ArrayList<Gradable> getAll(int classId) {
         Connection conn = MySqlConnection.getConnection();
         String query = "SELECT * FROM Gradables WHERE class_id=?";
@@ -78,10 +77,6 @@ public class GradableService {
             statement.setInt(1, tp);
             statement.setInt(2,gradable.getGradableId());
             statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys();
-            while (rs.next()) {
-                gradable.setGradableId(rs.getInt(1));
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -94,14 +89,9 @@ public class GradableService {
             PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, rw);
             statement.setInt(2,gradable.getGradableId());
-            statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys();
-            while (rs.next()) {
-                gradable.setGradableId(rs.getInt(1));
-            }
+            statement.executeUpdate();            
         } catch (SQLException e) {
             e.printStackTrace();
         }
 	}
-	
 }

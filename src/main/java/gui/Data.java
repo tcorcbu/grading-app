@@ -112,6 +112,16 @@ public class Data {
 		return gradableList.get(i);
 	}
 	
+	public Gradable getGradableByName(String name) {
+		Gradable g = new Gradable();
+		for (int i = 0; i<gradableList.size(); i++) {
+			if(gradableList.get(i).getName().equals(name)) {
+				g =  gradableList.get(i);
+			}
+		}
+		return g;
+	}
+	
 	public void addGradable(Gradable newGradable) {
 		gradableList.add(newGradable);
 	}
