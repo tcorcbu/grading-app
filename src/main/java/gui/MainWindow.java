@@ -15,10 +15,6 @@ import db.GradableService;
 public class MainWindow {
 		
 		public MainWindow(final JFrame mainframe,final Data data) {
-			System.out.println("MainWindow to do list:");
-			System.out.println("> Add functionality to Save Class");
-			System.out.println("> Add functionality to Load Class");
-			System.out.println();
 					
 			// START Menu toolbar
 			JMenuBar menuBar = new JMenuBar();
@@ -281,7 +277,7 @@ public class MainWindow {
 							// Check student ID against the database and error if there is a conflict
 							Student newStudent = new Student(firstName,lastName,schoolID,year);
 							for (int i=0; i<data.nGradables(); i++) {
-								newStudent.addGradable(data.getGradable(i));
+								newStudent.addGradable(data.getGradable(i).copy());
 							}
 							
 							data.addStudent(newStudent);
@@ -311,7 +307,7 @@ public class MainWindow {
 							// Check student ID against the database and error if there is a conflict
 							Student newStudent = new Student(firstName,lastName,schoolID,year);
 							for (int i=0; i<data.nGradables(); i++) {
-								newStudent.addGradable(data.getGradable(i));
+								newStudent.addGradable(data.getGradable(i).copy());
 							}
 							
 							data.addStudent(newStudent);
@@ -438,10 +434,10 @@ public class MainWindow {
 							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
-								data.getStudent(i).addGradable(newGradable);
+								data.getStudent(i).addGradable(newGradable.copy());
 							}
 									
-								String gCategory = newGradable.getType().getType();
+								String gCategory = newGradable.getType().toString();
 								boolean added = false;
 								for (int i=0; i<gradablesRoot.getChildCount();i++) {
 									if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
@@ -477,10 +473,10 @@ public class MainWindow {
 							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
-								data.getStudent(i).addGradable(newGradable);
+								data.getStudent(i).addGradable(newGradable.copy());
 							}
 									
-							String gCategory = newGradable.getType().getType();
+							String gCategory = newGradable.getType().toString();
 							boolean added = false;
 							for (int i=0; i<gradablesRoot.getChildCount();i++) {
 								if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {

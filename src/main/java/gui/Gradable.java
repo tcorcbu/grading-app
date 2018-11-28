@@ -13,6 +13,16 @@ public class Gradable {
 	public Gradable() {
 		
 	}
+	
+	// public Gradable(Gradable g) {
+		// this.name = g.getName();
+		// this.total = g.getPoints();
+		// this.type = g.getType();
+		// this.pointsLost = g.getPointsLost;
+		// this.IntraCategoryWeight = g.getIntraCategoryWeight();
+		// this.StudentWeight = g.getStudentWeight();
+		// this.String note = g.getNote();
+	// }
 
 	public int getGradableId() {
 		return gradableId;
@@ -34,15 +44,13 @@ public class Gradable {
 		this.type = type;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
-	}
-
 	public Gradable(String name, int total, GradableType type, int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
 		this.IntraCategoryWeight = IntraCategoryWeight;
+		this.pointsLost = total;
+		this.IntraCategoryWeight = 100;
 	}
 		
 	public Gradable(String name, int total, GradableType type,int IntraCategoryWeight,int pointsLost,int StudentWeight,String note) {
@@ -103,9 +111,12 @@ public class Gradable {
 		return type;
 	}
 
-
 	public String getNote() {
 		return note;
+	}
+	
+	public void setNote(String n) {
+		note = n;
 	}
 	
 	public String toString() {
@@ -128,4 +139,14 @@ public class Gradable {
 		gradableId = id;
 	}
 
+	public Gradable copy() {
+		Gradable g = new Gradable(this.getName(),
+									this.getPoints(),
+									this.getType(),
+									this.getIntraCategoryWeight(),
+									this.getPointsLost(),
+									this.getStudentWeight(),
+									this.getNote());
+		return g;
+	}
 }

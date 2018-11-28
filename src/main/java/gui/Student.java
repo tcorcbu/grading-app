@@ -1,10 +1,12 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.Random; // for making fake data
+
+import db.GradeService;
 
 
 public class Student {
+	private int studentId;
 	private String firstName;
 	private String lastName;
 	private String schoolID;
@@ -19,16 +21,6 @@ public class Student {
 		this.lastName = lastName;
 		this.schoolID = schoolID;
 		this.year = year;
-		
-		// query from database using schoolID (already filtered on classID?) and iterate through all gradables.
-		// Random rand = new Random();
-		// gradableList.add(new Gradable("Midterm 1",117,new GradableType("Midterm",20),100,rand.nextInt(10),firstName +" note for Midterm 1"));
-		// gradableList.add(new Gradable("Blackjack",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Blackjack"));
-		// gradableList.add(new Gradable("Treinta Ena",100,new GradableType("Homework",35),100,rand.nextInt(10),firstName +" note for Treinta Ena"));
-		// gradableList.add(new Gradable("Grading System",200,new GradableType("Project",20),100,rand.nextInt(10),firstName +" Note for Grading System"));
-		// gradableList.add(new Gradable("Participation",10,new GradableType("Participation",5),100,rand.nextInt(10),firstName +" Note for Participation"));
-		// gradableList.add(new Gradable("Final",100,new GradableType("Final",20),100,rand.nextInt(10),firstName +" Note for Final"));
-		
 	}
 		
 	public void setFirstName(String firstName) {
@@ -73,6 +65,7 @@ public class Student {
 
 	public void addGradable(Gradable g) {
 		gradableList.add(g);
+		GradeService.insert(g,this);
 	}
 	
 	public void dropGradable(Gradable g) {
@@ -81,7 +74,6 @@ public class Student {
 				gradableList.remove(gradableList.get(i));
 			}
 		}
-
 	}
 	
 	public Gradable getGradable(int i) {
@@ -123,4 +115,12 @@ public class Student {
 	public boolean is(String type) {
 		return this.year.equals(type);
 	}	
+	
+	public int getID() {
+		return studentId;
+	}
+	
+	public void setID(int id) {
+		studentId = id;
+	}
 }
