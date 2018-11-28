@@ -17,13 +17,6 @@ public class GradableProfile {
 	}
 	
 	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
-		System.out.println("GradableProfile to do list:");
-		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
-		System.out.println("> Add histogram if we figure out how");
-		System.out.println("> Add functionality to Total Points");
-		System.out.println("> Add functionality to Weight");
-		System.out.println("> Add saving functionality to the other columns");
-		System.out.println();
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,7));

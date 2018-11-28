@@ -15,13 +15,6 @@ import db.CategoryService;
 public class ClassProfile {
 		
 	public ClassProfile(final JFrame mainframe,final Data data) {
-		System.out.println("ClassProfile to do list:");
-		System.out.println("> Fix layout");
-		System.out.println("> Add functinality to addPercent");
-		System.out.println("> Bring up student profile when double click on student name");
-		System.out.println("> Add actual values into summary table");
-		System.out.println("> Add in a histogram if we're feeling good");
-		System.out.println();
 
 		mainframe.setTitle(data.getLoadedClass() + " Profile");
 		
@@ -194,8 +187,8 @@ public class ClassProfile {
 				for (int i=0;i<addedGradableTypes.size(); i++) {
 					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassId());
 					categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
-														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate"))+"%",
-														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))+"%"});
+														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate")),
+														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))});
 				
 				}
 			   }

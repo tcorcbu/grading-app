@@ -17,13 +17,6 @@ public class StudentProfile {
 	}
 	
 	private void drawStudentProfile(final JFrame mainframe,final Data data,Student s) {
-		System.out.println("StudentProfile to do list:");
-		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
-		System.out.println("> Consider making the fields mutable");
-		System.out.println("> Fix or remove the class profile link in the file menu");
-		System.out.println("> Make the Gradable column immutable");
-		System.out.println("> Add saving functionality to the other columns");
-		System.out.println();
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,4));
@@ -88,7 +81,7 @@ public class StudentProfile {
 		
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getIntraCategoryWeight(),g.getNote()});
+			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getStudentWeight(),g.getNote()});
 		}
 
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

@@ -1,7 +1,8 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.Random; // for making fake data
+
+import db.GradeService;
 
 
 public class Student {
@@ -64,6 +65,7 @@ public class Student {
 
 	public void addGradable(Gradable g) {
 		gradableList.add(g);
+		GradeService.insert(g,this);
 	}
 	
 	public void dropGradable(Gradable g) {

@@ -31,7 +31,6 @@ public class Data {
 		this.LoadedClass = LoadedClass;
         classId = ClassService.getId(LoadedClass);
 				
-		
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
         getCategories();
@@ -73,6 +72,16 @@ public class Data {
 	public void addStudent(Student newStudent) {
         int studentId = StudentService.insertStudent(newStudent);
         StudentClassService.insertStudentClass(classId, studentId);
+		for(int i=0; i<gradableList.size(); i++) {
+			Gradable g = new Gradable(gradableList.get(i).getName(),
+										gradableList.get(i).getPoints(),
+										gradableList.get(i).getType(),
+										gradableList.get(i).getIntraCategoryWeight(),
+										gradableList.get(i).getPoints(),
+										100,"");
+			g.setID(gradableList.get(i).getID());
+			newStudent.addGradable(g);
+		}
         getStudents();
 	}
 	
