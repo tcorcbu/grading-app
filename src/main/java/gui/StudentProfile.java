@@ -7,6 +7,9 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.*;
 
+import db.GradeService;
+import db.StudentService;
+
 public class StudentProfile {
 		
 	public StudentProfile(JFrame mainframe,Data data, Student s) {
@@ -14,13 +17,6 @@ public class StudentProfile {
 	}
 	
 	private void drawStudentProfile(final JFrame mainframe,final Data data,Student s) {
-		System.out.println("StudentProfile to do list:");
-		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
-		System.out.println("> Consider making the fields mutable");
-		System.out.println("> Fix or remove the class profile link in the file menu");
-		System.out.println("> Make the Gradable column immutable");
-		System.out.println("> Add saving functionality to the other columns");
-		System.out.println();
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,4));
@@ -85,7 +81,7 @@ public class StudentProfile {
 		
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getGradableWeight(),g.getNote()});
+			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getStudentWeight(),g.getNote()});
 		}
 
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -146,6 +142,33 @@ public class StudentProfile {
 		
 		JTableHeader gradableHeader = gradableTable.getTableHeader();
 		gradableHeader.addMouseListener(TableHeaderMouseListener);
+		
+		gradableModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int row = gradableTable.getSelectedRow();
+				int column = gradableTable.getSelectedColumn();
+				String gradableName = gradableTable.getValueAt(row,0).toString();
+				
+				Gradable g = s.getGradable(gradableName);
+				switch(column) {
+				case 1:
+					Integer tablePoints = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
+					g.setPointsLost(tablePoints);
+					GradeService.updatePointsLost(g.getID(), StudentService.getId(s),tablePoints);
+					break;
+				case 2:
+					Integer tableWeight = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
+					g.setStudentWeight(tableWeight);
+					GradeService.updateStudentWeight(g.getID(),StudentService.getId(s),tableWeight);
+					break;
+				case 3:
+					String tableNote = gradableTable.getValueAt(row,column).toString();
+					g.setNote(tableNote);
+					GradeService.updateComment(g.getID(),StudentService.getId(s),tableNote);
+					break;
+				}	
+		  }
+		});
 		
 		// END Action Listeners
 		

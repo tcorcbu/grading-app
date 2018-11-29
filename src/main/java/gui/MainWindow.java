@@ -8,18 +8,14 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.text.*;
+
+import db.GradableService;
+import db.GradeService;
 
 public class MainWindow {
 		
 		public MainWindow(final JFrame mainframe,final Data data) {
-			System.out.println("MainWindow to do list:");
-			System.out.println("> Add popup for addGradable");
-			System.out.println("> Add functionality to dropGradable");
-			System.out.println("> Add popup for addStudent");
-			System.out.println("> Add functionality to dropStudent");
-			System.out.println("> Add functionality to Save Class");
-			System.out.println("> Add functionality to Load Class");
-			System.out.println();
 					
 			// START Menu toolbar
 			JMenuBar menuBar = new JMenuBar();
@@ -33,32 +29,49 @@ public class MainWindow {
 			JMenuItem menuItem_load = new JMenuItem("Load Class");
 			menu.add(menuItem_load);
 			
-			JMenuItem menuItem_Class_Profile = new JMenuItem("Class Profile");
-			menu.add(menuItem_Class_Profile);
+			JMenuItem menuItem_new = new JMenuItem("New Class");
+			menu.add(menuItem_new);
+			
+			JMenuItem menuItem_close = new JMenuItem("Close Class");
+			menu.add(menuItem_close);
 			
 			JMenuItem menuItem_exit = new JMenuItem("Exit");
 			menu.add(menuItem_exit);
 			
-
 			mainframe.setJMenuBar(menuBar);
 			// END Menu Toolbar
 			
+			// START Layout
+			final JPanel mainPanel = new JPanel();
+			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+			final JPanel treePanel = new JPanel();
+			treePanel.setLayout(new GridLayout(1,0));
+			JPanel buttonPanel = new JPanel();
+			buttonPanel.setLayout(new GridLayout(2,2));
+			
+			// END Layout
+			
 			// START Gradables tree
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables");
+			int mysumU = 0;
+			int mysumG = 0;
+			for(int i=0; i<data.gradableTypes().size(); i++) {
+				mysumU += data.gradableTypes().get(i).getWeight("Undergraduate");
+				mysumG += data.gradableTypes().get(i).getWeight("Graduate");
+			}
+			
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(mysumU)+"%, "+String.valueOf(mysumG)+"%)");
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.gradableTypes().size(); i++) {
-				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i).getType()));
-			}
-			
-			for (int i=0;i<data.nGradables();i++) {
+				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i)));
 				
-				for (int j=0; j<gradableCategories.size(); j++) {
-					
-					if (data.getGradable(i).isType(gradableCategories.get(j).toString())) {
-						gradableCategories.get(j).add(new DefaultMutableTreeNode(data.getGradable(i)));
+				for (int j=0;j<data.nGradables();j++) {
+					if (data.getGradable(j).isType(data.gradableTypes().get(i).getType())) {
+						gradableCategories.get(i).add(new DefaultMutableTreeNode(data.getGradable(j)));
 					}
 				}
+				
 			}
 			
 			for (int i=0; i<gradableCategories.size(); i++) {
@@ -67,20 +80,14 @@ public class MainWindow {
 
 			final JTree gradablesTree = new JTree(topGradables);
 			gradablesTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-			JScrollPane gradableView = new JScrollPane(gradablesTree);
+			final DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
+			final DefaultMutableTreeNode gradablesRoot = (DefaultMutableTreeNode)gradablesModel.getRoot();
+			final JScrollPane gradableView = new JScrollPane(gradablesTree);
 			
 			for(int i=0;i<gradablesTree.getRowCount();i++){
 				gradablesTree.expandRow(i);
 			}
 			
-			gradablesTree.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					System.out.println((DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent());
-				}
-			}
-		});
-		
 			// END Gradables tree 
 			
 			// START Students tree
@@ -102,15 +109,16 @@ public class MainWindow {
 				}
 			}
 			
-			
 			for (int i=0; i<studentCategories.size(); i++) {
 				topStudents.add(studentCategories.get(i));
 			}
 			
-			
 			final JTree studentsTree = new JTree(topStudents);
 			studentsTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-			JScrollPane studentView = new JScrollPane(studentsTree);
+			final DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
+			final DefaultMutableTreeNode studentsRoot = (DefaultMutableTreeNode)studentsModel.getRoot();
+				
+			final JScrollPane studentView = new JScrollPane(studentsTree);
 			
 			for(int i=0;i<studentsTree.getRowCount();i++){
 				studentsTree.expandRow(i);
@@ -133,16 +141,11 @@ public class MainWindow {
 			// END Buttons
 			
 			// START layout
-			final JPanel mainPanel = new JPanel();
-			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 			
-			JPanel treePanel = new JPanel();
-			treePanel.setLayout(new GridLayout(0,2));
 			treePanel.add(gradableView);
 			treePanel.add(studentView);
 			
-			JPanel buttonPanel = new JPanel();
-			buttonPanel.setLayout(new GridLayout(2,2));
+			
 			buttonPanel.add(addGradable);
 			buttonPanel.add(addStudent);
 			buttonPanel.add(dropGradable);
@@ -172,7 +175,7 @@ public class MainWindow {
 					   ClassProfile c = new ClassProfile(mainframe, data);
 					   }
 					};
-			menuItem_Class_Profile.addActionListener(ClassProfileListener);
+			classSummary.addActionListener(ClassProfileListener);
 			
 			studentsTree.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
@@ -206,67 +209,343 @@ public class MainWindow {
 			
 			ActionListener AddStudentListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					// System.out.println("Add Student");
-					NewStudentDialog nsd = new NewStudentDialog(data);
-					nsd.setModal(true);
-					nsd.showDialog();
-					ArrayList<Student> addedStudents = nsd.getStudents();
 					
-					DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
-					DefaultMutableTreeNode studentsRoot = (DefaultMutableTreeNode)studentsModel.getRoot();
+					treePanel.remove(0);
 					
-					Student addedStudent;
+					// START setup layout
+					JPanel newStudentPanel = new JPanel();		
+					newStudentPanel.setLayout(new BoxLayout(newStudentPanel, BoxLayout.Y_AXIS));
 					
-					for (int s=0; s<addedStudents.size(); s++) {
+					JPanel gridPanel = new JPanel();
+					gridPanel.setLayout(new GridLayout(4,2));
 					
-					addedStudent = addedStudents.get(s);
-					String sYear = addedStudent.getYear();
-					for (int i=0; i<studentsRoot.getChildCount();i++) {
-						if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
-							DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
-							studentsModel.insertNodeInto(new DefaultMutableTreeNode(addedStudent), yearBranch, yearBranch.getChildCount());
+					JPanel fnameInputPanel = new JPanel();
+					JPanel lnameInputPanel = new JPanel();
+					JPanel sidInputPanel = new JPanel();
+					JPanel yearInputPanel = new JPanel();
+					
+					JPanel addPanel = new JPanel();
+					JPanel botPanel = new JPanel();
+					// END setup layout
+					
+					Object[] yearOptions = data.studentTypes().toArray();
+					
+					final JTextField fnameTextField = new JTextField(10);
+					final JTextField lnameTextField = new JTextField(10);
+					final JTextField sidTextField = new JTextField(10);
+					final JComboBox<Object> yearCombo = new JComboBox<Object>(yearOptions);
+					
+					fnameInputPanel.add(fnameTextField);
+					lnameInputPanel.add(lnameTextField);
+					sidInputPanel.add(sidTextField);
+					yearInputPanel.add(yearCombo);
+					
+					gridPanel.add(new JLabel("First Name"));
+					gridPanel.add(fnameInputPanel);
+					gridPanel.add(new JLabel("Last Name"));
+					gridPanel.add(lnameInputPanel);
+					gridPanel.add(new JLabel("School ID"));
+					gridPanel.add(sidInputPanel);
+					gridPanel.add(new JLabel("Year"));
+					gridPanel.add(yearInputPanel);
+					
+					JButton addButton = new JButton("Add");
+					JButton addAndClose = new JButton("Add and Close");
+					JButton closeButton = new JButton("Close");
+					addPanel.add(addButton);
+					addPanel.add(addAndClose);
+					botPanel.add(addPanel);
+					botPanel.add(closeButton);
+					
+					newStudentPanel.add(gridPanel);
+					newStudentPanel.add(botPanel);
+					
+					treePanel.add(newStudentPanel,0,0);
+					mainframe.revalidate();
+					mainframe.repaint();
+					
+					for(int i=0;i<studentsTree.getRowCount();i++){
+						studentsTree.expandRow(i);
+					}	
+				
+					ActionListener addStudentButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							String firstName = fnameTextField.getText();
+							String lastName = lnameTextField.getText();
+							String schoolID = sidTextField.getText();
+							String year = (String)yearCombo.getSelectedItem();
+							
+							// Check student ID against the database and error if there is a conflict
+							Student newStudent = new Student(firstName,lastName,schoolID,year);
+							for (int i=0; i<data.nGradables(); i++) {
+								newStudent.addGradable(data.getGradable(i).copy());
+							}
+							
+							data.addStudent(newStudent);
+							
+							String sYear = newStudent.getYear();
+							for (int i=0; i<studentsRoot.getChildCount();i++) {
+								if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
+									DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
+									studentsModel.insertNodeInto(new DefaultMutableTreeNode(newStudent), yearBranch, yearBranch.getChildCount());
+								}
+							}
+							
+							fnameTextField.setText("");
+							lnameTextField.setText("");
+							sidTextField.setText("");
 						}
-					}
-					}
+					};
+					addButton.addActionListener(addStudentButtonListener);
+					
+					ActionListener addStudentAndCloseButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							String firstName = fnameTextField.getText();
+							String lastName = lnameTextField.getText();
+							String schoolID = sidTextField.getText();
+							String year = (String)yearCombo.getSelectedItem();
+							
+							// Check student ID against the database and error if there is a conflict
+							Student newStudent = new Student(firstName,lastName,schoolID,year);
+							for (int i=0; i<data.nGradables(); i++) {
+								newStudent.addGradable(data.getGradable(i).copy());
+							}
+							
+							data.addStudent(newStudent);
+												
+							String sYear = newStudent.getYear();
+							for (int i=0; i<studentsRoot.getChildCount();i++) {
+								if (studentsModel.getChild(studentsRoot,i).toString().equals(sYear)) {
+									DefaultMutableTreeNode yearBranch = (DefaultMutableTreeNode) studentsModel.getChild(studentsRoot,i);
+									studentsModel.insertNodeInto(new DefaultMutableTreeNode(newStudent), yearBranch, yearBranch.getChildCount());
+								}
+							}
+								
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
+							mainframe.revalidate();
+							mainframe.repaint();
+						}
+					};
+					addAndClose.addActionListener(addStudentAndCloseButtonListener);
+					
+					ActionListener CloseAddStudentButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
+							mainframe.revalidate();
+							mainframe.repaint();
+							
+						}
+					};
+					closeButton.addActionListener(CloseAddStudentButtonListener);
+				
+				
+				
+				
 				}
 			};
 			addStudent.addActionListener(AddStudentListener);
 			
 			ActionListener AddGradableListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Add Gradable");
 					
-					NewGradableDialog ngd = new NewGradableDialog(data);
-					ngd.setModal(true);
-					ngd.showDialog();
-					ArrayList<Gradable> addedGradables = ngd.getGradables();
+					treePanel.remove(0);
+					treePanel.remove(0);
+					// START Setup Layout
+					JPanel newGradablePanel = new JPanel();
+					newGradablePanel.setLayout(new BoxLayout(newGradablePanel, BoxLayout.Y_AXIS));
 					
-					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
-					DefaultMutableTreeNode gradablesRoot = (DefaultMutableTreeNode)gradablesModel.getRoot();
+					JPanel gridPanel = new JPanel();
+					gridPanel.setLayout(new GridLayout(4,2));
 					
-					Gradable addedGradable;
+					JPanel nameInputPanel = new JPanel();
+					JPanel pointsInputPanel = new JPanel();
+					JPanel weightInputPanel = new JPanel();
+					JPanel categoryInputPanel = new JPanel();
 					
-					for (int s=0; s<addedGradables.size(); s++) {
+					JPanel addPanel = new JPanel();
+					JPanel botPanel = new JPanel();
+					// END setup layout
+		
+					ArrayList<GradableType> gradableTypes = data.copyGradableTypes();
+					gradableTypes.add(new GradableType("New Category",0,0));
+					Object[] categoryOptions = gradableTypes.toArray();
 					
-					addedGradable = addedGradables.get(s);
-					String gCategory = addedGradable.getType().getType();
-					for (int i=0; i<gradablesRoot.getChildCount();i++) {
-						if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
-							DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
-							gradablesModel.insertNodeInto(new DefaultMutableTreeNode(addedGradable), categoryBranch, categoryBranch.getChildCount());
+					final JTextField nameTextField = new JTextField(10);
+					NumberFormat pointsFormat;
+					pointsFormat = NumberFormat.getNumberInstance();
+					final JFormattedTextField pointsTextField = new JFormattedTextField(pointsFormat);
+					pointsTextField.setValue(new Integer(100));
+					pointsTextField.setColumns(10);
+					// JTextField pointsTextField = new JTextField(10);
+					NumberFormat weightFormat;
+					weightFormat = NumberFormat.getNumberInstance();
+					final JFormattedTextField weightTextField = new JFormattedTextField(weightFormat);
+					weightTextField.setValue(new Integer(100));
+					weightTextField.setColumns(10);
+					weightTextField.setValue(new Integer(100));
+					// JTextField weightTextField = new JTextField(10);
+					
+					final JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
+					
+					nameInputPanel.add(nameTextField);
+					pointsInputPanel.add(pointsTextField);
+					weightInputPanel.add(weightTextField);
+					categoryInputPanel.add(categoryCombo);
+					
+					gridPanel.add(new JLabel("Gradable Name"));
+					gridPanel.add(nameInputPanel);
+					gridPanel.add(new JLabel("Total Points"));
+					gridPanel.add(pointsInputPanel);
+					gridPanel.add(new JLabel("Relative Weight"));
+					gridPanel.add(weightInputPanel);
+					gridPanel.add(new JLabel("Category"));
+					gridPanel.add(categoryInputPanel);
+					
+					JButton addButton = new JButton("Add");
+					JButton addAndClose = new JButton("Add and Close");
+					JButton closeButton = new JButton("Close");
+					addPanel.add(addButton);
+					addPanel.add(addAndClose);
+					botPanel.add(addPanel);
+					botPanel.add(closeButton);
+					
+					newGradablePanel.add(gridPanel);
+					newGradablePanel.add(botPanel);
+					
+					treePanel.add(newGradablePanel,0,0);
+					treePanel.add(gradableView,0,1);
+					mainframe.revalidate();
+					mainframe.repaint();
+					
+					for(int i=0;i<gradablesTree.getRowCount();i++){
+						gradablesTree.expandRow(i);
+					}
+					
+					ActionListener addGradableButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							String name = nameTextField.getText();
+							Integer points = ((Number)pointsTextField.getValue()).intValue();
+							Integer weight = ((Number)weightTextField.getValue()).intValue();
+							GradableType category = (GradableType)categoryCombo.getSelectedItem();
+							
+							Gradable newGradable = new Gradable(name,points,category,weight);
+							data.addGradable(newGradable);
+							GradableService.insert(newGradable, data.getClassId());
+								
+							for(int i=0; i<data.nStudents(); i++){
+								Gradable gtemp = newGradable.copy();
+								gtemp.setPointsLost(newGradable.getPoints());
+								gtemp.setStudentWeight(100);
+								data.getStudent(i).addGradable(gtemp);
+							}
+									
+								String gCategory = newGradable.getType().toString();
+								boolean added = false;
+								for (int i=0; i<gradablesRoot.getChildCount();i++) {
+									if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
+										DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
+										gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable), categoryBranch, categoryBranch.getChildCount());
+										added = true;
+									}
+								}
+								
+								if (!added){
+									int count = gradablesRoot.getChildCount();
+									gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable.getType()),gradablesRoot,count);
+									DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,count);
+									gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable), categoryBranch, categoryBranch.getChildCount());
+								}
+
+							nameTextField.setText("");
+							// pointsTextField.setText("");
+							// weightTextField.setText("");
 						}
-					}
-					}
+					};
+					addButton.addActionListener(addGradableButtonListener);
+		
+					ActionListener addAndGradableCloseButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							String name = nameTextField.getText();
+							Integer points = ((Number)pointsTextField.getValue()).intValue();
+							Integer weight = ((Number)weightTextField.getValue()).intValue();
+							GradableType category = (GradableType)categoryCombo.getSelectedItem();
+							
+							Gradable newGradable = new Gradable(name,points,category,weight);
+							data.addGradable(newGradable);
+							GradableService.insert(newGradable, data.getClassId());
+								
+							for(int i=0; i<data.nStudents(); i++){
+								Gradable gtemp = newGradable.copy();
+								gtemp.setPointsLost(newGradable.getPoints());
+								gtemp.setStudentWeight(100);
+								data.getStudent(i).addGradable(gtemp);
+							}
+									
+							String gCategory = newGradable.getType().toString();
+							boolean added = false;
+							for (int i=0; i<gradablesRoot.getChildCount();i++) {
+								if (gradablesModel.getChild(gradablesRoot,i).toString().equals(gCategory)) {
+									DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,i);
+									gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable), categoryBranch, categoryBranch.getChildCount());
+									added = true;
+								}
+							}
+							
+							if (!added){
+								int count = gradablesRoot.getChildCount();
+								gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable.getType()),gradablesRoot,count);
+								DefaultMutableTreeNode categoryBranch = (DefaultMutableTreeNode) gradablesModel.getChild(gradablesRoot,count);
+								gradablesModel.insertNodeInto(new DefaultMutableTreeNode(newGradable), categoryBranch, categoryBranch.getChildCount());
+							}
+									
+							treePanel.remove(0);
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
+							treePanel.add(studentView,0,1);
+							mainframe.revalidate();
+							mainframe.repaint();
+									
+						}
+					};
+					addAndClose.addActionListener(addAndGradableCloseButtonListener);
+					
+					ActionListener CloseAddGradableButtonListener = new ActionListener(){
+						public void actionPerformed(ActionEvent e) {
+							treePanel.remove(0);
+							treePanel.remove(0);
+							treePanel.add(gradableView,0,0);
+							treePanel.add(studentView,0,1);
+							mainframe.revalidate();
+							mainframe.repaint();
+						}
+					};
+					closeButton.addActionListener(CloseAddGradableButtonListener);
+		
+					ActionListener categoryListener = new ActionListener(){
+							public void actionPerformed(ActionEvent e){
+								GradableType mySelection = (GradableType)categoryCombo.getSelectedItem();
+								if (mySelection.getType().equals("New Category")){
+									NewCategoryDialog ncd = new NewCategoryDialog(data);
+									ncd.setModal(true);
+									ncd.showDialog();
+									ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
+									for (int i=0;i<addedGradableTypes.size(); i++) {
+									categoryCombo.addItem(addedGradableTypes.get(i));
+									categoryCombo.setSelectedItem(addedGradableTypes.get(i));
+									}
+								}
+								}
+							};
+					categoryCombo.addActionListener( categoryListener );
 				}
 			};
 			addGradable.addActionListener(AddGradableListener);
 			
 			ActionListener DropStudentListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				// System.out.println("Drop Student");
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();
-				// System.out.println((Student)node.getUserObject());
-				
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();				
 				if (node.getUserObject() instanceof Student) {
 					data.dropStudent((Student)node.getUserObject());
 					DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
@@ -282,25 +561,48 @@ public class MainWindow {
 				
 				if (node.getUserObject() instanceof Gradable) {
 					data.dropGradable((Gradable)node.getUserObject());
-					// NEED TO DROP IT FROM EVERY STUDENT TOO
 					for (int i = 0; i < data.nStudents(); i++) {
 						data.getStudent(i).dropGradable((Gradable)node.getUserObject());
 					}
 					
 					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
 					gradablesModel.removeNodeFromParent(node);
+					GradeService.drop((Gradable)node.getUserObject());
+					GradableService.drop((Gradable)node.getUserObject());
 				}
 				}
 			};
 			dropGradable.addActionListener(DropGradableListener);
 			
-			classSummary.addActionListener(ClassProfileListener);
-			// END Action Listeners 
+			ActionListener menuItem_saveListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					data.saveClass();
+				}
+			};
+			menuItem_save.addActionListener(menuItem_saveListener);
 			
+			ActionListener menuItem_loadListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Load Class");
+				}
+			};
+			menuItem_load.addActionListener(menuItem_loadListener);
+			
+			ActionListener menuItem_newListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("New Class");
+				}
+			};
+			menuItem_new.addActionListener(menuItem_newListener);
+			
+			ActionListener menuItem_closeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Close Class");
+				}
+			};
+			menuItem_close.addActionListener(menuItem_closeListener);
+			
+			// END Action Listeners 
 		}
-
-		
-	// private void drawMainWindow(JFrame mainframe,Data data) {
-
 	
 } 

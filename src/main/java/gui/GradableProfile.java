@@ -6,6 +6,11 @@ import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.*;
+import java.text.*;
+
+import db.GradeService;
+import db.StudentService;
+import db.GradableService;
 
 public class GradableProfile {
 		
@@ -14,42 +19,38 @@ public class GradableProfile {
 	}
 	
 	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
-		System.out.println("GradableProfile to do list:");
-		System.out.println("> fix layout of table (need scroll bars, perhaps span whole screen)");
-		System.out.println("> Add histogram if we figure out how");
-		System.out.println("> Add functionality to Total Points");
-		System.out.println("> Add functionality to Weight");
-		System.out.println("> Fix or remove the class profile link in the file menu");
-		System.out.println("> Make the Students column immutable");
-		System.out.println("> Add saving functionality to the other columns");
-		System.out.println();
 		
 		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new GridLayout(2,6));
+		infoPanel.setLayout(new GridLayout(2,7));
 		
 		infoPanel.add(new JLabel("Title: "));
 		infoPanel.add(new JLabel("Category: "));
-		infoPanel.add(new JLabel("Category Weight:"));
+		infoPanel.add(new JLabel("Undergrad Weight:"));
+		infoPanel.add(new JLabel("Graduate Weight:"));
 		infoPanel.add(new JLabel("Total Points: "));
 		infoPanel.add(new JLabel("Gradable Weight: "));
 		infoPanel.add(new JLabel("Average: "));
 		infoPanel.add(new JLabel(g.getName()));
 		infoPanel.add(new JLabel(g.getType().getType()));
 		
-		infoPanel.add(new JLabel(String.valueOf(g.getCategoryWeight())));
+		infoPanel.add(new JLabel(String.valueOf(g.getType().getWeight("Undergraduate"))+"%"));
+		infoPanel.add(new JLabel(String.valueOf(g.getType().getWeight("Graduate"))+"%"));
 		
-		// JTextField categoryWeight = new JTextField();
-		// categoryWeight.setText(String.valueOf(g.getCategoryWeight()));
-		// infoPanel.add(categoryWeight);
-		
-		JTextField gradablePoints = new JTextField();
-		gradablePoints.setText(String.valueOf(g.getPoints()));
+		NumberFormat pointsFormat;
+		pointsFormat = NumberFormat.getNumberInstance();
+		final JFormattedTextField gradablePoints = new JFormattedTextField(pointsFormat);
+		gradablePoints.setValue(g.getPoints());
+		gradablePoints.setColumns(10);	
 		infoPanel.add(gradablePoints);
 		
-		JTextField gradableWeight = new JTextField();
-		gradableWeight.setText(String.valueOf(g.getGradableWeight()));
+		NumberFormat weightFormat;
+		weightFormat = NumberFormat.getNumberInstance();
+		final JFormattedTextField gradableWeight = new JFormattedTextField(weightFormat);
+		gradableWeight.setValue(g.getIntraCategoryWeight());
+		gradableWeight.setColumns(10);
 		infoPanel.add(gradableWeight);
-		infoPanel.add(new JLabel("90"));
+		
+		infoPanel.add(new JLabel("NEED AVG"));
 
 		DefaultTableModel studentModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -117,15 +118,59 @@ public class GradableProfile {
 		// END Layout
 		
 		// START Action Listeners
-					ActionListener backListener = new ActionListener(){
-			   public void actionPerformed(ActionEvent e){
-				   mainframe.remove(mainPanel);
-				   mainframe.setTitle(data.getLoadedClass());
-				   MainWindow m = new MainWindow(mainframe,data);
-				   }
-				};
-
+		ActionListener backListener = new ActionListener(){
+		   public void actionPerformed(ActionEvent e){
+			   mainframe.remove(mainPanel);
+			   mainframe.setTitle(data.getLoadedClass());
+			   MainWindow m = new MainWindow(mainframe,data);
+			   }
+			};
 		backButton.addActionListener(backListener);
+		
+		
+		ActionListener pointsListener = new ActionListener(){
+		   public void actionPerformed(ActionEvent e){
+			   int p = ((Number)gradablePoints.getValue()).intValue();
+			   g.setPoints(p);
+			   GradableService.updatePoints(g,p);
+			   }
+			};
+		gradablePoints.addActionListener(pointsListener);
+		
+		ActionListener weightListener = new ActionListener(){
+		   public void actionPerformed(ActionEvent e){
+			   int w = ((Number)gradableWeight.getValue()).intValue();
+			   g.setIntraCategoryWeight(w);
+			   GradableService.updateWeight(g,w);
+			   }
+			};
+		gradableWeight.addActionListener(weightListener);
+		
+		
+		studentModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int row = studentTable.getSelectedRow();
+				int column = studentTable.getSelectedColumn();
+				String studentName = studentTable.getValueAt(row,0).toString();
+				
+				Student s = data.getStudent(row);
+				Gradable gradable = s.getGradable(g.getName());
+				switch(column) {
+				case 1:
+					Integer tablePoints = Integer.parseInt(studentTable.getValueAt(row, column).toString());
+					gradable.setPointsLost(tablePoints);
+					GradeService.updatePointsLost(gradable.getID(), StudentService.getId(s),tablePoints);
+					break;
+				case 2:
+					String tableNote = studentTable.getValueAt(row,column).toString();
+					gradable.setNote(tableNote);
+					GradeService.updateComment(gradable.getID(),StudentService.getId(s),tableNote);
+					break;
+				}	
+		  }
+		});
+		
+		
 		// END Action Listeners
 		
 	}

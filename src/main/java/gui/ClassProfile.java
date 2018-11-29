@@ -9,36 +9,14 @@ import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import db.GradableTypeService;
+import db.CategoryService;
+
 public class ClassProfile {
 		
 	public ClassProfile(final JFrame mainframe,final Data data) {
-		System.out.println("ClassProfile to do list:");
-		System.out.println("> Fix layout");
-		System.out.println("> Add functinality to addPercent");
-		System.out.println("> Bring up student profile when double click on student name");
-		System.out.println("> Add actual values into summary table");
-		System.out.println("> Add in a histogram if we're feeling good");
-		System.out.println();
 
-		mainframe.setTitle(mainframe.getTitle() + " Profile");
-		
-		// START Menu toolbar
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		menu.getAccessibleContext().setAccessibleDescription("File Menu");
-		menuBar.add(menu);
-		
-		JMenuItem menuItem_save = new JMenuItem("Save Class");
-		menu.add(menuItem_save);
-		
-		JMenuItem menuItem_load = new JMenuItem("Load Class");
-		menu.add(menuItem_load);
-		
-		JMenuItem menuItem_exit = new JMenuItem("Exit");
-		menu.add(menuItem_exit);
-		
-		mainframe.setJMenuBar(menuBar);
-		// END Menu Toolbar
+		mainframe.setTitle(data.getLoadedClass() + " Profile");
 		
 		// START Panel Setup
 		final JPanel mainPanel = new JPanel();
@@ -49,6 +27,11 @@ public class ClassProfile {
 		
 		JPanel middlePanel = new JPanel();
 		middlePanel.setLayout(new GridLayout(0,2));
+		
+		JPanel categoryTablePanel = new JPanel();
+		categoryTablePanel.setLayout(new BoxLayout(categoryTablePanel, BoxLayout.Y_AXIS));
+		
+		JPanel addRemoveCategoryPanel = new JPanel();
 		
 		JPanel curvePanel = new JPanel();
 		
@@ -71,35 +54,6 @@ public class ClassProfile {
 		
 		myTableModel gradeTableModel = new myTableModel(); 
 		final JTable gradeTable = new JTable(gradeTableModel);
-		
-		// gradeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		// for (int i=0; i<gradeTable.getColumnCount(); i++) {
-			// TableColumn column = gradeTable.getColumnModel().getColumn(i);
-			// switch (i) {
-				// case 0:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(150);
-					// column.setMinWidth(50);
-					// break;
-				// case 1:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// case 2:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// case 3:
-					// column.setMaxWidth(200);
-					// column.setPreferredWidth(100);
-					// column.setMinWidth(50);
-					// break;
-				// default:
-					// break;
-			// }
-		// }
 		
 		// Add columns
 		gradeTableModel.addColumn("Student"); 
@@ -133,7 +87,7 @@ public class ClassProfile {
 		// END Breakout Table
 		
 		// START Category Table
-		DefaultTableModel categoryTableModel = new DefaultTableModel() {
+		final DefaultTableModel categoryTableModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
 				if (colIndex == 0){
 				return false;
@@ -145,13 +99,17 @@ public class ClassProfile {
 		};
 		
 		categoryTableModel.addColumn("Category");
-		categoryTableModel.addColumn("Weight");
+		categoryTableModel.addColumn("Graduate Weight (%)");
+		categoryTableModel.addColumn("Undergrad Weight (%)");
 		
 		for (int i=0; i<data.gradableTypes().size(); i++) {
-			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),String.valueOf(data.gradableTypes(i).getWeight())+"%"});
+			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),
+										String.valueOf(data.gradableTypes(i).getWeight("Graduate")),
+										String.valueOf(data.gradableTypes(i).getWeight("Undergraduate"))});
 		}
 		
-		JTable categoryTable = new JTable(categoryTableModel);
+		
+		final JTable categoryTable = new JTable(categoryTableModel);
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		// END Category Table
@@ -172,6 +130,8 @@ public class ClassProfile {
 		JLabel curveLabel = new JLabel("Curve");
 		JTextField curveField = new JTextField(10);
 		// JButton curveApply = new JButton("Add Percent");
+		JButton addCategoryButton = new JButton("Add Category");
+		JButton removeCategoryButton = new JButton("Remove Category");
 		JButton backButton = new JButton("Back");
 		
 		//END buttons
@@ -182,7 +142,14 @@ public class ClassProfile {
 		topPanel.add(gradeTablePane);
 		topPanel.add(breakoutTablePane);
 
-		middlePanel.add(categoryTablePane);		
+		categoryTablePanel.add(categoryTablePane);
+		
+		addRemoveCategoryPanel.add(addCategoryButton);
+		addRemoveCategoryPanel.add(removeCategoryButton);
+		
+		categoryTablePanel.add(addRemoveCategoryPanel);
+		
+		middlePanel.add(categoryTablePanel);		
 		middlePanel.add(gradeBreakdownOuterPanel);		
 		
 		curvePanel.add(curveLabel);
@@ -209,7 +176,35 @@ public class ClassProfile {
 			   MainWindow m = new MainWindow(mainframe,data);
 			   }
 			};
-
+		backButton.addActionListener(backListener);
+		
+		ActionListener addCategoryListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				NewCategoryDialog ncd = new NewCategoryDialog(data);
+				ncd.setModal(true);
+				ncd.showDialog();
+				ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
+				for (int i=0;i<addedGradableTypes.size(); i++) {
+					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassId());
+					categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
+														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate")),
+														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))});
+				
+				}
+			   }
+			};
+		addCategoryButton.addActionListener(addCategoryListener);
+		
+		ActionListener removeCategoryListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
+				GradableTypeService.dropGradableType(gt,data.getClassId());
+				data.removeGradableType(gt);
+				categoryTableModel.removeRow(categoryTable.getSelectedRow());
+			   }
+			};
+		removeCategoryButton.addActionListener(removeCategoryListener);
+		
 		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				Point clickPoint = e.getPoint();
@@ -217,7 +212,6 @@ public class ClassProfile {
 				TableColumnModel columnModel = gradeTable.getColumnModel();
 				
 				String category = gradeTable.getColumnName(column);
-				System.out.println(category);
 				int nColumns = gradeTable.getColumnCount();
 				
 				TableColumnModel breakoutModel = breakoutTable.getColumnModel();
@@ -255,8 +249,28 @@ public class ClassProfile {
 		
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
-
-		backButton.addActionListener(backListener);
+		
+		categoryTableModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				System.out.println(e.getType());
+				if(e.getType() == 0) {
+					int row = categoryTable.getSelectedRow();
+					int column = categoryTable.getSelectedColumn();
+					String categoryType = categoryTable.getValueAt(row,0).toString();
+					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
+					GradableType gt = data.getGradableTypeByName(categoryType);
+					if (column == 1) {
+						gt.setGraduateWeight(tableValue);
+						CategoryService.updateUgradWeight(gt,tableValue);
+						
+					} else {
+						gt.setUndergradWeight(tableValue);
+						CategoryService.updateGradWeight(gt,tableValue);
+					}
+				}
+		  }
+		});
+		
 		// END Action Listeners 
 	}
 
