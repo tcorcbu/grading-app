@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.text.*;
 
 import db.GradableService;
+import db.GradeService;
 
 public class MainWindow {
 		
@@ -434,7 +435,10 @@ public class MainWindow {
 							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
-								data.getStudent(i).addGradable(newGradable.copy());
+								Gradable gtemp = newGradable.copy();
+								gtemp.setPointsLost(newGradable.getPoints());
+								gtemp.setStudentWeight(100);
+								data.getStudent(i).addGradable(gtemp);
 							}
 									
 								String gCategory = newGradable.getType().toString();
@@ -473,7 +477,10 @@ public class MainWindow {
 							GradableService.insert(newGradable, data.getClassId());
 								
 							for(int i=0; i<data.nStudents(); i++){
-								data.getStudent(i).addGradable(newGradable.copy());
+								Gradable gtemp = newGradable.copy();
+								gtemp.setPointsLost(newGradable.getPoints());
+								gtemp.setStudentWeight(100);
+								data.getStudent(i).addGradable(gtemp);
 							}
 									
 							String gCategory = newGradable.getType().toString();
@@ -560,6 +567,8 @@ public class MainWindow {
 					
 					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
 					gradablesModel.removeNodeFromParent(node);
+					GradeService.drop((Gradable)node.getUserObject());
+					GradableService.drop((Gradable)node.getUserObject());
 				}
 				}
 			};

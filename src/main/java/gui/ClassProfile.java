@@ -252,19 +252,22 @@ public class ClassProfile {
 		
 		categoryTableModel.addTableModelListener(new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
-				int row = categoryTable.getSelectedRow();
-				int column = categoryTable.getSelectedColumn();
-				String categoryType = categoryTable.getValueAt(row,0).toString();
-				Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
-				GradableType gt = data.getGradableTypeByName(categoryType);
-				if (column == 1) {
-					gt.setGraduateWeight(tableValue);
-					CategoryService.updateUgradWeight(gt,tableValue);
-					
-				} else {
-					gt.setUndergradWeight(tableValue);
-					CategoryService.updateGradWeight(gt,tableValue);
-				}	
+				System.out.println(e.getType());
+				if(e.getType() == 0) {
+					int row = categoryTable.getSelectedRow();
+					int column = categoryTable.getSelectedColumn();
+					String categoryType = categoryTable.getValueAt(row,0).toString();
+					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
+					GradableType gt = data.getGradableTypeByName(categoryType);
+					if (column == 1) {
+						gt.setGraduateWeight(tableValue);
+						CategoryService.updateUgradWeight(gt,tableValue);
+						
+					} else {
+						gt.setUndergradWeight(tableValue);
+						CategoryService.updateGradWeight(gt,tableValue);
+					}
+				}
 		  }
 		});
 		
