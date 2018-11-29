@@ -170,7 +170,6 @@ public class MainWindow {
 			
 			ActionListener ClassProfileListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					   // System.out.println("Class Profile Selected");
 					   mainframe.remove(mainPanel);
 					   ClassProfile c = new ClassProfile(mainframe, data);
 					   }
@@ -182,7 +181,6 @@ public class MainWindow {
 					if (e.getClickCount() == 2) {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();
 						
-						// System.out.println(node.getUserObject().getClass());
 						if (node.getUserObject() instanceof Student) {
 							mainframe.remove(mainPanel);
 							mainframe.setTitle("Student Profile");
@@ -197,7 +195,6 @@ public class MainWindow {
 					if (e.getClickCount() == 2) {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent();
 						
-						System.out.println(node.getUserObject().getClass());
 						if (node.getUserObject() instanceof Gradable) {
 							mainframe.remove(mainPanel);
 							mainframe.setTitle("Gradable Profile");
@@ -550,6 +547,9 @@ public class MainWindow {
 					data.dropStudent((Student)node.getUserObject());
 					DefaultTreeModel studentsModel = (DefaultTreeModel) studentsTree.getModel();
 					studentsModel.removeNodeFromParent(node);
+					
+					// int sid = (Student)node.getUserObject().getID();
+					
 				}
 				}
 			};

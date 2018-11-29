@@ -100,9 +100,8 @@ public class GradableProfile {
 		JButton backButton = new JButton("Back");
 		// START Layout 				
 		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
-		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
-		botPanel.add(backButton);
+		botPanel.setLayout(new BorderLayout());
+		botPanel.add(backButton,BorderLayout.EAST);
 
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));

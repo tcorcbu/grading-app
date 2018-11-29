@@ -31,12 +31,6 @@ public class SelectClass {
         }
 
 		private void drawSelectClass(final JFrame mainframe) {
-            System.out.println("SelectClass to do list:");
-            System.out.println("> Need to load list of classes from database");
-            System.out.println("> Need to write our own New Class window which allows loading from previous");
-            System.out.println("    > Perhaps keep it in the same window and just change the 'Load Class' button");
-            System.out.println();
-
 
             mainframe.setTitle("Select Class");
 
@@ -110,7 +104,6 @@ public class SelectClass {
                         mainframe.setSize( width, 500 );
 
                         mainframe.setTitle(data.getLoadedClass());
-                        System.out.println(data.getGradables());
                         MainWindow m = new MainWindow(mainframe,data);
                     }
                     }
