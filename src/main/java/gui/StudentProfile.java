@@ -12,7 +12,7 @@ import db.StudentService;
 
 public class StudentProfile {
 		
-	public StudentProfile(JFrame mainframe,Data data, Student s) {
+	public StudentProfile(final JFrame mainframe,Data data, final Student s) {
 		drawStudentProfile(mainframe,data,s);
 	}
 	
