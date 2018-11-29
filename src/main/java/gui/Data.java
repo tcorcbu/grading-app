@@ -15,13 +15,6 @@ public class Data {
 
 
 	public Data() {
-		// add default gradable types for new class
-		
-		// gradableTypes.add(new GradableType("Homework",25,25));
-		// gradableTypes.add(new GradableType("Project",25,25));
-		// gradableTypes.add(new GradableType("Participation",25,25));
-		// gradableTypes.add(new GradableType("Final",25,25));
-		
 		// add student types for new class
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
@@ -65,6 +58,7 @@ public class Data {
 		return studentList.get(i);
 	}
 	
+	
 	public ArrayList<String> getStudentTypes() {
 		return studentTypes;
 	}
@@ -82,7 +76,7 @@ public class Data {
 			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
 		}
-        getStudents();
+        // getStudents();
 	}
 	
 	public void dropStudent(Student s) {
@@ -137,6 +131,7 @@ public class Data {
 	
 	public void dropGradable(Gradable g) {
 	    GradableService.drop(g);
+		GradeService.drop(g);
 	    refreshGradables();
 	}
 	
@@ -202,6 +197,12 @@ public class Data {
 		this.gradableList = data2clone.copyGradables();
 		this.gradableTypes = data2clone.copyGradableTypes();
 		this.studentTypes = data2clone.copyStudentTypes();
+		for(int i=0; i<gradableList.size(); i++) {
+			GradableService.insert(gradableList.get(i),classId);
+		}
+		for(int i=0; i<gradableTypes.size(); i++) {
+			CategoryService.insert(gradableTypes.get(i),classId);
+		}
 	}
 
 	public int getClassId() {

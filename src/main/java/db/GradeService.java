@@ -32,6 +32,18 @@ public class GradeService {
         }
     }
 
+	public static void drop(Gradable gradable) {
+        Connection conn = MySqlConnection.getConnection();
+        String sql = "DELETE FROM Grades WHERE gradable_id=?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1,gradable.getGradableId());
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+	
     public static ArrayList<Gradable> getAllGradablesForStudent(Student student, int classId) {
         int studentId = StudentService.getId(student);
         ArrayList<Gradable>res = GradableService.getAll(classId);

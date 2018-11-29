@@ -147,6 +147,7 @@ public class Gradable {
 									this.getPointsLost(),
 									this.getStudentWeight(),
 									this.getNote());
+		g.setID(this.gradableId);
 		return g;
 	}
 }
