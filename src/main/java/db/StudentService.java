@@ -52,6 +52,7 @@ public class StudentService {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("res in StudentService.getId: " + res);
         return res;
     }
 

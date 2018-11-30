@@ -11,6 +11,7 @@ public class Student {
 	private String lastName;
 	private String schoolID;
 	private String year;
+
 	private ArrayList<Gradable> gradableList = new ArrayList<Gradable>();
 	
 	public Student() {
@@ -107,11 +108,10 @@ public class Student {
 			return total/n;
 		}
 	}
-	
-	public String toString() {
-		return firstName+" "+lastName;
+
+	public String toString(){
+		return firstName + " " + lastName;
 	}
-	
 	public boolean is(String type) {
 		return this.year.equals(type);
 	}	
