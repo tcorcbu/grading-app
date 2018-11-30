@@ -16,6 +16,10 @@ public class GradeService {
     //insert into grades table with a student and a gradable (with full fields set)
     public static void insert(Gradable gradable, Student student) {
         int studentId = StudentService.getId(student);
+        if (studentId == -1) {
+            return;
+        }
+        System.out.println("studentId in Grade Service: " + studentId);
         Connection conn = MySqlConnection.getConnection();
         String query = "INSERT INTO Grades (student_id, gradable_id, points_lost, student_weight, comment)" +
                 "VALUES(?,?,?,?,?)";

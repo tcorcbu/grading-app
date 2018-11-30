@@ -73,6 +73,8 @@ public class Data {
 				return;
 			}
 		}
+		System.out.println(newStudent);
+		System.out.println(studentId);
         StudentClassService.insertStudentClass(classId, studentId);
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
