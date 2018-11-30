@@ -16,7 +16,7 @@ public class StudentProfile {
 		drawStudentProfile(mainframe,data,s);
 	}
 	
-	private void drawStudentProfile(final JFrame mainframe,final Data data,Student s) {
+	private void drawStudentProfile(final JFrame mainframe,final Data data,final Student s) {
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,4));
@@ -58,7 +58,7 @@ public class StudentProfile {
 				case 0:
 					column.setMaxWidth(300);
 					column.setPreferredWidth(150);
-					column.setMinWidth(100);
+					column.setMinWidth(75);
 					break;
 				case 1:
 					column.setMaxWidth(200);
@@ -72,7 +72,7 @@ public class StudentProfile {
 					break;
 				case 3:
 					column.setPreferredWidth(450);
-					column.setMinWidth(100);
+					column.setMinWidth(125);
 					break;
 				default:
 					break;
@@ -94,18 +94,17 @@ public class StudentProfile {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-		JPanel gradePanel = new JPanel();
-		gradePanel.setLayout(new GridLayout(0,2));
-		gradePanel.add(new JLabel("Current Grade: "));
-		gradePanel.add(new JLabel("A"));
+		// JPanel gradePanel = new JPanel();
+		// gradePanel.setLayout(new GridLayout(0,2));
+		JLabel gradeInfo = new JLabel("Current Grade: A");
 		
 		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
-		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
-		gradePanel.setAlignmentX(botPanel.LEFT_ALIGNMENT);
-		// botPanel.setLayout(new GridLayout(0,2));
-		botPanel.add(gradePanel);
-		botPanel.add(backButton);
+		botPanel.setLayout(new BorderLayout());
+		// backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
+		// gradeInfo.setAlignmentX(botPanel.LEFT_ALIGNMENT);
+		botPanel.add(gradeInfo,BorderLayout.WEST);
+		botPanel.add(backButton,BorderLayout.EAST);
+		
 		
 		// mainPanel.add(upperPanel);
 		mainPanel.add(infoPanel);
@@ -136,7 +135,6 @@ public class StudentProfile {
 			public void mouseClicked(MouseEvent e) {
 				Point clickPoint = e.getPoint();
 				int column = gradableTable.columnAtPoint(clickPoint);
-				System.out.println(gradableTable.getColumnName(column));
 			}
 		};
 		
@@ -148,7 +146,7 @@ public class StudentProfile {
 				int row = gradableTable.getSelectedRow();
 				int column = gradableTable.getSelectedColumn();
 				String gradableName = gradableTable.getValueAt(row,0).toString();
-				
+
 				Gradable g = s.getGradable(gradableName);
 				switch(column) {
 				case 1:

@@ -35,7 +35,7 @@ public class ClassProfile {
 		
 		JPanel curvePanel = new JPanel();
 		
-		JPanel buttonPanel = new JPanel();
+		JPanel buttonPanel = new JPanel(new BorderLayout());
 		
 		JPanel gradeBreakdownPanel = new JPanel();
 		gradeBreakdownPanel.setLayout(new GridLayout(5,2));
@@ -155,8 +155,8 @@ public class ClassProfile {
 		curvePanel.add(curveLabel);
 		curvePanel.add(curveField);
 		
-		buttonPanel.add(curvePanel);
-		buttonPanel.add(backButton);
+		buttonPanel.add(curvePanel,BorderLayout.WEST);
+		buttonPanel.add(backButton,BorderLayout.EAST);
 		
 		mainPanel.add(topPanel);
 		mainPanel.add(middlePanel);
@@ -252,19 +252,21 @@ public class ClassProfile {
 		
 		categoryTableModel.addTableModelListener(new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
-				int row = categoryTable.getSelectedRow();
-				int column = categoryTable.getSelectedColumn();
-				String categoryType = categoryTable.getValueAt(row,0).toString();
-				Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
-				GradableType gt = data.getGradableTypeByName(categoryType);
-				if (column == 1) {
-					gt.setGraduateWeight(tableValue);
-					CategoryService.updateUgradWeight(gt,tableValue);
-					
-				} else {
-					gt.setUndergradWeight(tableValue);
-					CategoryService.updateGradWeight(gt,tableValue);
-				}	
+				if(e.getType() == 0) {
+					int row = categoryTable.getSelectedRow();
+					int column = categoryTable.getSelectedColumn();
+					String categoryType = categoryTable.getValueAt(row,0).toString();
+					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
+					GradableType gt = data.getGradableTypeByName(categoryType);
+					if (column == 1) {
+						gt.setGraduateWeight(tableValue);
+						CategoryService.updateUgradWeight(gt,tableValue);
+						
+					} else {
+						gt.setUndergradWeight(tableValue);
+						CategoryService.updateGradWeight(gt,tableValue);
+					}
+				}
 		  }
 		});
 		

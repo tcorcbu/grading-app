@@ -15,13 +15,6 @@ public class Data {
 
 
 	public Data() {
-		// add default gradable types for new class
-		
-		// gradableTypes.add(new GradableType("Homework",25,25));
-		// gradableTypes.add(new GradableType("Project",25,25));
-		// gradableTypes.add(new GradableType("Participation",25,25));
-		// gradableTypes.add(new GradableType("Final",25,25));
-		
 		// add student types for new class
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
@@ -65,12 +58,21 @@ public class Data {
 		return studentList.get(i);
 	}
 	
+	
 	public ArrayList<String> getStudentTypes() {
 		return studentTypes;
 	}
 	
 	public void addStudent(Student newStudent) {
-        int studentId = StudentService.insertStudent(newStudent);
+		int studentId = StudentService.getId(newStudent);
+		if (studentId == -1) {
+			studentId = StudentService.insertStudent(newStudent);
+		} else {
+			if (StudentClassService.containsStudent(studentId, classId)) {
+				getStudents();
+				return;
+			}
+		}
         StudentClassService.insertStudentClass(classId, studentId);
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
@@ -81,13 +83,18 @@ public class Data {
 										100,"");
 			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
+			GradeService.insert(g,newStudent);
 		}
         getStudents();
 	}
 	
 	public void dropStudent(Student s) {
 	    int studentId = StudentService.getId(s);
+	    if (studentId == -1) {
+	    	return;
+		}
         StudentClassService.deleteStudentClass(classId,studentId);
+		GradeService.dropStudentGrades(studentId);
 	    getStudents();
 	}
 
@@ -137,6 +144,7 @@ public class Data {
 	
 	public void dropGradable(Gradable g) {
 	    GradableService.drop(g);
+		GradeService.drop(g);
 	    refreshGradables();
 	}
 	
@@ -202,6 +210,12 @@ public class Data {
 		this.gradableList = data2clone.copyGradables();
 		this.gradableTypes = data2clone.copyGradableTypes();
 		this.studentTypes = data2clone.copyStudentTypes();
+		for(int i=0; i<gradableList.size(); i++) {
+			GradableService.insert(gradableList.get(i),classId);
+		}
+		for(int i=0; i<gradableTypes.size(); i++) {
+			CategoryService.insert(gradableTypes.get(i),classId);
+		}
 	}
 
 	public int getClassId() {

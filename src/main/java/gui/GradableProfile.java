@@ -8,15 +8,17 @@ import java.awt.*;
 import javax.swing.table.*;
 import java.text.*;
 
+import db.GradeService;
+import db.StudentService;
 import db.GradableService;
 
 public class GradableProfile {
 		
-	public GradableProfile(JFrame mainframe,Data data, Gradable g) {
+	public GradableProfile(JFrame mainframe,Data data, final Gradable g) {
 		drawGradableProfile(mainframe,data,g);
 	}
 	
-	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
+	private void drawGradableProfile(final JFrame mainframe,final Data data,final Gradable g) {
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,7));
@@ -62,7 +64,7 @@ public class GradableProfile {
 		};
 		
 		// indexTableModel studentModel = new indexTableModel(); 
-		JTable studentTable = new JTable(studentModel); 
+		final JTable studentTable = new JTable(studentModel);
 
 		studentModel.addColumn("Student"); 
 		studentModel.addColumn("Points Lost"); 
@@ -91,16 +93,15 @@ public class GradableProfile {
 			studentModel.addRow(new Object[]{stmp.getFirstName()+" "+stmp.getLastName(),gtmp.getPointsLost(),gtmp.getNote()});
 		}
 
-		JScrollPane studentTablePane = new JScrollPane(studentTable);
+		final JScrollPane studentTablePane = new JScrollPane(studentTable);
 		
 		// END Gradable Table
 		
 		JButton backButton = new JButton("Back");
 		// START Layout 				
 		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
-		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
-		botPanel.add(backButton);
+		botPanel.setLayout(new BorderLayout());
+		botPanel.add(backButton,BorderLayout.EAST);
 
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -143,6 +144,31 @@ public class GradableProfile {
 			   }
 			};
 		gradableWeight.addActionListener(weightListener);
+		
+		
+		studentModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int row = studentTable.getSelectedRow();
+				int column = studentTable.getSelectedColumn();
+				String studentName = studentTable.getValueAt(row,0).toString();
+				
+				Student s = data.getStudent(row);
+				Gradable gradable = s.getGradable(g.getName());
+				switch(column) {
+				case 1:
+					Integer tablePoints = Integer.parseInt(studentTable.getValueAt(row, column).toString());
+					gradable.setPointsLost(tablePoints);
+					GradeService.updatePointsLost(gradable.getID(), StudentService.getId(s),tablePoints);
+					break;
+				case 2:
+					String tableNote = studentTable.getValueAt(row,column).toString();
+					gradable.setNote(tableNote);
+					GradeService.updateComment(gradable.getID(),StudentService.getId(s),tableNote);
+					break;
+				}	
+		  }
+		});
+		
 		
 		// END Action Listeners
 		
