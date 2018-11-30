@@ -82,7 +82,7 @@ public class Data {
 			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
 		}
-        getStudents();
+        // getStudents();
 	}
 	
 	public void dropStudent(Student s) {
