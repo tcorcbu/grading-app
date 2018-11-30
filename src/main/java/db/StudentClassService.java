@@ -52,4 +52,23 @@ public class StudentClassService {
         }
         return res;
     }
+
+    public static int studentInClass(int class_id, int student_id) {
+        Connection conn = MySqlConnection.getConnection();
+        String sql = "SELECT * FROM StudentsClasses WHERE class_id = ? and student_id = ?";
+        int res = -1;
+        try{
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, class_id);
+            statement.setInt(2, student_id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                res = rs.getInt("student_id");
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res; 
+    }
+
 }

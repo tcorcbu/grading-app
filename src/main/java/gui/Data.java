@@ -31,6 +31,19 @@ public class Data {
         getStudents();
 	}
 
+	public void resetData(){
+		LoadedClass = "";
+		classId = -1;
+		studentList = new ArrayList<Student>();
+		gradableList = new ArrayList<Gradable>();
+		studentTypes = new ArrayList<String>();
+		gradableTypes = new ArrayList<GradableType>();
+	}
+
+	public void closeClass(){
+		ClassService.closeClass(classId);
+	}
+
 
 	public void refreshGradables(){
         this.gradableList = GradableService.getAll(classId);
@@ -64,8 +77,34 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
-        int studentId = StudentService.insertStudent(newStudent);
-        StudentClassService.insertStudentClass(classId, studentId);
+
+		// check if a student is in the student table
+
+		int res = StudentService.studentInDb(newStudent.getSchoolID());
+
+		if(res == -1){// student not in the student table
+			// add to both
+			System.out.println("Not in db");
+			int studentId = StudentService.insertStudent(newStudent);
+			StudentClassService.insertStudentClass(classId, studentId);
+		}else{// student in the db
+			System.out.println("In db");
+
+			// check if the student id and the class id are in the same row
+			// in the studentclasses table
+
+			int studentInClass = StudentClassService.studentInClass(classId, res);
+
+			if(studentInClass == -1){ // not in class
+
+				System.out.println("student not in class");
+
+				StudentClassService.insertStudentClass(classId, res);
+
+			}
+			
+		}
+		
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
 										gradableList.get(i).getPoints(),
