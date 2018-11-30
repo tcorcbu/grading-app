@@ -584,6 +584,14 @@ public class MainWindow {
 			ActionListener menuItem_loadListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Load Class");
+					// reset data obj
+					//data.resetData();
+
+					mainframe.remove(mainPanel);
+
+					// load select class panel
+					SelectClass s = new SelectClass(mainframe);
+					
 				}
 			};
 			menuItem_load.addActionListener(menuItem_loadListener);
@@ -598,6 +606,13 @@ public class MainWindow {
 			ActionListener menuItem_closeListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					System.out.println("Close Class");
+					// add dialog
+					// ask for class name
+					// if the class name matches to the current class,
+					// set the class status in the db to closed
+					CloseClassDialog ccd = new CloseClassDialog(data);
+					ccd.setModal(true);
+					ccd.showDialog();
 				}
 			};
 			menuItem_close.addActionListener(menuItem_closeListener);

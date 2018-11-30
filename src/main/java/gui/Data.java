@@ -31,6 +31,19 @@ public class Data {
         getStudents();
 	}
 
+	public void resetData(){
+		LoadedClass = "";
+		classId = -1;
+		studentList = new ArrayList<Student>();
+		gradableList = new ArrayList<Gradable>();
+		studentTypes = new ArrayList<String>();
+		gradableTypes = new ArrayList<GradableType>();
+	}
+
+	public void closeClass(){
+		ClassService.closeClass(classId);
+	}
+
 
 	public void refreshGradables(){
         this.gradableList = GradableService.getAll(classId);
@@ -64,8 +77,20 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
-        int studentId = StudentService.insertStudent(newStudent);
+
+		int studentId = StudentService.getId(newStudent);
+		if (studentId == -1) {
+			studentId = StudentService.insertStudent(newStudent);
+		} else {
+			if (StudentClassService.containsStudent(studentId, classId)) {
+				getStudents();
+				return;
+			}
+		}
+		System.out.println(newStudent);
+		System.out.println(studentId);
         StudentClassService.insertStudentClass(classId, studentId);
+
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
 										gradableList.get(i).getPoints(),
@@ -75,13 +100,18 @@ public class Data {
 										100,"");
 			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
+			GradeService.insert(g,newStudent);
 		}
         // getStudents();
 	}
 	
 	public void dropStudent(Student s) {
 	    int studentId = StudentService.getId(s);
+	    if (studentId == -1) {
+	    	return;
+		}
         StudentClassService.deleteStudentClass(classId,studentId);
+		GradeService.dropStudentGrades(studentId);
 	    getStudents();
 	}
 

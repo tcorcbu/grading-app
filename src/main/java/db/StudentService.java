@@ -52,6 +52,7 @@ public class StudentService {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("res in StudentService.getId: " + res);
         return res;
     }
 
@@ -79,6 +80,23 @@ public class StudentService {
             e.printStackTrace();
         }
         return student;
+    }
+
+    public static int studentInDb(String id) {
+        Connection conn = MySqlConnection.getConnection();
+        String sql = "SELECT * FROM Students WHERE school_id = ?";
+        int res = -1;
+        try{
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                res = rs.getInt("student_id");
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res; 
     }
 
 }
