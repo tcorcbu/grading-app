@@ -31,6 +31,19 @@ public class Data {
         getStudents();
 	}
 
+	public void resetData(){
+		LoadedClass = "";
+		classId = -1;
+		studentList = new ArrayList<Student>();
+		gradableList = new ArrayList<Gradable>();
+		studentTypes = new ArrayList<String>();
+		gradableTypes = new ArrayList<GradableType>();
+	}
+
+	public void closeClass(){
+		ClassService.closeClass(classId);
+	}
+
 
 	public void refreshGradables(){
         this.gradableList = GradableService.getAll(classId);
@@ -64,6 +77,7 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
+
 		int studentId = StudentService.getId(newStudent);
 		if (studentId == -1) {
 			studentId = StudentService.insertStudent(newStudent);
@@ -76,6 +90,7 @@ public class Data {
 		System.out.println(newStudent);
 		System.out.println(studentId);
         StudentClassService.insertStudentClass(classId, studentId);
+
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
 										gradableList.get(i).getPoints(),

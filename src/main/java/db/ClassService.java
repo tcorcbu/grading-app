@@ -72,4 +72,16 @@ public class ClassService {
         }
         return res;
     }
+
+    public static void closeClass(int classId){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE Classes SET status='closed' WHERE class_id=?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, classId);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
