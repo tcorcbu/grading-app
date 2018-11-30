@@ -64,7 +64,17 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
-        int studentId = StudentService.insertStudent(newStudent);
+		int studentId = StudentService.getId(newStudent);
+		if (studentId == -1) {
+			studentId = StudentService.insertStudent(newStudent);
+		} else {
+			if (StudentClassService.containsStudent(studentId, classId)) {
+				getStudents();
+				return;
+			}
+		}
+		System.out.println(newStudent);
+		System.out.println(studentId);
         StudentClassService.insertStudentClass(classId, studentId);
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
@@ -75,13 +85,18 @@ public class Data {
 										100,"");
 			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
+			GradeService.insert(g,newStudent);
 		}
         // getStudents();
 	}
 	
 	public void dropStudent(Student s) {
 	    int studentId = StudentService.getId(s);
+	    if (studentId == -1) {
+	    	return;
+		}
         StudentClassService.deleteStudentClass(classId,studentId);
+		GradeService.dropStudentGrades(studentId);
 	    getStudents();
 	}
 

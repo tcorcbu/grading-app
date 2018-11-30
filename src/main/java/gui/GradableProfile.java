@@ -14,11 +14,11 @@ import db.GradableService;
 
 public class GradableProfile {
 		
-	public GradableProfile(JFrame mainframe,Data data, Gradable g) {
+	public GradableProfile(JFrame mainframe,Data data, final Gradable g) {
 		drawGradableProfile(mainframe,data,g);
 	}
 	
-	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
+	private void drawGradableProfile(final JFrame mainframe,final Data data,final Gradable g) {
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,7));
@@ -64,7 +64,7 @@ public class GradableProfile {
 		};
 		
 		// indexTableModel studentModel = new indexTableModel(); 
-		JTable studentTable = new JTable(studentModel); 
+		final JTable studentTable = new JTable(studentModel);
 
 		studentModel.addColumn("Student"); 
 		studentModel.addColumn("Points Lost"); 
@@ -93,7 +93,7 @@ public class GradableProfile {
 			studentModel.addRow(new Object[]{stmp.getFirstName()+" "+stmp.getLastName(),gtmp.getPointsLost(),gtmp.getNote()});
 		}
 
-		JScrollPane studentTablePane = new JScrollPane(studentTable);
+		final JScrollPane studentTablePane = new JScrollPane(studentTable);
 		
 		// END Gradable Table
 		

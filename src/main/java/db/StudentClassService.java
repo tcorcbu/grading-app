@@ -52,4 +52,21 @@ public class StudentClassService {
         }
         return res;
     }
+
+    public static boolean containsStudent(int studentId, int classId) {
+        Connection conn = MySqlConnection.getConnection();
+        String sql = "SELECT student_id FROM StudentsClasses WHERE class_id = ? AND student_id = ?";
+        try {
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, classId);
+            statement.setInt(2,studentId);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

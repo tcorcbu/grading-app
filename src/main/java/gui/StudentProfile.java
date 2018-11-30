@@ -12,11 +12,11 @@ import db.StudentService;
 
 public class StudentProfile {
 		
-	public StudentProfile(JFrame mainframe,Data data, Student s) {
+	public StudentProfile(final JFrame mainframe,Data data, final Student s) {
 		drawStudentProfile(mainframe,data,s);
 	}
 	
-	private void drawStudentProfile(final JFrame mainframe,final Data data,Student s) {
+	private void drawStudentProfile(final JFrame mainframe,final Data data,final Student s) {
 		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,4));
@@ -146,7 +146,7 @@ public class StudentProfile {
 				int row = gradableTable.getSelectedRow();
 				int column = gradableTable.getSelectedColumn();
 				String gradableName = gradableTable.getValueAt(row,0).toString();
-				
+
 				Gradable g = s.getGradable(gradableName);
 				switch(column) {
 				case 1:
