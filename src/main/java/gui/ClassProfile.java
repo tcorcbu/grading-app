@@ -9,7 +9,6 @@ import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-import db.GradableTypeService;
 import db.CategoryService;
 
 public class ClassProfile {
@@ -57,18 +56,20 @@ public class ClassProfile {
 		
 		// Add columns
 		gradeTableModel.addColumn("Student"); 
-		for(int i = 0; i<data.gradableTypes().size(); i++) {
-			gradeTableModel.addColumn(data.gradableTypes(i).getType());
+		gradeTableModel.addColumn("Total");
+		for(int i = 0; i<data.getCategoryList().size(); i++) {
+			gradeTableModel.addColumn(data.CategoryList(i).getType());
 		}
 		
 		// Add rows
-		String[] gradeTableRow = new String[data.gradableTypes().size()+1];
+		String[] gradeTableRow = new String[data.getCategoryList().size()+2];
 		
 		for (int i=0; i<data.nStudents(); i++){
 			Student stmp = data.getStudent(i);
 			gradeTableRow[0] = stmp.getFirstName()+" "+stmp.getLastName();
-			for (int j=1; j<gradeTableRow.length; j++) {
-				gradeTableRow[j] = String.valueOf(stmp.getCategoryAverage(data.gradableTypes(j-1).getType()))+"%";
+			gradeTableRow[1] = String.valueOf(stmp.getOverallPercent(data.getCategoryList())) + "%";
+			for (int j=2; j<gradeTableRow.length; j++) {
+				gradeTableRow[j] = String.valueOf(stmp.getCategoryAverage(data.CategoryList(j-2).getType()))+"%";
 			}
 			gradeTableModel.addRow(gradeTableRow);
 		}
@@ -102,10 +103,10 @@ public class ClassProfile {
 		categoryTableModel.addColumn("Graduate Weight (%)");
 		categoryTableModel.addColumn("Undergrad Weight (%)");
 		
-		for (int i=0; i<data.gradableTypes().size(); i++) {
-			categoryTableModel.addRow(new String[]{data.gradableTypes(i).getType(),
-										String.valueOf(data.gradableTypes(i).getWeight("Graduate")),
-										String.valueOf(data.gradableTypes(i).getWeight("Undergraduate"))});
+		for (int i=0; i<data.getCategoryList().size(); i++) {
+			categoryTableModel.addRow(new String[]{data.CategoryList(i).getType(),
+										String.valueOf(data.CategoryList(i).getWeight("Graduate")),
+										String.valueOf(data.CategoryList(i).getWeight("Undergraduate"))});
 		}
 		
 		
@@ -183,12 +184,12 @@ public class ClassProfile {
 				NewCategoryDialog ncd = new NewCategoryDialog(data);
 				ncd.setModal(true);
 				ncd.showDialog();
-				ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
-				for (int i=0;i<addedGradableTypes.size(); i++) {
-					GradableTypeService.insertGradableType(addedGradableTypes.get(i),data.getClassId());
-					categoryTableModel.addRow(new String[]{addedGradableTypes.get(i).getType(),
-														String.valueOf(addedGradableTypes.get(i).getWeight("Graduate")),
-														String.valueOf(addedGradableTypes.get(i).getWeight("Undergraduate"))});
+				ArrayList<Category> addedCategories = ncd.getCategories();
+				for (int i=0;i<addedCategories.size(); i++) {
+					
+					categoryTableModel.addRow(new String[]{addedCategories.get(i).getType(),
+														String.valueOf(addedCategories.get(i).getWeight("Graduate")),
+														String.valueOf(addedCategories.get(i).getWeight("Undergraduate"))});
 				
 				}
 			   }
@@ -198,8 +199,8 @@ public class ClassProfile {
 		ActionListener removeCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
-				GradableTypeService.dropGradableType(gt,data.getClassId());
-				data.removeGradableType(gt);
+				data.addSaveCommand(CategoryService.drop(gt));
+				data.removeCategory(gt);
 				categoryTableModel.removeRow(categoryTable.getSelectedRow());
 			   }
 			};
@@ -257,14 +258,14 @@ public class ClassProfile {
 					int column = categoryTable.getSelectedColumn();
 					String categoryType = categoryTable.getValueAt(row,0).toString();
 					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
-					GradableType gt = data.getGradableTypeByName(categoryType);
+					Category gt = data.getCategoryByName(categoryType);
 					if (column == 1) {
 						gt.setGraduateWeight(tableValue);
-						CategoryService.updateUgradWeight(gt,tableValue);
+						data.addSaveCommand(CategoryService.updateGradWeight(gt, tableValue));
 						
 					} else {
 						gt.setUndergradWeight(tableValue);
-						CategoryService.updateGradWeight(gt,tableValue);
+						data.addSaveCommand(CategoryService.updateUgradWeight(gt, tableValue));
 					}
 				}
 		  }

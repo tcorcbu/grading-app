@@ -1,15 +1,14 @@
 package gui;
-public class GradableType {
-	private Integer id;
+public class Category {
 	private String type;
 	private int GraduateWeight;
 	private int UndergradWeight;
 
-	public GradableType() {
+	public Category() {
 		
 	}
 	
-	public GradableType(String type, int GraduateWeight, int UndergradWeight) {
+	public Category(String type, int GraduateWeight, int UndergradWeight) {
 		this.type = type;
 		this.GraduateWeight = GraduateWeight;
 		this.UndergradWeight = UndergradWeight;
@@ -21,14 +20,6 @@ public class GradableType {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public int getGraduateWeight() {
@@ -56,9 +47,17 @@ public class GradableType {
 
 	}
 
-
 	public String toString() {
 		return type + " (" + String.valueOf(UndergradWeight) + "%, " + String.valueOf(GraduateWeight) + "%)";
 	}
 
+	// @Override
+	// public boolean equals(Category c) {
+		// boolean tf = false;
+		// if(this.getType().equals(c.getType())){
+			// System.out.println("true");
+			// tf = true;
+		// }
+		// return tf;
+	// }
 }

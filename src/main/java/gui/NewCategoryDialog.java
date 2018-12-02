@@ -11,8 +11,8 @@ import java.text.*;
 
 
 public class NewCategoryDialog extends JDialog{
-	private GradableType newGradableType;
-	private ArrayList<GradableType> newGradableTypes = new ArrayList<GradableType>();
+	private Category newCategory;
+	private ArrayList<Category> newCategories = new ArrayList<Category>();
 	
 	public NewCategoryDialog(final Data data) {
 		
@@ -85,9 +85,9 @@ public class NewCategoryDialog extends JDialog{
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
 				
 				// Check student ID against the database and error if there is a conflict
-				newGradableType = new GradableType(name,gWeight,uWeight);
-				CategoryService.insert(newGradableType, data.getClassId());
-				newGradableTypes.add(newGradableType);
+				newCategory = new Category(name,gWeight,uWeight);
+				data.addSaveCommand(CategoryService.insert(newCategory));
+				newCategories.add(newCategory);
 				data.getCategories();
 				nameTextField.setText("");
 				// gWeightTextField.setText("");
@@ -102,10 +102,10 @@ public class NewCategoryDialog extends JDialog{
 				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
 				// Check student ID against the database and error if there is a conflict
-				newGradableType = new GradableType(name,gWeight,uWeight);
-				CategoryService.insert(newGradableType, data.getClassId());
+				newCategory = new Category(name,gWeight,uWeight);
+				data.addSaveCommand(CategoryService.insert(newCategory));
 				data.getCategories();
-				newGradableTypes.add(newGradableType);
+				newCategories.add(newCategory);
 				setVisible(false);
 			}
 		};
@@ -124,8 +124,8 @@ public class NewCategoryDialog extends JDialog{
 		this.setVisible( true );
 	}
 	
-	public ArrayList<GradableType> getGradableTypes() {
-		return newGradableTypes;
+	public ArrayList<Category> getCategories() {
+		return newCategories;
 	}
 	
 }

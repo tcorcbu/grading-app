@@ -1,13 +1,13 @@
 package gui;
 
-import db.ClassService;
-
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 
+import db.ClassService;
+import db.Globals;
 
 
 public class NewClassDialog extends JDialog{
@@ -69,9 +69,16 @@ public class NewClassDialog extends JDialog{
 						System.out.println((String)useTemplateCombo.getSelectedItem());
 						// instantiate new Data using other class
 						// copy assignments over
+						System.out.print("class id before copyClass: ");
+						System.out.println(Globals.class_id());
 						Data copyClass = new Data((String)useTemplateCombo.getSelectedItem());
+						System.out.print("class id after copyClass: ");
+						System.out.println(Globals.class_id());
 						ClassService.insertClass(classNameTextField.getText());
-						data.setLoadedClass((String)classNameTextField.getText());
+						data.setLoadedClass(classNameTextField.getText());
+						System.out.print("class id after data.setLoadedClass: ");
+						System.out.println(Globals.class_id());
+						// Globals.setClassId(ClassService.getId(classNameTextField.getText()));
 						data.clone(copyClass);
 					}
 					//save class to db

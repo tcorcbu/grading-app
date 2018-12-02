@@ -1,22 +1,21 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import db.GradeService;
 
 
 public class Student {
-	private int studentId;
 	private String firstName;
 	private String lastName;
 	private String schoolID;
 	private String year;
-
 	private ArrayList<Gradable> gradableList = new ArrayList<Gradable>();
 	
 	public Student() {
-		
 	}
+	
 	public Student(String firstName, String lastName, String schoolID, String year) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -92,21 +91,40 @@ public class Student {
 	}
 	
 	public int getCategoryAverage(String type) {
-		int n = 0;
 		int total = 0;
-		Gradable gtmp = new Gradable();
+		int sumWeights = 0;
+		int assignmentTotal;
+		int assignmentPointsLost;
+		int assignmentIntraCategoryWeight;
+		Gradable gtmp;
 		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).getType().getType().equals(type)) {
-				gtmp =  gradableList.get(i);
-				n += 1;
-				total += gtmp.getPercentage();
+			if(gradableList.get(i).isType(type)) {
+				gtmp = gradableList.get(i);
+				assignmentTotal = gtmp.getPoints();
+				assignmentPointsLost = gtmp.getPointsLost();
+				assignmentIntraCategoryWeight = gtmp.getIntraCategoryWeight();
+				if (assignmentTotal == 0) {
+					total += 0;
+				}else {
+					total += (assignmentTotal-assignmentPointsLost)*assignmentIntraCategoryWeight/assignmentTotal;
+				}
+				sumWeights += assignmentIntraCategoryWeight;
 			}
 		}
-		if (n == 0){
+		if (sumWeights == 0){
 			return 0;
 		} else {
-			return total/n;
+			return total*100/sumWeights;
 		}
+	}
+	
+	public int getOverallPercent(ArrayList<Category> categoryList) {
+		int total = 0;
+		for(int i=0; i<categoryList.size(); i++) {
+			total += getCategoryAverage(categoryList.get(i).getType())*categoryList.get(i).getWeight(year);
+		
+		}
+		return total/100;
 	}
 
 	public String toString(){
@@ -115,12 +133,5 @@ public class Student {
 	public boolean is(String type) {
 		return this.year.equals(type);
 	}	
-	
-	public int getID() {
-		return studentId;
-	}
-	
-	public void setID(int id) {
-		studentId = id;
-	}
+
 }

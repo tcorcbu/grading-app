@@ -1,6 +1,7 @@
 package gui;
 
 import db.ClassService;
+import db.Globals;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -9,6 +10,7 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+
 
 public class SelectClass {
 		
@@ -43,6 +45,12 @@ public class SelectClass {
 		private void drawSelectClass(final JFrame mainframe) {
 
             mainframe.setTitle("Select Class");
+			int width = 275;
+			int height = 150;
+			int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+			int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+			mainframe.setLocation(x, y);
+			mainframe.setSize( width, height );
 
             final JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -63,33 +71,11 @@ public class SelectClass {
 
             // old classes
 
-            // JButton jbtLoad = new JButton("Load Class");
-            // jbtLoad.setAlignmentX(panel.CENTER_ALIGNMENT);
-
-            // JButton jbtNew = new JButton( "New Class" );
-            // jbtNew.setAlignmentX(panel.CENTER_ALIGNMENT);
-
-            // JButton newFromSelected = new JButton( "New From Selected" );
-            // newFromSelected.setAlignmentX(panel.CENTER_ALIGNMENT);
-
-            // JPanel newButtonsPanel = new JPanel();
-            // newButtonsPanel.add(jbtNew);
-            // newButtonsPanel.add(newFromSelected);
-
-
-            // JPanel comboPanel = new JPanel();
-            // comboPanel.add(classLabel);
-            // comboPanel.add(classCombo);
-
-
             mainPanel.add(classLabelPanel);
             mainPanel.add(Box.createHorizontalStrut(10));
             mainPanel.add(classComboPanel);
             mainPanel.add(Box.createHorizontalStrut(10));
             mainPanel.add(oldClassComboPanel);
-            // panel.add(Box.createHorizontalStrut(10));
-            // panel.add(newButtonsPanel);
-            // panel.add(Box.createHorizontalStrut(10));
 
             mainframe.add(mainPanel);
             mainframe.validate();
@@ -98,8 +84,8 @@ public class SelectClass {
             ActionListener loadListener = new ActionListener(){
                 public void actionPerformed(ActionEvent e){
                     String mySelection = (String)classCombo.getSelectedItem();
-                    if (mySelection.equals("Select a class")){
-                    } else {
+                    if (!mySelection.equals("Select a class")){
+                    // } else {
 
                         Data data;
                         if (mySelection.equals("New Class")) {
@@ -110,6 +96,7 @@ public class SelectClass {
 
                         } else {
                             data = new Data(mySelection);
+							
                         }
 
 
@@ -118,10 +105,10 @@ public class SelectClass {
                         int height = 500;
 
                         int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
-                        int y = (int) mainframe.getLocation().y - ((500 - mainframe.getHeight()) / 2);
+                        int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
 
                         mainframe.setLocation(x, y);
-                        mainframe.setSize( width, 500 );
+                        mainframe.setSize( width, height );
 
                         mainframe.setTitle(data.getLoadedClass());
                         MainWindow m = new MainWindow(mainframe,data);
@@ -129,24 +116,6 @@ public class SelectClass {
                     }
                 };
             classCombo.addActionListener( loadListener );
-
-
-            // ActionListener newListener = new ActionListener(){
-                   // public void actionPerformed(ActionEvent e){
-                       // String NewClassName = JOptionPane.showInputDialog("Please input the new class name ");
-                       // classCombo.addItem(NewClassName);
-                       // classCombo.setSelectedItem(NewClassName);
-
-                                       // }
-                    // };
-            // jbtNew.addActionListener( newListener );
-
-            // ActionListener newFromSelectedListener = new ActionListener(){
-                // public void actionPerformed(ActionEvent e){
-                    // System.out.println(mainframe.getLocation().x);
-                                       // }
-                    // };
-            // newFromSelected.addActionListener( newFromSelectedListener );
 		
 	    }
 	
