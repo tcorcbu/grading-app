@@ -25,9 +25,9 @@ public class GradeService {
             statement.setString(1,student.getSchoolID());
             statement.setString(2,gradable.getName());
 			statement.setInt(3,Globals.class_id());
-            statement.setInt(4,gradable.getPointsLost());
-            statement.setInt(5,gradable.getStudentWeight());
-            statement.setString(6,gradable.getNote());
+            statement.setInt(4,gradable.getPoints());
+            statement.setInt(5,100);
+            statement.setString(6,"");
             // statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

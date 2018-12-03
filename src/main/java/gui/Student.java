@@ -65,7 +65,7 @@ public class Student {
 
 	public void addGradable(Gradable g) {
 		gradableList.add(g);
-		GradeService.insert(g,this);
+		
 	}
 	
 	public void dropGradable(Gradable g) {

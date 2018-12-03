@@ -100,8 +100,9 @@ public class ClassProfile {
 		};
 		
 		categoryTableModel.addColumn("Category");
-		categoryTableModel.addColumn("Graduate Weight (%)");
-		categoryTableModel.addColumn("Undergrad Weight (%)");
+		categoryTableModel.addColumn("Graduate ("+String.valueOf(data.sumGradCategories())+"%)");
+		categoryTableModel.addColumn("Undergrad ("+String.valueOf(data.sumUndergradCategories())+"%)");
+		
 		
 		for (int i=0; i<data.getCategoryList().size(); i++) {
 			categoryTableModel.addRow(new String[]{data.CategoryList(i).getType(),
@@ -112,19 +113,22 @@ public class ClassProfile {
 		
 		final JTable categoryTable = new JTable(categoryTableModel);
 		
+		JTableHeader categoryTableHeader = categoryTable.getTableHeader();
+		TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
+		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		// END Category Table
 		
-		gradeBreakdownPanel.add(new JLabel("A"));
-		gradeBreakdownPanel.add(new JLabel("10"));
-		gradeBreakdownPanel.add(new JLabel("B"));
-		gradeBreakdownPanel.add(new JLabel("9"));
-		gradeBreakdownPanel.add(new JLabel("C"));
-		gradeBreakdownPanel.add(new JLabel("8"));
-		gradeBreakdownPanel.add(new JLabel("D"));
-		gradeBreakdownPanel.add(new JLabel("6"));
-		gradeBreakdownPanel.add(new JLabel("F"));
-		gradeBreakdownPanel.add(new JLabel("1"));
+		// gradeBreakdownPanel.add(new JLabel("A"));
+		// gradeBreakdownPanel.add(new JLabel("10"));
+		// gradeBreakdownPanel.add(new JLabel("B"));
+		// gradeBreakdownPanel.add(new JLabel("9"));
+		// gradeBreakdownPanel.add(new JLabel("C"));
+		// gradeBreakdownPanel.add(new JLabel("8"));
+		// gradeBreakdownPanel.add(new JLabel("D"));
+		// gradeBreakdownPanel.add(new JLabel("6"));
+		// gradeBreakdownPanel.add(new JLabel("F"));
+		// gradeBreakdownPanel.add(new JLabel("1"));
 		
 		
 		// START buttons
@@ -156,7 +160,7 @@ public class ClassProfile {
 		curvePanel.add(curveLabel);
 		curvePanel.add(curveField);
 		
-		buttonPanel.add(curvePanel,BorderLayout.WEST);
+		// buttonPanel.add(curvePanel,BorderLayout.WEST);
 		buttonPanel.add(backButton,BorderLayout.EAST);
 		
 		mainPanel.add(topPanel);
@@ -267,6 +271,9 @@ public class ClassProfile {
 						gt.setUndergradWeight(tableValue);
 						data.addSaveCommand(CategoryService.updateUgradWeight(gt, tableValue));
 					}
+					categoryTableColumnModel.getColumn(1).setHeaderValue("Graduate ("+String.valueOf(data.sumGradCategories())+"%)");
+					categoryTableColumnModel.getColumn(2).setHeaderValue("Undergrad ("+String.valueOf(data.sumUndergradCategories())+"%)");
+					categoryTableHeader.repaint();
 				}
 		  }
 		});

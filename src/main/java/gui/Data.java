@@ -41,6 +41,22 @@ public class Data {
 		// categoryList = new ArrayList<Category>();
 	// }
 
+	public int sumUndergradCategories() {
+		int mysum = 0;
+		for(int i=0; i<categoryList.size(); i++) {
+				mysum += categoryList.get(i).getWeight("Undergraduate");
+		}
+		return mysum;
+	}
+	
+	public int sumGradCategories() {
+		int mysum = 0;
+		for(int i=0; i<categoryList.size(); i++) {
+				mysum += categoryList.get(i).getWeight("Graduate");
+		}
+		return mysum;
+	}
+	
 	public void addSaveCommand(PreparedStatement savecommand) {
 		saveCommand.add(savecommand);
 	}
@@ -86,7 +102,7 @@ public class Data {
 			this.addSaveCommand(StudentService.insertStudent(newStudent));
 		}
 		
-        StudentClassService.insertStudentClass(newStudent.getSchoolID());
+        this.addSaveCommand(StudentClassService.insertStudentClass(newStudent.getSchoolID()));
 
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
@@ -96,6 +112,7 @@ public class Data {
 										gradableList.get(i).getPoints(),
 										100,"");
 			newStudent.addGradable(g);
+			this.addSaveCommand(GradeService.insert(g,newStudent));
 		}
 	}
 	
@@ -104,9 +121,9 @@ public class Data {
 	    // if (studentId == -1) {
 	    	// return;
 		// }
-        StudentClassService.deleteStudentClass(s.getSchoolID());
+        this.addSaveCommand(StudentClassService.deleteStudentClass(s.getSchoolID()));
 		this.addSaveCommand(GradeService.dropStudentGrades(s.getSchoolID()));
-	    loadStudents();
+	    // loadStudents();
 	}
 
 	public void loadStudents(){

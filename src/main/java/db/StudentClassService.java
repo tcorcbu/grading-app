@@ -12,30 +12,34 @@ import java.util.List;
 import db.Globals;
 
 public class StudentClassService {
-    public static void insertStudentClass(String school_id){
+    public static PreparedStatement insertStudentClass(String school_id){
         Connection conn = MySqlConnection.getConnection();
         String sql = "INSERT INTO StudentsClasses (class_id, school_id) VALUES (?,?)";
+		PreparedStatement statement = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(sql);
+            statement = conn.prepareStatement(sql);
             statement.setInt(1, Globals.class_id());
             statement.setString(2, school_id);
-            statement.execute();
+            // statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
     }
 
-    public static void deleteStudentClass(String school_id){
+    public static PreparedStatement deleteStudentClass(String school_id){
         Connection conn = MySqlConnection.getConnection();
         String sql = "DELETE FROM StudentsClasses WHERE class_id = ? and school_id = ?";
+		PreparedStatement statement = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(sql);
+            statement = conn.prepareStatement(sql);
             statement.setInt(1, Globals.class_id());
             statement.setString(2, school_id);
-            statement.execute();
+            // statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
     }
 
     public static List<String> getAllStudentsId(int classId){

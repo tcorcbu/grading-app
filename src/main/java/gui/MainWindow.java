@@ -55,12 +55,12 @@ public class MainWindow {
 			// START Gradables tree
 			int mysumU = 0;
 			int mysumG = 0;
-			for(int i=0; i<data.getCategoryList().size(); i++) {
-				mysumU += data.CategoryList(i).getWeight("Undergraduate");
-				mysumG += data.CategoryList(i).getWeight("Graduate");
-			}
+			// for(int i=0; i<data.getCategoryList().size(); i++) {
+				// mysumU += data.CategoryList(i).getWeight("Undergraduate");
+				// mysumG += data.CategoryList(i).getWeight("Graduate");
+			// }
 			
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(mysumU)+"%, "+String.valueOf(mysumG)+"%)");
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)");
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.getCategoryList().size(); i++) {
@@ -438,6 +438,7 @@ public class MainWindow {
 								gtemp.setPointsLost(newGradable.getPoints());
 								gtemp.setStudentWeight(100);
 								data.getStudent(i).addGradable(gtemp);
+								data.addSaveCommand(GradeService.insert(gtemp,data.getStudent(i)));
 							}
 									
 								String gCategory = newGradable.getType().toString();
@@ -484,6 +485,7 @@ public class MainWindow {
 								gtemp.setPointsLost(newGradable.getPoints());
 								gtemp.setStudentWeight(100);
 								data.getStudent(i).addGradable(gtemp);
+								data.addSaveCommand(GradeService.insert(gtemp,data.getStudent(i)));
 							}
 									
 							String gCategory = newGradable.getType().toString();
@@ -593,6 +595,7 @@ public class MainWindow {
 			ActionListener menuItem_loadListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mainframe.remove(mainPanel);
+					// menuBar = mainframe.getMenuBar();
 					mainframe.remove(menuBar);
 					// load select class panel
 					SelectClass s = new SelectClass(mainframe);

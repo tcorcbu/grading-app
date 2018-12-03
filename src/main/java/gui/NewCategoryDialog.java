@@ -45,15 +45,14 @@ public class NewCategoryDialog extends JDialog{
 		NumberFormat gWeightFormat;
 		gWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField gWeightTextField = new JFormattedTextField(gWeightFormat);
-		gWeightTextField.setValue(new Integer(100));
+		// gWeightTextField.setValue(new Integer(0));
 		gWeightTextField.setColumns(10);
 
 		NumberFormat uWeightFormat;
 		uWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField uWeightTextField = new JFormattedTextField(uWeightFormat);
-		uWeightTextField.setValue(new Integer(100));
+		// uWeightTextField.setValue(new Integer(0));
 		uWeightTextField.setColumns(10);
-		uWeightTextField.setValue(new Integer(100));
 				
 		nameInputPanel.add(nameTextField);
 		gWeightInputPanel.add(gWeightTextField);
@@ -88,7 +87,7 @@ public class NewCategoryDialog extends JDialog{
 				newCategory = new Category(name,gWeight,uWeight);
 				data.addSaveCommand(CategoryService.insert(newCategory));
 				newCategories.add(newCategory);
-				data.getCategories();
+				data.addCategory(newCategory);
 				nameTextField.setText("");
 				// gWeightTextField.setText("");
 				// uWeightTextField.setText("");
@@ -104,7 +103,8 @@ public class NewCategoryDialog extends JDialog{
 				// Check student ID against the database and error if there is a conflict
 				newCategory = new Category(name,gWeight,uWeight);
 				data.addSaveCommand(CategoryService.insert(newCategory));
-				data.getCategories();
+				// data.getCategories();
+				data.addCategory(newCategory);
 				newCategories.add(newCategory);
 				setVisible(false);
 			}
