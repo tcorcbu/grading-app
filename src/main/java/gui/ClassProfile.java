@@ -8,6 +8,7 @@ import java.awt.*;
 import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.lang.Math.*;
 
 import db.CategoryService;
 
@@ -92,13 +93,15 @@ public class ClassProfile {
 		
 		final myTableModel breakoutTableModel = new myTableModel();
 		final JTable breakoutTable = new JTable(breakoutTableModel);
-		breakoutTable.setFocusable(false);
-		
+		breakoutTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JScrollPane breakoutTablePane = new JScrollPane(breakoutTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		BoundedRangeModel gradeTablePaneModel = gradeTablePane.getVerticalScrollBar().getModel();
 		breakoutTablePane.getVerticalScrollBar().setModel( gradeTablePaneModel );
+		
+		// Dimension d = breakoutTable.getPreferredSize();
+		// breakoutTablePane.setPreferredSize(new Dimension(50*breakoutColumnModel.getColumnCount(),d.height));
 		
 		// END Breakout Table
 		
@@ -335,7 +338,15 @@ public class ClassProfile {
 						breakoutTableModel.addRow(rowValues);
 					}
 					
+					TableColumnModel breakoutColumnModel = breakoutTable.getColumnModel();
+					for (int i=0; i<breakoutColumnModel.getColumnCount(); i++) {
+						breakoutColumnModel.getColumn(i).setPreferredWidth(75);;
+					}
+					Dimension d = breakoutTable.getPreferredSize();
+					breakoutTablePane.setPreferredSize(new Dimension(Math.min(60*(breakoutColumnModel.getColumnCount()),200),d.height));
+					
 					midPanel.add(breakoutTablePane);
+		
 				}else{
 					midPanel.remove(breakoutTablePane);
 				}
