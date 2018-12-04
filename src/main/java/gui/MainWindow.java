@@ -60,7 +60,13 @@ public class MainWindow {
 				// mysumG += data.CategoryList(i).getWeight("Graduate");
 			// }
 			
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)");
+			String GradablesTreeHeader;
+			if(data.sumUndergradCategories()!=data.sumGradCategories()){
+				GradablesTreeHeader = "Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)";
+			}else{
+				GradablesTreeHeader = "Gradables ("+String.valueOf(data.sumUndergradCategories())+"%)";
+			}
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode(GradablesTreeHeader);
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.getCategoryList().size(); i++) {
