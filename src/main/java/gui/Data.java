@@ -4,14 +4,15 @@ import db.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.*;
 
 public class Data {
 	private String LoadedClass;
-	private int classId;
 	private ArrayList<Student> studentList = new ArrayList<Student>();
 	private ArrayList<Gradable> gradableList = new ArrayList<Gradable>();
 	private ArrayList<String> studentTypes = new ArrayList<String>();
-	private ArrayList<GradableType> gradableTypes = new ArrayList<GradableType>();
+	private ArrayList<Category> categoryList = new ArrayList<Category>();
+	private ArrayList<PreparedStatement> saveCommand = new ArrayList<PreparedStatement>();
 
 
 	public Data() {
@@ -22,44 +23,63 @@ public class Data {
 	
 	public Data(String LoadedClass) {
 		this.LoadedClass = LoadedClass;
-        classId = ClassService.getId(LoadedClass);
-				
+		Globals.setClassId(ClassService.getId(LoadedClass));
+		
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
-        getCategories();
-        refreshGradables();
-        getStudents();
+        loadCategories();
+        loadGradables();
+        loadStudents();
 	}
 
-	public void resetData(){
-		LoadedClass = "";
-		classId = -1;
-		studentList = new ArrayList<Student>();
-		gradableList = new ArrayList<Gradable>();
-		studentTypes = new ArrayList<String>();
-		gradableTypes = new ArrayList<GradableType>();
-	}
+	// public void resetData(){
+		// LoadedClass = "";
+		// class_id = -1;
+		// studentList = new ArrayList<Student>();
+		// gradableList = new ArrayList<Gradable>();
+		// studentTypes = new ArrayList<String>();
+		// categoryList = new ArrayList<Category>();
+	// }
 
+	public int sumUndergradCategories() {
+		int mysum = 0;
+		for(int i=0; i<categoryList.size(); i++) {
+				mysum += categoryList.get(i).getWeight("Undergraduate");
+		}
+		return mysum;
+	}
+	
+	public int sumGradCategories() {
+		int mysum = 0;
+		for(int i=0; i<categoryList.size(); i++) {
+				mysum += categoryList.get(i).getWeight("Graduate");
+		}
+		return mysum;
+	}
+	
+	public void addSaveCommand(PreparedStatement savecommand) {
+		saveCommand.add(savecommand);
+	}
+	
 	public void closeClass(){
-		ClassService.closeClass(classId);
+		ClassService.closeClass(Globals.class_id());
 	}
 
-
-	public void refreshGradables(){
-        this.gradableList = GradableService.getAll(classId);
+	public void loadGradables(){
+        this.gradableList = GradableService.getAll(Globals.class_id());
     }
 
-	public void getCategories(){
-	    this.gradableTypes = CategoryService.getAll(classId);
+	public void loadCategories(){
+	    this.categoryList = CategoryService.getAll(Globals.class_id());
     }
 
-    public ArrayList<GradableType> getGradableTypes(){
-	    return this.gradableTypes;
+    public ArrayList<Category> getCategories(){
+	    return this.categoryList;
     }
 	// Loaded Class accessors and mutators
 	public void setLoadedClass(String lc) {
 		LoadedClass = lc;
-		classId = ClassService.getId(LoadedClass);
+		Globals.setClassId(ClassService.getId(LoadedClass));
 	}
 	
 	public String getLoadedClass() {
@@ -77,19 +97,12 @@ public class Data {
 	}
 	
 	public void addStudent(Student newStudent) {
-
-		int studentId = StudentService.getId(newStudent);
-		if (studentId == -1) {
-			studentId = StudentService.insertStudent(newStudent);
-		} else {
-			if (StudentClassService.containsStudent(studentId, classId)) {
-				getStudents();
-				return;
-			}
+		studentList.add(newStudent);
+		if(!StudentService.studentInDb(newStudent)){
+			this.addSaveCommand(StudentService.insertStudent(newStudent));
 		}
-		System.out.println(newStudent);
-		System.out.println(studentId);
-        StudentClassService.insertStudentClass(classId, studentId);
+		
+        this.addSaveCommand(StudentClassService.insertStudentClass(newStudent.getSchoolID()));
 
 		for(int i=0; i<gradableList.size(); i++) {
 			Gradable g = new Gradable(gradableList.get(i).getName(),
@@ -98,39 +111,33 @@ public class Data {
 										gradableList.get(i).getIntraCategoryWeight(),
 										gradableList.get(i).getPoints(),
 										100,"");
-			g.setID(gradableList.get(i).getID());
 			newStudent.addGradable(g);
-			GradeService.insert(g,newStudent);
+			this.addSaveCommand(GradeService.insert(g,newStudent));
 		}
-        // getStudents();
 	}
 	
 	public void dropStudent(Student s) {
-	    int studentId = StudentService.getId(s);
-	    if (studentId == -1) {
-	    	return;
-		}
-        StudentClassService.deleteStudentClass(classId,studentId);
-		GradeService.dropStudentGrades(studentId);
-	    getStudents();
+	    // int studentId = StudentService.getId(s);
+	    // if (studentId == -1) {
+	    	// return;
+		// }
+        this.addSaveCommand(StudentClassService.deleteStudentClass(s.getSchoolID()));
+		this.addSaveCommand(GradeService.dropStudentGrades(s.getSchoolID()));
+	    // loadStudents();
 	}
 
-	public void getStudents(){
-        List<Integer>studentIds = StudentClassService.getAllStudentsId(classId);
+	public void loadStudents(){
+        List<String>studentIds = StudentClassService.getAllStudentsId(Globals.class_id());
 
 		this.studentList.clear();
-        for (Integer id : studentIds) {
+        for (String id : studentIds) {
             studentList.add(StudentService.getStudentById(id));
         }
 
         for (Student student : studentList) {
-            student.setGradableList(GradeService.getAllGradablesForStudent(student,classId));
+            student.setGradableList(GradeService.getAllGradablesForStudent(student));
         }
-        // this.studentList.clear();
-        // for (Student student : students) {
-            // this.studentList.add(student);
-        // }
-		// System.out.println(students);
+
     }
 	
 	public int nStudents() {
@@ -160,28 +167,34 @@ public class Data {
 	}
 	
 	public void dropGradable(Gradable g) {
-	    GradableService.drop(g);
-		GradeService.drop(g);
-	    refreshGradables();
+	    this.addSaveCommand(GradableService.drop(g));
+		this.addSaveCommand(GradeService.drop(g));
+		
+		for (int i = 0; i<gradableList.size(); i++) {
+			if(gradableList.get(i).getName().equals(g.getName())) {
+				gradableList.remove(gradableList.get(i));
+			}
+		}
+	    // loadGradables();
 	}
 	
 	public int nGradables() {
 		return gradableList.size();
 	}
 	
-	public ArrayList<GradableType> gradableTypes() {
-		return gradableTypes;
+	public ArrayList<Category> getCategoryList() {
+		return categoryList;
 	}
 	
-	public GradableType gradableTypes(int i) {
-		return gradableTypes.get(i);
+	public Category CategoryList(int i) {
+		return categoryList.get(i);
 	}
 	
-	public GradableType getGradableTypeByName(String name) {
-		GradableType gt = new GradableType();
-		for (int i = 0; i<gradableTypes.size(); i++) {
-			if(gradableTypes.get(i).getType().equals(name)) {
-				gt =  gradableTypes.get(i);
+	public Category getCategoryByName(String name) {
+		Category gt = new Category();
+		for (int i = 0; i<categoryList.size(); i++) {
+			if(categoryList.get(i).getType().equals(name)) {
+				gt =  categoryList.get(i);
 			}
 		}
 		return gt;
@@ -199,22 +212,22 @@ public class Data {
 		gradableList = new ArrayList<Gradable>(gl);
 	}
 	
-	public ArrayList<GradableType> copyGradableTypes() {
-		return new ArrayList<GradableType>(gradableTypes);
+	public ArrayList<Category> copyCategories() {
+		return new ArrayList<Category>(categoryList);
 	}
 	
-	public void setGradableTypes(ArrayList<GradableType> gt) {
-		gradableTypes = new ArrayList<GradableType>(gt);
+	public void setCategories(ArrayList<Category> gt) {
+		categoryList = new ArrayList<Category>(gt);
 	}
 	
-	public void addGradableType(GradableType gt) {
-		gradableTypes.add(gt);
+	public void addCategory(Category gt) {
+		categoryList.add(gt);
 	}
 	
-	public void removeGradableType(String gt) {
-		for(int i=0; i<gradableTypes.size(); i++) {
-			if(gradableTypes.get(i).getType() == gt){
-				gradableTypes.remove(gradableTypes.get(i));
+	public void removeCategory(String gt) {
+		for(int i=0; i<categoryList.size(); i++) {
+			if(categoryList.get(i).getType().equals(gt)){
+				categoryList.remove(categoryList.get(i));
 			}
 		}
 	}
@@ -225,22 +238,29 @@ public class Data {
 	
 	public void clone(Data data2clone) {
 		this.gradableList = data2clone.copyGradables();
-		this.gradableTypes = data2clone.copyGradableTypes();
+		this.categoryList = data2clone.copyCategories();
 		this.studentTypes = data2clone.copyStudentTypes();
+		System.out.print("class id in clone: ");
+		System.out.println(Globals.class_id());
 		for(int i=0; i<gradableList.size(); i++) {
-			GradableService.insert(gradableList.get(i),classId);
+			this.addSaveCommand(GradableService.insert(gradableList.get(i)));
 		}
-		for(int i=0; i<gradableTypes.size(); i++) {
-			CategoryService.insert(gradableTypes.get(i),classId);
+		for(int i=0; i<categoryList.size(); i++) {
+			this.addSaveCommand(CategoryService.insert(categoryList.get(i)));
 		}
-	}
-
-	public int getClassId() {
-		return classId;
 	}
 	
 	public void saveClass() {
-		System.out.println("save class");
+		try{
+			for(int i=0; i<saveCommand.size(); i++) {
+				saveCommand.get(i).execute();
+			}	
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+		saveCommand = new ArrayList<PreparedStatement>();
+		
+		
 	}
 
 }

@@ -1,10 +1,9 @@
 package gui;
 
 public class Gradable {
-	private int gradableId;
 	private String name;
 	private int total;
-	private GradableType type;
+	private Category type;
 	private int pointsLost;
 	private int IntraCategoryWeight;
 	private int StudentWeight;
@@ -24,14 +23,6 @@ public class Gradable {
 		// this.String note = g.getNote();
 	// }
 
-	public int getGradableId() {
-		return gradableId;
-	}
-
-	public void setGradableId(int gradableId) {
-		this.gradableId = gradableId;
-	}
-
 	public int getTotal() {
 		return total;
 	}
@@ -40,11 +31,11 @@ public class Gradable {
 		this.total = total;
 	}
 
-	public void setType(GradableType type) {
+	public void setType(Category type) {
 		this.type = type;
 	}
 
-	public Gradable(String name, int total, GradableType type, int IntraCategoryWeight) {
+	public Gradable(String name, int total, Category type, int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
@@ -53,7 +44,7 @@ public class Gradable {
 		this.IntraCategoryWeight = 100;
 	}
 		
-	public Gradable(String name, int total, GradableType type,int IntraCategoryWeight,int pointsLost,int StudentWeight,String note) {
+	public Gradable(String name, int total, Category type,int IntraCategoryWeight,int pointsLost,int StudentWeight,String note) {
 		this.name = name;
 		this.total = total;
 		this.type = type;
@@ -107,7 +98,7 @@ public class Gradable {
 		total = p;
 	}
 
-	public GradableType getType() {
+	public Category getType() {
 		return type;
 	}
 
@@ -131,13 +122,13 @@ public class Gradable {
 		return this.type.getType().equals(type);
 	}	
 	
-	public int getID() {
-		return gradableId;
-	}
+	// public int getID() {
+		// return gradableId;
+	// }
 
-	public void setID(int id) {
-		gradableId = id;
-	}
+	// public void setID(int id) {
+		// gradableId = id;
+	// }
 
 	public Gradable copy() {
 		Gradable g = new Gradable(this.getName(),
@@ -147,7 +138,6 @@ public class Gradable {
 									this.getPointsLost(),
 									this.getStudentWeight(),
 									this.getNote());
-		g.setID(this.gradableId);
 		return g;
 	}
 }

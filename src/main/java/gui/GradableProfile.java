@@ -131,7 +131,7 @@ public class GradableProfile {
 		   public void actionPerformed(ActionEvent e){
 			   int p = ((Number)gradablePoints.getValue()).intValue();
 			   g.setPoints(p);
-			   GradableService.updatePoints(g,p);
+			   data.addSaveCommand(GradableService.updatePoints(g,p));
 			   }
 			};
 		gradablePoints.addActionListener(pointsListener);
@@ -140,7 +140,7 @@ public class GradableProfile {
 		   public void actionPerformed(ActionEvent e){
 			   int w = ((Number)gradableWeight.getValue()).intValue();
 			   g.setIntraCategoryWeight(w);
-			   GradableService.updateWeight(g,w);
+			   data.addSaveCommand(GradableService.updateWeight(g,w));
 			   }
 			};
 		gradableWeight.addActionListener(weightListener);
@@ -158,12 +158,12 @@ public class GradableProfile {
 				case 1:
 					Integer tablePoints = Integer.parseInt(studentTable.getValueAt(row, column).toString());
 					gradable.setPointsLost(tablePoints);
-					GradeService.updatePointsLost(gradable.getID(), StudentService.getId(s),tablePoints);
+					data.addSaveCommand(GradeService.updatePointsLost(gradable, s.getSchoolID(),tablePoints));
 					break;
 				case 2:
 					String tableNote = studentTable.getValueAt(row,column).toString();
 					gradable.setNote(tableNote);
-					GradeService.updateComment(gradable.getID(),StudentService.getId(s),tableNote);
+					data.addSaveCommand(GradeService.updateComment(gradable,s.getSchoolID(),tableNote));
 					break;
 				}	
 		  }

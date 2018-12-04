@@ -55,19 +55,19 @@ public class MainWindow {
 			// START Gradables tree
 			int mysumU = 0;
 			int mysumG = 0;
-			for(int i=0; i<data.gradableTypes().size(); i++) {
-				mysumU += data.gradableTypes().get(i).getWeight("Undergraduate");
-				mysumG += data.gradableTypes().get(i).getWeight("Graduate");
-			}
+			// for(int i=0; i<data.getCategoryList().size(); i++) {
+				// mysumU += data.CategoryList(i).getWeight("Undergraduate");
+				// mysumG += data.CategoryList(i).getWeight("Graduate");
+			// }
 			
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(mysumU)+"%, "+String.valueOf(mysumG)+"%)");
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)");
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
-			for (int i=0; i<data.gradableTypes().size(); i++) {
-				gradableCategories.add(new DefaultMutableTreeNode(data.gradableTypes().get(i)));
+			for (int i=0; i<data.getCategoryList().size(); i++) {
+				gradableCategories.add(new DefaultMutableTreeNode(data.CategoryList(i)));
 				
 				for (int j=0;j<data.nGradables();j++) {
-					if (data.getGradable(j).isType(data.gradableTypes().get(i).getType())) {
+					if (data.getGradable(j).isType(data.CategoryList(i).getType())) {
 						gradableCategories.get(i).add(new DefaultMutableTreeNode(data.getGradable(j)));
 					}
 				}
@@ -274,9 +274,6 @@ public class MainWindow {
 							
 							// Check student ID against the database and error if there is a conflict
 							Student newStudent = new Student(firstName,lastName,schoolID,year);
-							for (int i=0; i<data.nGradables(); i++) {
-								newStudent.addGradable(data.getGradable(i).copy());
-							}
 							
 							data.addStudent(newStudent);
 							
@@ -291,6 +288,10 @@ public class MainWindow {
 							fnameTextField.setText("");
 							lnameTextField.setText("");
 							sidTextField.setText("");
+							
+							for(int i=0;i<studentsTree.getRowCount();i++){
+								studentsTree.expandRow(i);
+							}
 						}
 					};
 					addButton.addActionListener(addStudentButtonListener);
@@ -304,9 +305,6 @@ public class MainWindow {
 							
 							// Check student ID against the database and error if there is a conflict
 							Student newStudent = new Student(firstName,lastName,schoolID,year);
-							for (int i=0; i<data.nGradables(); i++) {
-								newStudent.addGradable(data.getGradable(i).copy());
-							}
 							
 							data.addStudent(newStudent);
 												
@@ -322,6 +320,10 @@ public class MainWindow {
 							treePanel.add(gradableView,0,0);
 							mainframe.revalidate();
 							mainframe.repaint();
+							
+							for(int i=0;i<studentsTree.getRowCount();i++){
+								studentsTree.expandRow(i);
+							}
 						}
 					};
 					addAndClose.addActionListener(addStudentAndCloseButtonListener);
@@ -365,8 +367,8 @@ public class MainWindow {
 					JPanel botPanel = new JPanel();
 					// END setup layout
 		
-					ArrayList<GradableType> gradableTypes = data.copyGradableTypes();
-					gradableTypes.add(new GradableType("New Category",0,0));
+					ArrayList<Category> gradableTypes = data.copyCategories();
+					gradableTypes.add(new Category("New Category",0,0));
 					Object[] categoryOptions = gradableTypes.toArray();
 					
 					final JTextField nameTextField = new JTextField(10);
@@ -425,17 +427,18 @@ public class MainWindow {
 							String name = nameTextField.getText();
 							Integer points = ((Number)pointsTextField.getValue()).intValue();
 							Integer weight = ((Number)weightTextField.getValue()).intValue();
-							GradableType category = (GradableType)categoryCombo.getSelectedItem();
+							Category category = (Category)categoryCombo.getSelectedItem();
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
-							GradableService.insert(newGradable, data.getClassId());
+							data.addSaveCommand(GradableService.insert(newGradable));
 								
 							for(int i=0; i<data.nStudents(); i++){
 								Gradable gtemp = newGradable.copy();
 								gtemp.setPointsLost(newGradable.getPoints());
 								gtemp.setStudentWeight(100);
 								data.getStudent(i).addGradable(gtemp);
+								data.addSaveCommand(GradeService.insert(gtemp,data.getStudent(i)));
 							}
 									
 								String gCategory = newGradable.getType().toString();
@@ -456,6 +459,10 @@ public class MainWindow {
 								}
 
 							nameTextField.setText("");
+							
+							for(int i=0;i<gradablesTree.getRowCount();i++){
+								gradablesTree.expandRow(i);
+							}
 							// pointsTextField.setText("");
 							// weightTextField.setText("");
 						}
@@ -467,17 +474,18 @@ public class MainWindow {
 							String name = nameTextField.getText();
 							Integer points = ((Number)pointsTextField.getValue()).intValue();
 							Integer weight = ((Number)weightTextField.getValue()).intValue();
-							GradableType category = (GradableType)categoryCombo.getSelectedItem();
+							Category category = (Category)categoryCombo.getSelectedItem();
 							
 							Gradable newGradable = new Gradable(name,points,category,weight);
 							data.addGradable(newGradable);
-							GradableService.insert(newGradable, data.getClassId());
+							data.addSaveCommand(GradableService.insert(newGradable));
 								
 							for(int i=0; i<data.nStudents(); i++){
 								Gradable gtemp = newGradable.copy();
 								gtemp.setPointsLost(newGradable.getPoints());
 								gtemp.setStudentWeight(100);
 								data.getStudent(i).addGradable(gtemp);
+								data.addSaveCommand(GradeService.insert(gtemp,data.getStudent(i)));
 							}
 									
 							String gCategory = newGradable.getType().toString();
@@ -503,7 +511,10 @@ public class MainWindow {
 							treePanel.add(studentView,0,1);
 							mainframe.revalidate();
 							mainframe.repaint();
-									
+							
+							for(int i=0;i<gradablesTree.getRowCount();i++){
+								gradablesTree.expandRow(i);
+							}
 						}
 					};
 					addAndClose.addActionListener(addAndGradableCloseButtonListener);
@@ -522,15 +533,15 @@ public class MainWindow {
 		
 					ActionListener categoryListener = new ActionListener(){
 							public void actionPerformed(ActionEvent e){
-								GradableType mySelection = (GradableType)categoryCombo.getSelectedItem();
+								Category mySelection = (Category)categoryCombo.getSelectedItem();
 								if (mySelection.getType().equals("New Category")){
 									NewCategoryDialog ncd = new NewCategoryDialog(data);
 									ncd.setModal(true);
 									ncd.showDialog();
-									ArrayList<GradableType> addedGradableTypes = ncd.getGradableTypes();
-									for (int i=0;i<addedGradableTypes.size(); i++) {
-									categoryCombo.addItem(addedGradableTypes.get(i));
-									categoryCombo.setSelectedItem(addedGradableTypes.get(i));
+									ArrayList<Category> addedCategories = ncd.getCategories();
+									for (int i=0;i<addedCategories.size(); i++) {
+									categoryCombo.addItem(addedCategories.get(i));
+									categoryCombo.setSelectedItem(addedCategories.get(i));
 									}
 								}
 								}
@@ -567,8 +578,8 @@ public class MainWindow {
 					
 					DefaultTreeModel gradablesModel = (DefaultTreeModel) gradablesTree.getModel();
 					gradablesModel.removeNodeFromParent(node);
-					GradeService.drop((Gradable)node.getUserObject());
-					GradableService.drop((Gradable)node.getUserObject());
+					data.addSaveCommand(GradeService.drop((Gradable)node.getUserObject()));
+					data.addSaveCommand(GradableService.drop((Gradable)node.getUserObject()));
 				}
 				}
 			};
@@ -583,15 +594,11 @@ public class MainWindow {
 			
 			ActionListener menuItem_loadListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("Load Class");
-					// reset data obj
-					//data.resetData();
-
 					mainframe.remove(mainPanel);
-
+					// menuBar = mainframe.getMenuBar();
+					mainframe.remove(menuBar);
 					// load select class panel
 					SelectClass s = new SelectClass(mainframe);
-					
 				}
 			};
 			menuItem_load.addActionListener(menuItem_loadListener);

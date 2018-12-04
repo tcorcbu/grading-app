@@ -9,24 +9,23 @@ import java.util.List;
 public class GradableService {
     private GradableService(){};
 
-    public static void insert(Gradable gradable, int classId) {
+    public static PreparedStatement insert(Gradable gradable) {
         Connection conn = MySqlConnection.getConnection();
-        String query = "INSERT INTO Gradables (name,class_id,total_points,relative_weight,category_id) VALUES(?,?,?,?,?)";
-        try {
-            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        String query = "INSERT INTO Gradables (name,class_id,total_points,relative_weight,category_name) VALUES(?,?,?,?,?)";
+        PreparedStatement statement = null;
+		try {
+            statement = conn.prepareStatement(query);
             statement.setString(1, gradable.getName());
-            statement.setInt(2, classId);
+            statement.setInt(2, Globals.class_id());
             statement.setInt(3, gradable.getPoints());
             statement.setInt(4, gradable.getIntraCategoryWeight());
-            statement.setInt(5, gradable.getType().getId());
-            statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys();
-            while (rs.next()) {
-                gradable.setGradableId(rs.getInt(1));
-            }
+            statement.setString(5, gradable.getType().getType());
+            // statement.executeUpdate();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
     }
 
     public static ArrayList<Gradable> getAll(int classId) {
@@ -38,17 +37,15 @@ public class GradableService {
             statement.setInt(1, classId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                int gradableId = rs.getInt("gradable_id");
                 String name = rs.getString("name");
                 int points = rs.getInt("total_points");
                 int intraCategoryWeight = rs.getInt("relative_weight");
-                int categoryId = rs.getInt("category_id");
+                String category_name = rs.getString("category_name");
                 Gradable gradable = new Gradable();
-                gradable.setGradableId(gradableId);
                 gradable.setName(name);
                 gradable.setTotal(points);
                 gradable.setIntraCategoryWeight(intraCategoryWeight);
-                gradable.setType(CategoryService.getById(categoryId));
+                gradable.setType(CategoryService.getByName(category_name));
                 res.add(gradable);
             }
         } catch (SQLException e) {
@@ -57,41 +54,50 @@ public class GradableService {
         return res;
     }
 
-    public static void drop(Gradable gradable) {
+    public static PreparedStatement drop(Gradable gradable) {
         Connection conn = MySqlConnection.getConnection();
-        String sql = "DELETE FROM Gradables WHERE gradable_id=?";
+        String sql = "DELETE FROM Gradables WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1,gradable.getGradableId());
-            statement.execute();
+            statement = conn.prepareStatement(sql);
+            statement.setString(1,gradable.getName());
+			statement.setInt(2,Globals.class_id());
+            // statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
     }
 	
-	public static void updatePoints(Gradable gradable, int tp) {
+	public static PreparedStatement updatePoints(Gradable gradable, int tp) {
 		Connection conn = MySqlConnection.getConnection();
-        String query = "UPDATE Gradables SET total_points = ? WHERE gradable_id = ?";
+        String query = "UPDATE Gradables SET total_points = ? WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement = conn.prepareStatement(query);
             statement.setInt(1, tp);
-            statement.setInt(2,gradable.getGradableId());
-            statement.executeUpdate();
+            statement.setString(2,gradable.getName());
+			statement.setInt(3,Globals.class_id());
+            // statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
 	}
 	
-	public static void updateWeight(Gradable gradable, int rw) {
+	public static PreparedStatement updateWeight(Gradable gradable, int rw) {
 		Connection conn = MySqlConnection.getConnection();
-        String query = "UPDATE Gradables SET relative_weight = ? WHERE gradable_id = ?";
+        String query = "UPDATE Gradables SET relative_weight = ? WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement = conn.prepareStatement(query);
             statement.setInt(1, rw);
-            statement.setInt(2,gradable.getGradableId());
-            statement.executeUpdate();            
+            statement.setString(2,gradable.getName());
+			statement.setInt(3,Globals.class_id());
+            // statement.executeUpdate();            
         } catch (SQLException e) {
             e.printStackTrace();
         }
+		return statement;
 	}
 }
