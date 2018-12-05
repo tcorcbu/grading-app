@@ -14,12 +14,37 @@ import db.GradableService;
 
 public class GradableProfile {
 		
-	public GradableProfile(JFrame mainframe,Data data, Gradable g) {
+	public GradableProfile(JFrame mainframe,Data data, final Gradable g) {
 		drawGradableProfile(mainframe,data,g);
 	}
 	
-	private void drawGradableProfile(final JFrame mainframe,final Data data,Gradable g) {
+	private void drawGradableProfile(final JFrame mainframe,final Data data,final Gradable g) {
 		
+		// START Menu toolbar
+			mainframe.setJMenuBar(null);
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu("File");
+			menu.getAccessibleContext().setAccessibleDescription("File Menu");
+			menuBar.add(menu);
+			
+			JMenuItem menuItem_save = new JMenuItem("Save Class");
+			menu.add(menuItem_save);
+			
+			JMenuItem menuItem_load = new JMenuItem("Load Class");
+			menu.add(menuItem_load);
+			
+			JMenuItem menuItem_new = new JMenuItem("New Class");
+			menu.add(menuItem_new);
+			
+			JMenuItem menuItem_close = new JMenuItem("Close Class");
+			menu.add(menuItem_close);
+			
+			JMenuItem menuItem_exit = new JMenuItem("Exit");
+			menu.add(menuItem_exit);
+			
+			mainframe.setJMenuBar(menuBar);
+		// END Menu Toolbar
+			
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,7));
 		
@@ -64,7 +89,7 @@ public class GradableProfile {
 		};
 		
 		// indexTableModel studentModel = new indexTableModel(); 
-		JTable studentTable = new JTable(studentModel); 
+		final JTable studentTable = new JTable(studentModel);
 
 		studentModel.addColumn("Student"); 
 		studentModel.addColumn("Points Lost"); 
@@ -93,16 +118,15 @@ public class GradableProfile {
 			studentModel.addRow(new Object[]{stmp.getFirstName()+" "+stmp.getLastName(),gtmp.getPointsLost(),gtmp.getNote()});
 		}
 
-		JScrollPane studentTablePane = new JScrollPane(studentTable);
+		final JScrollPane studentTablePane = new JScrollPane(studentTable);
 		
 		// END Gradable Table
 		
 		JButton backButton = new JButton("Back");
 		// START Layout 				
 		JPanel botPanel = new JPanel();
-		botPanel.setLayout(new BoxLayout(botPanel, BoxLayout.LINE_AXIS));
-		backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
-		botPanel.add(backButton);
+		botPanel.setLayout(new BorderLayout());
+		botPanel.add(backButton,BorderLayout.EAST);
 
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -132,7 +156,7 @@ public class GradableProfile {
 		   public void actionPerformed(ActionEvent e){
 			   int p = ((Number)gradablePoints.getValue()).intValue();
 			   g.setPoints(p);
-			   GradableService.updatePoints(g,p);
+			   data.addSaveCommand(GradableService.updatePoints(g,p));
 			   }
 			};
 		gradablePoints.addActionListener(pointsListener);
@@ -141,7 +165,7 @@ public class GradableProfile {
 		   public void actionPerformed(ActionEvent e){
 			   int w = ((Number)gradableWeight.getValue()).intValue();
 			   g.setIntraCategoryWeight(w);
-			   GradableService.updateWeight(g,w);
+			   data.addSaveCommand(GradableService.updateWeight(g,w));
 			   }
 			};
 		gradableWeight.addActionListener(weightListener);
@@ -159,12 +183,12 @@ public class GradableProfile {
 				case 1:
 					Integer tablePoints = Integer.parseInt(studentTable.getValueAt(row, column).toString());
 					gradable.setPointsLost(tablePoints);
-					GradeService.updatePointsLost(gradable.getID(), StudentService.getId(s),tablePoints);
+					data.addSaveCommand(GradeService.updatePointsLost(gradable, s.getSchoolID(),tablePoints));
 					break;
 				case 2:
 					String tableNote = studentTable.getValueAt(row,column).toString();
 					gradable.setNote(tableNote);
-					GradeService.updateComment(gradable.getID(),StudentService.getId(s),tableNote);
+					data.addSaveCommand(GradeService.updateComment(gradable,s.getSchoolID(),tableNote));
 					break;
 				}	
 		  }
@@ -172,6 +196,68 @@ public class GradableProfile {
 		
 		
 		// END Action Listeners
+			
+			ActionListener menuItem_saveListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					data.saveClass();
+				}
+			};
+			menuItem_save.addActionListener(menuItem_saveListener);
+			
+			ActionListener menuItem_loadListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mainframe.remove(mainPanel);
+					
+					// load select class panel
+					SelectClass s = new SelectClass(mainframe);
+				}
+			};
+			menuItem_load.addActionListener(menuItem_loadListener);
+			
+			ActionListener menuItem_newListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Data data = new Data();
+					NewClassDialog ncd = new NewClassDialog(data);
+					ncd.setModal(true);
+					ncd.showDialog();
+					
+					mainframe.remove(mainPanel);
+					
+					int width = 750;
+					int height = 500;
+
+					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+					mainframe.setLocation(x, y);
+					mainframe.setSize( width, height );
+
+					mainframe.setTitle(data.getLoadedClass());
+					MainWindow m = new MainWindow(mainframe,data);
+				}
+			};
+			menuItem_new.addActionListener(menuItem_newListener);
+			
+			ActionListener menuItem_closeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Close Class");
+					// add dialog
+					// ask for class name
+					// if the class name matches to the current class,
+					// set the class status in the db to closed
+					CloseClassDialog ccd = new CloseClassDialog(data);
+					ccd.setModal(true);
+					ccd.showDialog();
+				}
+			};
+			menuItem_close.addActionListener(menuItem_closeListener);
+			
+			ActionListener exitListener = new ActionListener(){
+				   public void actionPerformed(ActionEvent e){
+					   System.exit(0);
+					   }
+					};
+			menuItem_exit.addActionListener(exitListener);
 		
 	}
 	

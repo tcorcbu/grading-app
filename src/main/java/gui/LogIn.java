@@ -15,7 +15,6 @@ public class LogIn{
 	public static void main(String[] args) {
 		LogIn li = new LogIn(new JFrame());
 	}
-		
 		public LogIn(JFrame mainframe) {
 			drawLogIn(mainframe);
 		}

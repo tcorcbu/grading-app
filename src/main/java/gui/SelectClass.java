@@ -1,6 +1,7 @@
 package gui;
 
 import db.ClassService;
+import db.Globals;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -10,9 +11,11 @@ import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
+
 public class SelectClass {
 		
 		private String[] classList;
+        private String[] oldClassList;
 
 		public SelectClass(JFrame mainframe) {
 			intitalClassList();
@@ -21,24 +24,33 @@ public class SelectClass {
 
 		private void intitalClassList(){
 		    java.util.List<String>classNames = ClassService.getClassNames();
+            java.util.List<String>oldClassNames = ClassService.getOldClassNames();
             classNames.add(0,"Select a class");
             classNames.add("New Class");
+            oldClassNames.add(0,"Select an old class");
+
             classList = new String[classNames.size()];
             int count = 0;
             for (String str : classNames) {
                 classList[count++] = str;
             }
+
+            oldClassList = new String[oldClassNames.size()];
+            int old_count = 0;
+            for (String old_str : oldClassNames) {
+                oldClassList[old_count++] = old_str;
+            }
         }
 
 		private void drawSelectClass(final JFrame mainframe) {
-            System.out.println("SelectClass to do list:");
-            System.out.println("> Need to load list of classes from database");
-            System.out.println("> Need to write our own New Class window which allows loading from previous");
-            System.out.println("    > Perhaps keep it in the same window and just change the 'Load Class' button");
-            System.out.println();
-
-
+			mainframe.setJMenuBar(null);
             mainframe.setTitle("Select Class");
+			int width = 275;
+			int height = 150;
+			int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+			int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+			mainframe.setLocation(x, y);
+			mainframe.setSize( width, height );
 
             final JPanel mainPanel = new JPanel();
             mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -51,31 +63,19 @@ public class SelectClass {
             JPanel classComboPanel = new JPanel();
             classComboPanel.add(classCombo);
 
-            // JButton jbtLoad = new JButton("Load Class");
-            // jbtLoad.setAlignmentX(panel.CENTER_ALIGNMENT);
+            // old classes
 
-            // JButton jbtNew = new JButton( "New Class" );
-            // jbtNew.setAlignmentX(panel.CENTER_ALIGNMENT);
+            final JComboBox<String> oldClassCombo = new JComboBox<String>(oldClassList);
+            JPanel oldClassComboPanel = new JPanel();
+            oldClassComboPanel.add(oldClassCombo);
 
-            // JButton newFromSelected = new JButton( "New From Selected" );
-            // newFromSelected.setAlignmentX(panel.CENTER_ALIGNMENT);
-
-            // JPanel newButtonsPanel = new JPanel();
-            // newButtonsPanel.add(jbtNew);
-            // newButtonsPanel.add(newFromSelected);
-
-
-            // JPanel comboPanel = new JPanel();
-            // comboPanel.add(classLabel);
-            // comboPanel.add(classCombo);
-
+            // old classes
 
             mainPanel.add(classLabelPanel);
             mainPanel.add(Box.createHorizontalStrut(10));
             mainPanel.add(classComboPanel);
-            // panel.add(Box.createHorizontalStrut(10));
-            // panel.add(newButtonsPanel);
-            // panel.add(Box.createHorizontalStrut(10));
+            mainPanel.add(Box.createHorizontalStrut(10));
+            mainPanel.add(oldClassComboPanel);
 
             mainframe.add(mainPanel);
             mainframe.validate();
@@ -84,8 +84,8 @@ public class SelectClass {
             ActionListener loadListener = new ActionListener(){
                 public void actionPerformed(ActionEvent e){
                     String mySelection = (String)classCombo.getSelectedItem();
-                    if (mySelection.equals("Select a class")){
-                    } else {
+                    if (!mySelection.equals("Select a class")){
+                    // } else {
 
                         Data data;
                         if (mySelection.equals("New Class")) {
@@ -96,6 +96,7 @@ public class SelectClass {
 
                         } else {
                             data = new Data(mySelection);
+							
                         }
 
 
@@ -104,13 +105,12 @@ public class SelectClass {
                         int height = 500;
 
                         int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
-                        int y = (int) mainframe.getLocation().y - ((500 - mainframe.getHeight()) / 2);
+                        int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
 
                         mainframe.setLocation(x, y);
-                        mainframe.setSize( width, 500 );
+                        mainframe.setSize( width, height );
 
                         mainframe.setTitle(data.getLoadedClass());
-                        System.out.println(data.getGradables());
                         MainWindow m = new MainWindow(mainframe,data);
                     }
                     }
@@ -118,22 +118,33 @@ public class SelectClass {
             classCombo.addActionListener( loadListener );
 
 
-            // ActionListener newListener = new ActionListener(){
-                   // public void actionPerformed(ActionEvent e){
-                       // String NewClassName = JOptionPane.showInputDialog("Please input the new class name ");
-                       // classCombo.addItem(NewClassName);
-                       // classCombo.setSelectedItem(NewClassName);
 
-                                       // }
-                    // };
-            // jbtNew.addActionListener( newListener );
 
-            // ActionListener newFromSelectedListener = new ActionListener(){
-                // public void actionPerformed(ActionEvent e){
-                    // System.out.println(mainframe.getLocation().x);
-                                       // }
-                    // };
-            // newFromSelected.addActionListener( newFromSelectedListener );
+            //----------------------
+
+            ActionListener loadOldListener = new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String mySelection = (String)oldClassCombo.getSelectedItem();
+                    if (!mySelection.equals("Select an old class")){
+
+                        Data data = new Data(mySelection);
+
+                        mainframe.remove(mainPanel);
+                        int width = 750;
+                        int height = 500;
+
+                        int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+                        int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+                        mainframe.setLocation(x, y);
+                        mainframe.setSize( width, height );
+
+                        mainframe.setTitle(data.getLoadedClass());
+                        MainWindow m = new MainWindow(mainframe,data);
+                    }
+                }
+            };
+            oldClassCombo.addActionListener( loadOldListener );
 		
 	    }
 	

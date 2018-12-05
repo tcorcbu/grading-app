@@ -11,8 +11,8 @@ import java.text.*;
 
 
 public class NewCategoryDialog extends JDialog{
-	private GradableType newGradableType;
-	private ArrayList<GradableType> newGradableTypes = new ArrayList<GradableType>();
+	private Category newCategory;
+	private ArrayList<Category> newCategories = new ArrayList<Category>();
 	
 	public NewCategoryDialog(final Data data) {
 		
@@ -45,15 +45,14 @@ public class NewCategoryDialog extends JDialog{
 		NumberFormat gWeightFormat;
 		gWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField gWeightTextField = new JFormattedTextField(gWeightFormat);
-		gWeightTextField.setValue(new Integer(100));
+		// gWeightTextField.setValue(new Integer(0));
 		gWeightTextField.setColumns(10);
 
 		NumberFormat uWeightFormat;
 		uWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField uWeightTextField = new JFormattedTextField(uWeightFormat);
-		uWeightTextField.setValue(new Integer(100));
+		// uWeightTextField.setValue(new Integer(0));
 		uWeightTextField.setColumns(10);
-		uWeightTextField.setValue(new Integer(100));
 				
 		nameInputPanel.add(nameTextField);
 		gWeightInputPanel.add(gWeightTextField);
@@ -85,10 +84,10 @@ public class NewCategoryDialog extends JDialog{
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
 				
 				// Check student ID against the database and error if there is a conflict
-				newGradableType = new GradableType(name,gWeight,uWeight);
-				CategoryService.insert(newGradableType, data.getClassId());
-				newGradableTypes.add(newGradableType);
-				data.getCategories();
+				newCategory = new Category(name,gWeight,uWeight);
+				data.addSaveCommand(CategoryService.insert(newCategory));
+				newCategories.add(newCategory);
+				data.addCategory(newCategory);
 				nameTextField.setText("");
 				// gWeightTextField.setText("");
 				// uWeightTextField.setText("");
@@ -102,10 +101,11 @@ public class NewCategoryDialog extends JDialog{
 				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
 				// Check student ID against the database and error if there is a conflict
-				newGradableType = new GradableType(name,gWeight,uWeight);
-				CategoryService.insert(newGradableType, data.getClassId());
-				data.getCategories();
-				newGradableTypes.add(newGradableType);
+				newCategory = new Category(name,gWeight,uWeight);
+				data.addSaveCommand(CategoryService.insert(newCategory));
+				// data.getCategories();
+				data.addCategory(newCategory);
+				newCategories.add(newCategory);
 				setVisible(false);
 			}
 		};
@@ -124,8 +124,8 @@ public class NewCategoryDialog extends JDialog{
 		this.setVisible( true );
 	}
 	
-	public ArrayList<GradableType> getGradableTypes() {
-		return newGradableTypes;
+	public ArrayList<Category> getCategories() {
+		return newCategories;
 	}
 	
 }
