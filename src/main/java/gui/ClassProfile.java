@@ -8,6 +8,7 @@ import java.awt.*;
 import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.lang.Math.*;
 
 import db.CategoryService;
 
@@ -17,18 +18,44 @@ public class ClassProfile {
 
 		mainframe.setTitle(data.getLoadedClass() + " Profile");
 		
+		// START Menu toolbar
+			mainframe.setJMenuBar(null);
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu("File");
+			menu.getAccessibleContext().setAccessibleDescription("File Menu");
+			menuBar.add(menu);
+			
+			JMenuItem menuItem_save = new JMenuItem("Save Class");
+			menu.add(menuItem_save);
+			
+			JMenuItem menuItem_load = new JMenuItem("Load Class");
+			menu.add(menuItem_load);
+			
+			JMenuItem menuItem_new = new JMenuItem("New Class");
+			menu.add(menuItem_new);
+			
+			JMenuItem menuItem_close = new JMenuItem("Close Class");
+			menu.add(menuItem_close);
+			
+			JMenuItem menuItem_exit = new JMenuItem("Exit");
+			menu.add(menuItem_exit);
+			
+			mainframe.setJMenuBar(menuBar);
+			// END Menu Toolbar
+			
 		// START Panel Setup
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new GridLayout(0,2));
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		
-		JPanel middlePanel = new JPanel();
-		middlePanel.setLayout(new GridLayout(0,2));
+		JPanel midPanel = new JPanel();
+		midPanel.setLayout(new BoxLayout(midPanel, BoxLayout.X_AXIS));
 		
 		JPanel categoryTablePanel = new JPanel();
 		categoryTablePanel.setLayout(new BoxLayout(categoryTablePanel, BoxLayout.Y_AXIS));
+		JPanel backButtonPanel = new JPanel();
 		
 		JPanel addRemoveCategoryPanel = new JPanel();
 		
@@ -53,6 +80,7 @@ public class ClassProfile {
 		
 		myTableModel gradeTableModel = new myTableModel(); 
 		final JTable gradeTable = new JTable(gradeTableModel);
+		gradeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		// Add columns
 		gradeTableModel.addColumn("Student"); 
@@ -73,7 +101,16 @@ public class ClassProfile {
 			}
 			gradeTableModel.addRow(gradeTableRow);
 		}
-
+		
+		TableColumnModel gradeColumnModel = gradeTable.getColumnModel();
+		for (int i=0; i<gradeColumnModel.getColumnCount(); i++) {
+			TableColumn column = gradeTable.getColumnModel().getColumn(i);
+			if (i==0){
+				column.setPreferredWidth(125);
+			}else{
+				column.setPreferredWidth(75);
+			}
+		}
 		JScrollPane gradeTablePane = new JScrollPane(gradeTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// END Grade Table
 		
@@ -81,16 +118,22 @@ public class ClassProfile {
 		
 		final myTableModel breakoutTableModel = new myTableModel();
 		final JTable breakoutTable = new JTable(breakoutTableModel);
-		breakoutTable.setFocusable(false);
-		
+		breakoutTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JScrollPane breakoutTablePane = new JScrollPane(breakoutTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		BoundedRangeModel gradeTablePaneModel = gradeTablePane.getVerticalScrollBar().getModel();
+		breakoutTablePane.getVerticalScrollBar().setModel( gradeTablePaneModel );
+		
+		// Dimension d = breakoutTable.getPreferredSize();
+		// breakoutTablePane.setPreferredSize(new Dimension(50*breakoutColumnModel.getColumnCount(),d.height));
+		
 		// END Breakout Table
 		
 		// START Category Table
 		final DefaultTableModel categoryTableModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
-				if (colIndex == 0){
+				if (colIndex < 2){
 				return false;
 				} 
 				else {
@@ -99,37 +142,51 @@ public class ClassProfile {
 			}
 		};
 		
-		categoryTableModel.addColumn("Category");
-		categoryTableModel.addColumn("Graduate ("+String.valueOf(data.sumGradCategories())+"%)");
-		categoryTableModel.addColumn("Undergrad ("+String.valueOf(data.sumUndergradCategories())+"%)");
-		
-		
-		for (int i=0; i<data.getCategoryList().size(); i++) {
-			categoryTableModel.addRow(new String[]{data.CategoryList(i).getType(),
-										String.valueOf(data.CategoryList(i).getWeight("Graduate")),
-										String.valueOf(data.CategoryList(i).getWeight("Undergraduate"))});
+		categoryTableModel.addColumn("Student Type"); 
+		categoryTableModel.addColumn("Total");
+		for(int i = 0; i<data.getCategoryList().size(); i++) {
+			categoryTableModel.addColumn(data.CategoryList(i).getType());
 		}
 		
 		
-		final JTable categoryTable = new JTable(categoryTableModel);
 		
+		String[] categoryTableLabels = {"Undergraduate","Graduate"};
+		String[] categoryTotals = {String.valueOf(data.sumUndergradCategories()),String.valueOf(data.sumGradCategories())};
+		String[] categoryTableRow = new String[data.getCategoryList().size()+2];
+		
+		for(int i=0; i<2; i++){
+			categoryTableRow[0] = categoryTableLabels[i];
+			categoryTableRow[1] = categoryTotals[i];
+			for (int j=2; j<categoryTableRow.length; j++) {
+				categoryTableRow[j] = String.valueOf(data.CategoryList(j-2).getWeight(categoryTableLabels[i]));
+			}
+			categoryTableModel.addRow(categoryTableRow);
+		}
+
 		final JTableHeader categoryTableHeader = categoryTable.getTableHeader();
 		final TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
+		final JTable categoryTable = new JTable(categoryTableModel);
+		categoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		categoryTable.setColumnSelectionAllowed(true);
+		
+		TableColumnModel categoryColumnModel = categoryTable.getColumnModel();
+		for (int i=0; i<categoryColumnModel.getColumnCount(); i++) {
+			TableColumn column = categoryTable.getColumnModel().getColumn(i);
+			if (i==0){
+				column.setPreferredWidth(125);
+			}else{
+				column.setPreferredWidth(75);
+			}
+		}
+		JTableHeader categoryTableHeader = categoryTable.getTableHeader();
+		TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
+		Dimension d = categoryTable.getPreferredSize();
+		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*4));
+		 
+		
 		// END Category Table
-		
-		// gradeBreakdownPanel.add(new JLabel("A"));
-		// gradeBreakdownPanel.add(new JLabel("10"));
-		// gradeBreakdownPanel.add(new JLabel("B"));
-		// gradeBreakdownPanel.add(new JLabel("9"));
-		// gradeBreakdownPanel.add(new JLabel("C"));
-		// gradeBreakdownPanel.add(new JLabel("8"));
-		// gradeBreakdownPanel.add(new JLabel("D"));
-		// gradeBreakdownPanel.add(new JLabel("6"));
-		// gradeBreakdownPanel.add(new JLabel("F"));
-		// gradeBreakdownPanel.add(new JLabel("1"));
-		
 		
 		// START buttons
 		JLabel curveLabel = new JLabel("Curve");
@@ -144,27 +201,27 @@ public class ClassProfile {
 		
 		// START Layout
 		
-		topPanel.add(gradeTablePane);
-		topPanel.add(breakoutTablePane);
-
+		midPanel.add(gradeTablePane);
+		
 		categoryTablePanel.add(categoryTablePane);
 		
 		addRemoveCategoryPanel.add(addCategoryButton);
 		addRemoveCategoryPanel.add(removeCategoryButton);
+		backButtonPanel.add(backButton);
 		
-		categoryTablePanel.add(addRemoveCategoryPanel);
+		// categoryTablePanel.add(addRemoveCategoryPanel);
 		
-		middlePanel.add(categoryTablePanel);		
-		middlePanel.add(gradeBreakdownOuterPanel);		
+		topPanel.add(categoryTablePanel);		
 		
 		curvePanel.add(curveLabel);
 		curvePanel.add(curveField);
 		
 		// buttonPanel.add(curvePanel,BorderLayout.WEST);
-		buttonPanel.add(backButton,BorderLayout.EAST);
+		buttonPanel.add(addRemoveCategoryPanel,BorderLayout.WEST);
+		buttonPanel.add(backButtonPanel,BorderLayout.EAST);
 		
 		mainPanel.add(topPanel);
-		mainPanel.add(middlePanel);
+		mainPanel.add(midPanel);
 		mainPanel.add(buttonPanel);
 		
 		// END Layout 
@@ -183,6 +240,36 @@ public class ClassProfile {
 			};
 		backButton.addActionListener(backListener);
 		
+		TableModelListener categoryTableListener = new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				System.out.println(e.getType());
+				if(e.getType() == 0) {
+
+					int row = categoryTable.getSelectedRow();
+					int column = categoryTable.getSelectedColumn();
+					String categoryType = categoryTable.getColumnName(column);
+					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
+					Category gt = data.getCategoryByName(categoryType);
+					if (row == 1) {
+						gt.setGraduateWeight(tableValue);
+						data.addSaveCommand(CategoryService.updateGradWeight(gt, tableValue));
+						
+					} else {
+						gt.setUndergradWeight(tableValue);
+						data.addSaveCommand(CategoryService.updateUgradWeight(gt, tableValue));
+					}
+					categoryTableModel.removeTableModelListener(this);
+					categoryTableModel.setValueAt(String.valueOf(data.sumUndergradCategories()),0,1);
+					categoryTableModel.setValueAt(String.valueOf(data.sumGradCategories()),1,1);
+					// categoryTableModel.fireTableDataChanged();
+					categoryTableModel.addTableModelListener(this);
+					
+					// categoryTable.repaint();
+				}
+		  }
+		};
+		categoryTableModel.addTableModelListener(categoryTableListener);
+		
 		ActionListener addCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				NewCategoryDialog ncd = new NewCategoryDialog(data);
@@ -190,22 +277,51 @@ public class ClassProfile {
 				ncd.showDialog();
 				ArrayList<Category> addedCategories = ncd.getCategories();
 				for (int i=0;i<addedCategories.size(); i++) {
-					
-					categoryTableModel.addRow(new String[]{addedCategories.get(i).getType(),
-														String.valueOf(addedCategories.get(i).getWeight("Graduate")),
-														String.valueOf(addedCategories.get(i).getWeight("Undergraduate"))});
+					// categoryTableModel.addRow(new String[]{addedCategories.get(i).getType(),
+														// String.valueOf(addedCategories.get(i).getWeight("Graduate")),
+														// String.valueOf(addedCategories.get(i).getWeight("Undergraduate"))});
+				categoryTableModel.removeTableModelListener(categoryTableListener);
+				categoryTableModel.addColumn(addedCategories.get(i).getType());
+				categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Undergraduate")),0,categoryTableModel.getColumnCount()-1);
+				categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Graduate")),1,categoryTableModel.getColumnCount()-1);
+				for (int j=0; j<categoryColumnModel.getColumnCount(); j++) {
+					TableColumn column = categoryTable.getColumnModel().getColumn(j);
+					if (j==0){
+						column.setPreferredWidth(125);
+					}else{
+						column.setPreferredWidth(75);
+					}
+				}
+				categoryTableModel.addTableModelListener(categoryTableListener);
+				
+				gradeTableModel.addColumn(addedCategories.get(i).getType());
+				for(int j=0; j<data.nStudents(); j++){
+				gradeTableModel.setValueAt("0%",i,gradeTableModel.getColumnCount()-1);
+				}
+				
+				for (int j=0; j<gradeColumnModel.getColumnCount(); j++) {
+					TableColumn column = gradeTable.getColumnModel().getColumn(j);
+					if (j==0){
+						column.setPreferredWidth(125);
+					}else{
+						column.setPreferredWidth(75);
+					}
+				}
 				
 				}
+				categoryTable.repaint();
 			   }
 			};
 		addCategoryButton.addActionListener(addCategoryListener);
 		
 		ActionListener removeCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
+			    String gt = (String)categoryTable.getColumnName(categoryTable.getSelectedColumn());
 				data.addSaveCommand(CategoryService.drop(gt));
 				data.removeCategory(gt);
-				categoryTableModel.removeRow(categoryTable.getSelectedRow());
+				gradeTable.removeColumn(gradeTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
+				categoryTable.removeColumn(categoryTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
+				
 			   }
 			};
 		removeCategoryButton.addActionListener(removeCategoryListener);
@@ -214,71 +330,129 @@ public class ClassProfile {
 			public void mouseClicked(MouseEvent e) {
 				Point clickPoint = e.getPoint();
 				int column = gradeTable.columnAtPoint(clickPoint);
-				TableColumnModel columnModel = gradeTable.getColumnModel();
-				
-				String category = gradeTable.getColumnName(column);
-				int nColumns = gradeTable.getColumnCount();
-				
-				TableColumnModel breakoutModel = breakoutTable.getColumnModel();
+				if(column>1){
+					TableColumnModel columnModel = gradeTable.getColumnModel();
+					
+					String category = gradeTable.getColumnName(column);
+					int nColumns = gradeTable.getColumnCount();
+					
+					TableColumnModel breakoutModel = breakoutTable.getColumnModel();
 
-				breakoutTableModel.setColumnCount(0);
-				breakoutTableModel.setRowCount(0);
-				
-				breakoutTableModel.addColumn("Student");
-				int nInCategory = 0;
-				ArrayList<Gradable> breakoutGradables = new ArrayList<Gradable>();
-				for (int i=0; i< data.nGradables(); i++) {
-					if (data.getGradable(i).isType(category)) {
-						breakoutTableModel.addColumn(data.getGradable(i).getName());
-						breakoutGradables.add(data.getGradable(i));
-						nInCategory += 1;
-						// breakoutTable.getColumnModel().getColumn(0).setMinWidth(500);
-					}
-				}
-				
-				for (int i=0; i<data.nStudents(); i++){
-					Student stmp = data.getStudent(i);
+					breakoutTableModel.setColumnCount(0);
+					breakoutTableModel.setRowCount(0);
 					
-					
-					String[] rowValues = new String[nInCategory+1];
-					rowValues[0] = stmp.getName();
-					for (int j=0; j<nInCategory; j++) {
-						Gradable gtmp = stmp.getGradable(breakoutGradables.get(j).getName());
-						rowValues[j+1] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%";
+					// breakoutTableModel.addColumn("Student");
+					int nInCategory = 0;
+					ArrayList<Gradable> breakoutGradables = new ArrayList<Gradable>();
+					for (int i=0; i< data.nGradables(); i++) {
+						if (data.getGradable(i).isType(category)) {
+							breakoutTableModel.addColumn(data.getGradable(i).getName());
+							breakoutGradables.add(data.getGradable(i));
+							nInCategory += 1;
+							// breakoutTable.getColumnModel().getColumn(0).setMinWidth(500);
+						}
 					}
 					
-					breakoutTableModel.addRow(rowValues);
+					for (int i=0; i<data.nStudents(); i++){
+						Student stmp = data.getStudent(i);
+						
+						
+						String[] rowValues = new String[nInCategory+1];
+						// rowValues[0] = stmp.getName();
+						for (int j=0; j<nInCategory; j++) {
+							Gradable gtmp = stmp.getGradable(breakoutGradables.get(j).getName());
+							rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%";
+						}
+						
+						breakoutTableModel.addRow(rowValues);
+					}
+					
+					TableColumnModel breakoutColumnModel = breakoutTable.getColumnModel();
+					for (int i=0; i<breakoutColumnModel.getColumnCount(); i++) {
+						breakoutColumnModel.getColumn(i).setPreferredWidth(75);;
+					}
+					Dimension d = breakoutTable.getPreferredSize();
+					breakoutTablePane.setPreferredSize(new Dimension(Math.min(60*(breakoutColumnModel.getColumnCount()),200),d.height));
+					
+					midPanel.add(breakoutTablePane);
+		
+				}else{
+					midPanel.remove(breakoutTablePane);
 				}
+				mainframe.revalidate();
+				mainframe.repaint();
 			}
 		};
 		
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
+
 		
-		categoryTableModel.addTableModelListener(new TableModelListener() {
-			public void tableChanged(TableModelEvent e) {
-				if(e.getType() == 0) {
-					int row = categoryTable.getSelectedRow();
-					int column = categoryTable.getSelectedColumn();
-					String categoryType = categoryTable.getValueAt(row,0).toString();
-					Integer tableValue = Integer.parseInt(categoryTable.getValueAt(row, column).toString());
-					Category gt = data.getCategoryByName(categoryType);
-					if (column == 1) {
-						gt.setGraduateWeight(tableValue);
-						data.addSaveCommand(CategoryService.updateGradWeight(gt, tableValue));
-						
-					} else {
-						gt.setUndergradWeight(tableValue);
-						data.addSaveCommand(CategoryService.updateUgradWeight(gt, tableValue));
-					}
-					categoryTableColumnModel.getColumn(1).setHeaderValue("Graduate ("+String.valueOf(data.sumGradCategories())+"%)");
-					categoryTableColumnModel.getColumn(2).setHeaderValue("Undergrad ("+String.valueOf(data.sumUndergradCategories())+"%)");
-					categoryTableHeader.repaint();
-				}
-		  }
-		});
+
 		
 		// END Action Listeners 
+			
+			ActionListener menuItem_saveListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					data.saveClass();
+				}
+			};
+			menuItem_save.addActionListener(menuItem_saveListener);
+			
+			ActionListener menuItem_loadListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mainframe.remove(mainPanel);
+					
+					// load select class panel
+					SelectClass s = new SelectClass(mainframe);
+				}
+			};
+			menuItem_load.addActionListener(menuItem_loadListener);
+			
+			ActionListener menuItem_newListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Data data = new Data();
+					NewClassDialog ncd = new NewClassDialog(data);
+					ncd.setModal(true);
+					ncd.showDialog();
+					
+					mainframe.remove(mainPanel);
+					
+					int width = 750;
+					int height = 500;
+
+					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+					mainframe.setLocation(x, y);
+					mainframe.setSize( width, height );
+
+					mainframe.setTitle(data.getLoadedClass());
+					MainWindow m = new MainWindow(mainframe,data);
+				}
+			};
+			menuItem_new.addActionListener(menuItem_newListener);
+			
+			ActionListener menuItem_closeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Close Class");
+					// add dialog
+					// ask for class name
+					// if the class name matches to the current class,
+					// set the class status in the db to closed
+					CloseClassDialog ccd = new CloseClassDialog(data);
+					ccd.setModal(true);
+					ccd.showDialog();
+				}
+			};
+			menuItem_close.addActionListener(menuItem_closeListener);
+			
+			ActionListener exitListener = new ActionListener(){
+				   public void actionPerformed(ActionEvent e){
+					   System.exit(0);
+					   }
+					};
+			menuItem_exit.addActionListener(exitListener);
 	}
 
 } 

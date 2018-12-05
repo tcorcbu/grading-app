@@ -20,6 +20,7 @@ public class MainWindow {
 			// START Menu toolbar
 			final JMenuBar menuBar = new JMenuBar();
 			final JMenu menu = new JMenu("File");
+			mainframe.setJMenuBar(null);
 			menu.getAccessibleContext().setAccessibleDescription("File Menu");
 			menuBar.add(menu);
 			
@@ -60,7 +61,13 @@ public class MainWindow {
 				// mysumG += data.CategoryList(i).getWeight("Graduate");
 			// }
 			
-			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode("Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)");
+			String GradablesTreeHeader;
+			if(data.sumUndergradCategories()!=data.sumGradCategories()){
+				GradablesTreeHeader = "Gradables ("+String.valueOf(data.sumUndergradCategories())+"%, "+String.valueOf(data.sumGradCategories())+"%)";
+			}else{
+				GradablesTreeHeader = "Gradables ("+String.valueOf(data.sumUndergradCategories())+"%)";
+			}
+			DefaultMutableTreeNode topGradables = new DefaultMutableTreeNode(GradablesTreeHeader);
 					
 			ArrayList<DefaultMutableTreeNode> gradableCategories = new ArrayList<DefaultMutableTreeNode>();
 			for (int i=0; i<data.getCategoryList().size(); i++) {
@@ -133,7 +140,7 @@ public class MainWindow {
 			JButton dropGradable = new JButton("Drop Gradable");
 			JButton dropStudent = new JButton("Drop Student");
 			
-			JButton classSummary = new JButton("Class Summary");
+			JButton classSummary = new JButton("View Class Summary");
 			JPanel classSummaryPanel = new JPanel();
 			classSummaryPanel.setLayout(new GridLayout(1,1));
 			classSummaryPanel.add(classSummary);
@@ -160,17 +167,12 @@ public class MainWindow {
 			mainframe.repaint();
 			// END layout
 			
-			// START Action Listeners
-			ActionListener exitListener = new ActionListener(){
-				   public void actionPerformed(ActionEvent e){
-					   System.exit(0);
-					   }
-					};
-			menuItem_exit.addActionListener(exitListener);		
+			// START Action Listeners		
 			
 			ActionListener ClassProfileListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					   mainframe.remove(mainPanel);
+					   
 					   ClassProfile c = new ClassProfile(mainframe, data);
 					   }
 					};
@@ -183,6 +185,7 @@ public class MainWindow {
 						
 						if (node.getUserObject() instanceof Student) {
 							mainframe.remove(mainPanel);
+							
 							mainframe.setTitle("Student Profile");
 							StudentProfile sp = new StudentProfile(mainframe,data,(Student)node.getUserObject());
 						}
@@ -197,6 +200,7 @@ public class MainWindow {
 						
 						if (node.getUserObject() instanceof Gradable) {
 							mainframe.remove(mainPanel);
+							
 							mainframe.setTitle("Gradable Profile");
 							GradableProfile sp = new GradableProfile(mainframe,data,(Gradable)node.getUserObject());
 						}
@@ -387,6 +391,20 @@ public class MainWindow {
 					// JTextField weightTextField = new JTextField(10);
 					
 					final JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
+					
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent();
+					if (node.getUserObject() instanceof Category) {
+						Category selectedCategory = (Category)node.getUserObject();
+						// System.out.println(selectedCategory);
+						categoryCombo.setSelectedItem(selectedCategory);
+					} else{
+						if (node.getUserObject() instanceof Gradable) {
+							Gradable selectedGradable = (Gradable)node.getUserObject();
+							Category selectedCategory = selectedGradable.getType();
+							// System.out.println(selectedCategory);
+							categoryCombo.setSelectedItem(selectedCategory);
+						}
+					}
 					
 					nameInputPanel.add(nameTextField);
 					pointsInputPanel.add(pointsTextField);
@@ -585,6 +603,7 @@ public class MainWindow {
 			};
 			dropGradable.addActionListener(DropGradableListener);
 			
+			
 			ActionListener menuItem_saveListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					data.saveClass();
@@ -595,8 +614,7 @@ public class MainWindow {
 			ActionListener menuItem_loadListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					mainframe.remove(mainPanel);
-					// menuBar = mainframe.getMenuBar();
-					mainframe.remove(menuBar);
+					
 					// load select class panel
 					SelectClass s = new SelectClass(mainframe);
 				}
@@ -605,7 +623,24 @@ public class MainWindow {
 			
 			ActionListener menuItem_newListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("New Class");
+					Data data = new Data();
+					NewClassDialog ncd = new NewClassDialog(data);
+					ncd.setModal(true);
+					ncd.showDialog();
+					
+					mainframe.remove(mainPanel);
+					
+					int width = 750;
+					int height = 500;
+
+					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+					mainframe.setLocation(x, y);
+					mainframe.setSize( width, height );
+
+					mainframe.setTitle(data.getLoadedClass());
+					MainWindow m = new MainWindow(mainframe,data);
 				}
 			};
 			menuItem_new.addActionListener(menuItem_newListener);
@@ -624,6 +659,12 @@ public class MainWindow {
 			};
 			menuItem_close.addActionListener(menuItem_closeListener);
 			
+			ActionListener exitListener = new ActionListener(){
+				   public void actionPerformed(ActionEvent e){
+					   System.exit(0);
+					   }
+					};
+			menuItem_exit.addActionListener(exitListener);
 			// END Action Listeners 
 		}
 	

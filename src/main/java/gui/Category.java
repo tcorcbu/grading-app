@@ -48,7 +48,11 @@ public class Category {
 	}
 
 	public String toString() {
-		return type + " (" + String.valueOf(UndergradWeight) + "%, " + String.valueOf(GraduateWeight) + "%)";
+		if(UndergradWeight != GraduateWeight){
+			return type + " (" + String.valueOf(UndergradWeight) + "%, " + String.valueOf(GraduateWeight) + "%)";
+		}else{
+			return type + " (" + String.valueOf(UndergradWeight) + "%)";
+		}
 	}
 
 	// @Override
