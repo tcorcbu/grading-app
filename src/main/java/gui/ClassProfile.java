@@ -18,6 +18,31 @@ public class ClassProfile {
 
 		mainframe.setTitle(data.getLoadedClass() + " Profile");
 		
+		// START Menu toolbar
+			mainframe.setJMenuBar(null);
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu("File");
+			menu.getAccessibleContext().setAccessibleDescription("File Menu");
+			menuBar.add(menu);
+			
+			JMenuItem menuItem_save = new JMenuItem("Save Class");
+			menu.add(menuItem_save);
+			
+			JMenuItem menuItem_load = new JMenuItem("Load Class");
+			menu.add(menuItem_load);
+			
+			JMenuItem menuItem_new = new JMenuItem("New Class");
+			menu.add(menuItem_new);
+			
+			JMenuItem menuItem_close = new JMenuItem("Close Class");
+			menu.add(menuItem_close);
+			
+			JMenuItem menuItem_exit = new JMenuItem("Exit");
+			menu.add(menuItem_exit);
+			
+			mainframe.setJMenuBar(menuBar);
+			// END Menu Toolbar
+			
 		// START Panel Setup
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -213,7 +238,7 @@ public class ClassProfile {
 			};
 		backButton.addActionListener(backListener);
 		
-				TableModelListener categoryTableListener = new TableModelListener() {
+		TableModelListener categoryTableListener = new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
 				System.out.println(e.getType());
 				if(e.getType() == 0) {
@@ -364,6 +389,68 @@ public class ClassProfile {
 
 		
 		// END Action Listeners 
+			
+			ActionListener menuItem_saveListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					data.saveClass();
+				}
+			};
+			menuItem_save.addActionListener(menuItem_saveListener);
+			
+			ActionListener menuItem_loadListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mainframe.remove(mainPanel);
+					
+					// load select class panel
+					SelectClass s = new SelectClass(mainframe);
+				}
+			};
+			menuItem_load.addActionListener(menuItem_loadListener);
+			
+			ActionListener menuItem_newListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Data data = new Data();
+					NewClassDialog ncd = new NewClassDialog(data);
+					ncd.setModal(true);
+					ncd.showDialog();
+					
+					mainframe.remove(mainPanel);
+					
+					int width = 750;
+					int height = 500;
+
+					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+					mainframe.setLocation(x, y);
+					mainframe.setSize( width, height );
+
+					mainframe.setTitle(data.getLoadedClass());
+					MainWindow m = new MainWindow(mainframe,data);
+				}
+			};
+			menuItem_new.addActionListener(menuItem_newListener);
+			
+			ActionListener menuItem_closeListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Close Class");
+					// add dialog
+					// ask for class name
+					// if the class name matches to the current class,
+					// set the class status in the db to closed
+					CloseClassDialog ccd = new CloseClassDialog(data);
+					ccd.setModal(true);
+					ccd.showDialog();
+				}
+			};
+			menuItem_close.addActionListener(menuItem_closeListener);
+			
+			ActionListener exitListener = new ActionListener(){
+				   public void actionPerformed(ActionEvent e){
+					   System.exit(0);
+					   }
+					};
+			menuItem_exit.addActionListener(exitListener);
 	}
 
 } 

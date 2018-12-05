@@ -43,7 +43,7 @@ public class SelectClass {
         }
 
 		private void drawSelectClass(final JFrame mainframe) {
-
+			mainframe.setJMenuBar(null);
             mainframe.setTitle("Select Class");
 			int width = 275;
 			int height = 150;
