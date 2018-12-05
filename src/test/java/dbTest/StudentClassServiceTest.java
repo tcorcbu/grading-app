@@ -14,4 +14,10 @@ public class StudentClassServiceTest {
     public void testDelete(){
         StudentClassService.deleteStudentClass(1,1);
     }
+
+    @Test
+    public void testContains(){
+        System.out.println(StudentClassService.containsStudent(1,1));
+        System.out.println(StudentClassService.containsStudent(1,2));
+    }
 }

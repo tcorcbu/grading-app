@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9845fb45-57aa-46a4-94c9-23fff03f5652" name="Default" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/Data.java" afterPath="$PROJECT_DIR$/src/main/java/gui/Data.java" />
+=======
+      <change beforePath="$PROJECT_DIR$/src/main/java/db/GradeService.java" afterPath="$PROJECT_DIR$/src/main/java/db/GradeService.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/db/StudentService.java" afterPath="$PROJECT_DIR$/src/main/java/db/StudentService.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/Data.java" afterPath="$PROJECT_DIR$/src/main/java/gui/Data.java" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/Student.java" afterPath="$PROJECT_DIR$/src/main/java/gui/Student.java" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +36,13 @@
       <file leaf-file-name="LogIn.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/gui/LogIn.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="195">
               <caret line="22" column="4" lean-forward="false" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+=======
+            <state relative-caret-position="-593">
+              <caret line="22" column="4" lean-forward="true" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
               <folding />
             </state>
           </provider>
@@ -39,8 +51,13 @@
       <file leaf-file-name="Data.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/gui/Data.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="885">
               <caret line="74" column="9" lean-forward="false" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
+=======
+            <state relative-caret-position="164">
+              <caret line="74" column="9" lean-forward="true" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
               <folding />
             </state>
           </provider>
@@ -50,8 +67,18 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/db/StudentService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
+<<<<<<< HEAD
               <caret line="4" column="18" lean-forward="false" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
               <folding />
+=======
+              <caret line="4" column="18" lean-forward="true" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+              <folding>
+                <marker date="1543610686000" expanded="true" signature="219:275" ph="INSERT INTO Students... " />
+                <marker date="1543610686000" expanded="true" signature="1002:1042" ph="DELETE FROM Students... " />
+                <marker date="1543610686000" expanded="true" signature="1460:1511" ph="SELECT stude... Students" />
+                <marker date="1543610686000" expanded="true" signature="2168:2211" ph="SELECT * FRO... Students" />
+              </folding>
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
             </state>
           </provider>
         </entry>
@@ -59,8 +86,13 @@
       <file leaf-file-name="Student.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/gui/Student.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="1320">
               <caret line="112" column="42" lean-forward="false" selection-start-line="112" selection-start-column="42" selection-end-line="112" selection-end-column="42" />
+=======
+            <state relative-caret-position="233">
+              <caret line="112" column="42" lean-forward="true" selection-start-line="112" selection-start-column="42" selection-end-line="112" selection-end-column="42" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
               <folding>
                 <element signature="e#2210#2211#0" expanded="true" />
                 <element signature="e#2250#2251#0" expanded="true" />
@@ -72,7 +104,11 @@
       <file leaf-file-name="MainWindow.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/gui/MainWindow.java">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="7035">
+=======
+            <state relative-caret-position="4421">
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
               <caret line="502" column="53" lean-forward="false" selection-start-line="502" selection-start-column="42" selection-end-line="502" selection-end-column="53" />
               <folding />
             </state>
@@ -85,6 +121,7 @@
             <state relative-caret-position="67">
               <caret line="15" column="55" lean-forward="false" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
               <folding>
+<<<<<<< HEAD
                 <marker date="1543611580000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
                 <marker date="1543611580000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
                 <marker date="1543611580000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
@@ -92,6 +129,15 @@
                 <marker date="1543611580000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
                 <marker date="1543611580000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
                 <marker date="1543611580000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+=======
+                <marker date="1543610918000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
+                <marker date="1543610918000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
+                <marker date="1543610918000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
+                <marker date="1543610918000" expanded="true" signature="2963:3037" ph="UPDATE Grades... " />
+                <marker date="1543610918000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
+                <marker date="1543610918000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
+                <marker date="1543610918000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
               </folding>
             </state>
           </provider>
@@ -178,6 +224,11 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+<<<<<<< HEAD
+=======
+      <pane id="AndroidView" />
+      <pane id="Scope" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="Scope" />
@@ -505,7 +556,10 @@
       <workItem from="1543437141114" duration="236000" />
       <workItem from="1543437380497" duration="3092000" />
       <workItem from="1543608926996" duration="2443000" />
+<<<<<<< HEAD
       <workItem from="1543611601960" duration="12000" />
+=======
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
     </task>
     <servers />
   </component>
@@ -530,7 +584,11 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="6150000" />
+=======
+    <option name="totallyTimeSpent" value="6138000" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -542,11 +600,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="0" y="23" width="1280" height="739" extended-state="6" />
+=======
+    <frame x="0" y="24" width="1280" height="739" extended-state="6" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.49676898" order="6" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -558,20 +621,34 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26979" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.111801244" sideWeight="0.45153475" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32763976" sideWeight="0.28271407" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32919255" sideWeight="0.48707592" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32763976" sideWeight="0.71728593" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17701863" sideWeight="0.46122777" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2657512" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.111801244" sideWeight="0.45153475" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -590,6 +667,7 @@
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/gui/LogIn.java">
+<<<<<<< HEAD
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="22" column="4" lean-forward="true" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
@@ -658,6 +736,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/gui/LogIn.java">
       <provider selected="true" editor-type-id="text-editor">
+=======
+      <provider selected="true" editor-type-id="text-editor">
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
         <state relative-caret-position="540">
           <caret line="45" column="68" lean-forward="false" selection-start-line="45" selection-start-column="68" selection-end-line="45" selection-end-column="68" />
           <folding />
@@ -677,6 +758,7 @@
         <state relative-caret-position="1710">
           <caret line="122" column="5" lean-forward="true" selection-start-line="122" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
           <folding>
+<<<<<<< HEAD
             <marker date="1543611580000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
             <marker date="1543611580000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
             <marker date="1543611580000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
@@ -684,6 +766,15 @@
             <marker date="1543611580000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
             <marker date="1543611580000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
             <marker date="1543611580000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+=======
+            <marker date="1543610918000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
+            <marker date="1543610918000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
+            <marker date="1543610918000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
+            <marker date="1543610918000" expanded="true" signature="2963:3037" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
           </folding>
         </state>
       </provider>
@@ -770,7 +861,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="67">
           <caret line="57" column="94" lean-forward="false" selection-start-line="57" selection-start-column="94" selection-end-line="57" selection-end-column="94" />
+<<<<<<< HEAD
           <folding />
+=======
+          <folding>
+            <marker date="1543529822000" expanded="true" signature="393:456" ph="INSERT INTO StudentsClasses... " />
+            <marker date="1543529822000" expanded="true" signature="899:964" ph="DELETE FROM StudentsClasses... " />
+            <marker date="1543529822000" expanded="true" signature="1399:1456" ph="SELECT stude... StudentsClasses" />
+            <marker date="1543529822000" expanded="true" signature="2045:2121" ph="SELECT stude... StudentsClasses" />
+          </folding>
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
         </state>
       </provider>
     </entry>
@@ -803,7 +903,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/gui/MainWindow.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="7035">
+=======
+        <state relative-caret-position="4421">
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
           <caret line="502" column="53" lean-forward="false" selection-start-line="502" selection-start-column="42" selection-end-line="502" selection-end-column="53" />
           <folding />
         </state>
@@ -833,13 +937,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/gui/LogIn.java">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="195">
           <caret line="22" column="4" lean-forward="false" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+=======
+        <state relative-caret-position="-593">
+          <caret line="22" column="4" lean-forward="true" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/gui/Data.java">
+<<<<<<< HEAD
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="885">
           <caret line="74" column="9" lean-forward="false" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
@@ -862,15 +972,48 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="4" column="18" lean-forward="false" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+=======
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="74" column="9" lean-forward="true" selection-start-line="74" selection-start-column="9" selection-end-line="74" selection-end-column="9" />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/java/gui/Student.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="112" column="42" lean-forward="true" selection-start-line="112" selection-start-column="42" selection-end-line="112" selection-end-column="42" />
+          <folding>
+            <element signature="e#2210#2211#0" expanded="true" />
+            <element signature="e#2250#2251#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/db/StudentService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="4" column="18" lean-forward="true" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+          <folding>
+            <marker date="1543610686000" expanded="true" signature="219:275" ph="INSERT INTO Students... " />
+            <marker date="1543610686000" expanded="true" signature="1002:1042" ph="DELETE FROM Students... " />
+            <marker date="1543610686000" expanded="true" signature="1460:1511" ph="SELECT stude... Students" />
+            <marker date="1543610686000" expanded="true" signature="2168:2211" ph="SELECT * FRO... Students" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
     <entry file="file://$PROJECT_DIR$/src/main/java/db/GradeService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="67">
           <caret line="15" column="55" lean-forward="false" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
           <folding>
+<<<<<<< HEAD
             <marker date="1543611580000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
             <marker date="1543611580000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
             <marker date="1543611580000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
@@ -878,6 +1021,15 @@
             <marker date="1543611580000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
             <marker date="1543611580000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
             <marker date="1543611580000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+=======
+            <marker date="1543610918000" expanded="true" signature="709:829" ph="INSERT INTO Grades... " />
+            <marker date="1543610918000" expanded="true" signature="1444:1482" ph="DELETE FROM Grades... " />
+            <marker date="1543610918000" expanded="true" signature="2090:2151" ph="SELECT * FRO... Grades" />
+            <marker date="1543610918000" expanded="true" signature="2963:3037" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="3525:3602" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="4086:4156" ph="UPDATE Grades... " />
+            <marker date="1543610918000" expanded="true" signature="4625:4662" ph="DELETE FROM Grades... " />
+>>>>>>> c4180a4c9f2b31014991426e15265962276b5ff0
           </folding>
         </state>
       </provider>
