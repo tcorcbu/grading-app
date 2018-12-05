@@ -10,11 +10,11 @@ import javax.swing.table.DefaultTableModel;
 
 
 
-public class CloseClassDialog extends JDialog{
+public class CloseAppDialog extends JDialog{
 
-		public CloseClassDialog(final Data data) {
+		public CloseAppDialog(final Data data, final WindowEvent windowMain) {
 			
-			this.setTitle("Close Class");
+			this.setTitle("Close Application");
 			// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.setSize( 275, 150 );
 			Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -27,15 +27,18 @@ public class CloseClassDialog extends JDialog{
 			
 			JPanel classNamePanel = new JPanel();
 
-			JLabel classNameLabel = new JLabel("Are you sure you want to close this class?");
+			JLabel classNameLabel = new JLabel("Are you sure you want to close this application?");
 			final JTextField classNameTextField = new JTextField(10);
 
-			JButton createButton = new JButton("Close Class");
+			JButton closeButton = new JButton("Close App");
+
+			JButton cancelButton = new JButton("Save and Close");
 			
 			classNamePanel.add(classNameLabel);
 			
 			mainPanel.add(classNamePanel);
-			mainPanel.add(createButton);
+			mainPanel.add(closeButton);
+			mainPanel.add(cancelButton);
 			
 			this.add(mainPanel);
 			// this.setVisible( true );
@@ -43,15 +46,28 @@ public class CloseClassDialog extends JDialog{
 			ActionListener createListener = new ActionListener(){
 				public void actionPerformed(ActionEvent e){
 
-					// close class in db
-					data.closeClass();
+					windowMain.getWindow().dispose();
 					
 					setVisible(false);
 
 				}
 			};
 			
-			createButton.addActionListener(createListener);
+			closeButton.addActionListener(createListener);
+
+			ActionListener cancelListener = new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+
+					data.saveClass();
+
+					windowMain.getWindow().dispose();
+					
+					setVisible(false);
+
+				}
+			};
+			
+			cancelButton.addActionListener(cancelListener);
 		}
 		
 		public void showDialog() {

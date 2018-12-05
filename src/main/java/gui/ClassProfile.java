@@ -163,12 +163,10 @@ public class ClassProfile {
 			categoryTableModel.addRow(categoryTableRow);
 		}
 
-		final JTableHeader categoryTableHeader = categoryTable.getTableHeader();
-		final TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
 		final JTable categoryTable = new JTable(categoryTableModel);
 		categoryTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		categoryTable.setColumnSelectionAllowed(true);
-		
+
 		TableColumnModel categoryColumnModel = categoryTable.getColumnModel();
 		for (int i=0; i<categoryColumnModel.getColumnCount(); i++) {
 			TableColumn column = categoryTable.getColumnModel().getColumn(i);
@@ -178,8 +176,9 @@ public class ClassProfile {
 				column.setPreferredWidth(75);
 			}
 		}
-		JTableHeader categoryTableHeader = categoryTable.getTableHeader();
-		TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
+
+		final JTableHeader categoryTableHeader = categoryTable.getTableHeader();
+		final TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		Dimension d = categoryTable.getPreferredSize();
