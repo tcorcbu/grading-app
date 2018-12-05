@@ -18,8 +18,8 @@ public class MainWindow {
 		public MainWindow(final JFrame mainframe,final Data data) {
 					
 			// START Menu toolbar
-			JMenuBar menuBar = new JMenuBar();
-			JMenu menu = new JMenu("File");
+			final JMenuBar menuBar = new JMenuBar();
+			final JMenu menu = new JMenu("File");
 			menu.getAccessibleContext().setAccessibleDescription("File Menu");
 			menuBar.add(menu);
 			
