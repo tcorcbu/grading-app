@@ -66,8 +66,20 @@ public class Data {
 	}
 
 	public void loadGradables(){
-        this.gradableList = GradableService.getAll(Globals.class_id());
+		this.gradableList = GradableService.getAll(Globals.class_id());
+		for (Gradable gradable : gradableList) {
+			gradable.setType(findCategory(gradable.getType()));
+		}
     }
+
+    private Category findCategory(Category c) {
+		for (Category category : categoryList) {
+			if (category.getType().equals(c.getType())) {
+				return category;
+			}
+		}
+		return null;
+	}
 
 	public void loadCategories(){
 	    this.categoryList = CategoryService.getAll(Globals.class_id());
@@ -259,8 +271,6 @@ public class Data {
             e.printStackTrace();
         }
 		saveCommand = new ArrayList<PreparedStatement>();
-		
-		
 	}
 
 }

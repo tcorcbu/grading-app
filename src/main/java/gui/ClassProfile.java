@@ -113,8 +113,8 @@ public class ClassProfile {
 		
 		final JTable categoryTable = new JTable(categoryTableModel);
 		
-		JTableHeader categoryTableHeader = categoryTable.getTableHeader();
-		TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
+		final JTableHeader categoryTableHeader = categoryTable.getTableHeader();
+		final TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		// END Category Table
