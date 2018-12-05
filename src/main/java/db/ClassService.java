@@ -84,4 +84,22 @@ public class ClassService {
             e.printStackTrace();
         }
     }
+
+    public static boolean classIsOpen(int classId){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT status FROM Classes WHERE class_id=?";
+        String res = "";
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, classId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res = rs.getString("status");
+            }
+            return (res.equals("open"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return (res.equals("open"));
+    }
 }

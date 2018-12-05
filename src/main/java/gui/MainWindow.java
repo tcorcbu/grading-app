@@ -9,9 +9,14 @@ import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.text.*;
+import db.*;
 
 import db.GradableService;
 import db.GradeService;
+
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.WindowConstants;
 
 public class MainWindow {
 		
@@ -22,9 +27,14 @@ public class MainWindow {
 			JMenu menu = new JMenu("File");
 			menu.getAccessibleContext().setAccessibleDescription("File Menu");
 			menuBar.add(menu);
-			
+
+			boolean class_open = ClassService.classIsOpen(Globals.class_id());
+
 			JMenuItem menuItem_save = new JMenuItem("Save Class");
-			menu.add(menuItem_save);
+
+			if(class_open){
+				menu.add(menuItem_save);
+			}
 			
 			JMenuItem menuItem_load = new JMenuItem("Load Class");
 			menu.add(menuItem_load);
@@ -584,13 +594,16 @@ public class MainWindow {
 				}
 			};
 			dropGradable.addActionListener(DropGradableListener);
+
+			if(class_open){
+				ActionListener menuItem_saveListener = new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						data.saveClass();
+					}
+				};
+				menuItem_save.addActionListener(menuItem_saveListener);
+			}
 			
-			ActionListener menuItem_saveListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					data.saveClass();
-				}
-			};
-			menuItem_save.addActionListener(menuItem_saveListener);
 			
 			ActionListener menuItem_loadListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -620,9 +633,34 @@ public class MainWindow {
 					CloseClassDialog ccd = new CloseClassDialog(data);
 					ccd.setModal(true);
 					ccd.showDialog();
+
+					mainframe.remove(mainPanel);
+					// menuBar = mainframe.getMenuBar();
+					mainframe.remove(menuBar);
+					// load select class panel
+					SelectClass s = new SelectClass(mainframe);
 				}
 			};
 			menuItem_close.addActionListener(menuItem_closeListener);
+			//mainframe.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			mainframe.addWindowListener(new WindowAdapter()
+	        {
+	            @Override
+	            public void windowClosing(WindowEvent e)
+	            {
+	            	if(class_open){
+
+	            		CloseAppDialog cad = new CloseAppDialog(data, e);
+						cad.setModal(true);
+						cad.showDialog();
+
+	            	}
+
+	                //e.getWindow().dispose();
+	            }
+	        });
+
+	        //mainframe.setVisible(true);
 			
 			// END Action Listeners 
 		}

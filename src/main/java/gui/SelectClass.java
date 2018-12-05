@@ -116,6 +116,35 @@ public class SelectClass {
                     }
                 };
             classCombo.addActionListener( loadListener );
+
+
+
+
+            //----------------------
+
+            ActionListener loadOldListener = new ActionListener(){
+                public void actionPerformed(ActionEvent e){
+                    String mySelection = (String)oldClassCombo.getSelectedItem();
+                    if (!mySelection.equals("Select an old class")){
+
+                        Data data = new Data(mySelection);
+
+                        mainframe.remove(mainPanel);
+                        int width = 750;
+                        int height = 500;
+
+                        int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+                        int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+                        mainframe.setLocation(x, y);
+                        mainframe.setSize( width, height );
+
+                        mainframe.setTitle(data.getLoadedClass());
+                        MainWindow m = new MainWindow(mainframe,data);
+                    }
+                }
+            };
+            oldClassCombo.addActionListener( loadOldListener );
 		
 	    }
 	
