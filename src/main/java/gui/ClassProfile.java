@@ -289,10 +289,12 @@ public class ClassProfile {
 		
 		ActionListener removeCategoryListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-			    String gt = (String)categoryTable.getValueAt(categoryTable.getSelectedRow(),0);
+			    String gt = (String)categoryTable.getColumnName(categoryTable.getSelectedColumn());
 				data.addSaveCommand(CategoryService.drop(gt));
 				data.removeCategory(gt);
-				categoryTableModel.removeRow(categoryTable.getSelectedRow());
+				gradeTable.removeColumn(gradeTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
+				categoryTable.removeColumn(categoryTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
+				
 			   }
 			};
 		removeCategoryButton.addActionListener(removeCategoryListener);

@@ -394,6 +394,20 @@ public class MainWindow {
 					
 					final JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
 					
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent();
+					if (node.getUserObject() instanceof Category) {
+						Category selectedCategory = (Category)node.getUserObject();
+						// System.out.println(selectedCategory);
+						categoryCombo.setSelectedItem(selectedCategory);
+					} else{
+						if (node.getUserObject() instanceof Gradable) {
+							Gradable selectedGradable = (Gradable)node.getUserObject();
+							Category selectedCategory = selectedGradable.getType();
+							// System.out.println(selectedCategory);
+							categoryCombo.setSelectedItem(selectedCategory);
+						}
+					}
+					
 					nameInputPanel.add(nameTextField);
 					pointsInputPanel.add(pointsTextField);
 					weightInputPanel.add(weightTextField);
@@ -611,7 +625,23 @@ public class MainWindow {
 			
 			ActionListener menuItem_newListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("New Class");
+					Data data = new Data();
+					NewClassDialog ncd = new NewClassDialog(data);
+					ncd.setModal(true);
+					ncd.showDialog();
+					
+					mainframe.remove(mainPanel);
+					int width = 750;
+					int height = 500;
+
+					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
+					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
+
+					mainframe.setLocation(x, y);
+					mainframe.setSize( width, height );
+
+					mainframe.setTitle(data.getLoadedClass());
+					MainWindow m = new MainWindow(mainframe,data);
 				}
 			};
 			menuItem_new.addActionListener(menuItem_newListener);
