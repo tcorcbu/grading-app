@@ -152,17 +152,17 @@ public class StudentProfile {
 				case 1:
 					Integer tablePoints = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
 					g.setPointsLost(tablePoints);
-					GradeService.updatePointsLost(g.getID(), StudentService.getId(s),tablePoints);
+					data.addSaveCommand(GradeService.updatePointsLost(g, s.getSchoolID(),tablePoints));
 					break;
 				case 2:
 					Integer tableWeight = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
 					g.setStudentWeight(tableWeight);
-					GradeService.updateStudentWeight(g.getID(),StudentService.getId(s),tableWeight);
+					data.addSaveCommand(GradeService.updateStudentWeight(g,s.getSchoolID(),tableWeight));
 					break;
 				case 3:
 					String tableNote = gradableTable.getValueAt(row,column).toString();
 					g.setNote(tableNote);
-					GradeService.updateComment(g.getID(),StudentService.getId(s),tableNote);
+					data.addSaveCommand(GradeService.updateComment(g,s.getSchoolID(),tableNote));
 					break;
 				}	
 		  }

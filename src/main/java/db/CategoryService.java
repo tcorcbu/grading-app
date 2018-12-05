@@ -1,49 +1,68 @@
 package db;
 
-import gui.GradableType;
+import gui.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import db.Globals;
 
 public class CategoryService {
     private CategoryService(){};
+	
+    public static PreparedStatement insert(Category category){
 
-    public static void insert(GradableType gradableType, int classId){
         Connection conn = MySqlConnection.getConnection();
         String query = "INSERT INTO Categories (name,class_id,ugrad_weight,grad_weight) VALUES(?,?,?,?)";
-        try {
-            PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, gradableType.getType());
-            statement.setInt(2,classId);
-            statement.setInt(3, gradableType.getUndergradWeight());
-            statement.setInt(4,gradableType.getGraduateWeight());
-            statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys();
-            while (rs.next()) {
-                gradableType.setId(rs.getInt(1));
-            }
+        PreparedStatement statement = null;
+		try {
+            statement = conn.prepareStatement(query);
+            statement.setString(1, category.getType());
+            statement.setInt(2,Globals.class_id());
+            statement.setInt(3, category.getUndergradWeight());
+            statement.setInt(4,category.getGraduateWeight());
+
+            // statement.executeUpdate();
+            
         } catch (SQLException e){
             e.printStackTrace();
         }
+		return statement;
     }
 
-    public static ArrayList<GradableType> getAll(int classId) {
+    public static PreparedStatement drop(String name) {
         Connection conn = MySqlConnection.getConnection();
-        ArrayList<GradableType>res = new ArrayList<GradableType>();
+        String sql = "DELETE FROM categories WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
+        try{
+            statement = conn.prepareStatement(sql);
+            statement.setString(1, name);
+			statement.setInt(2, Globals.class_id());
+			
+            // statement.executeUpdate();
+			
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+		return statement;
+    }
+	
+	public static ArrayList<Category> getAll(int class_id) {
+        Connection conn = MySqlConnection.getConnection();
+        ArrayList<Category>res = new ArrayList<Category>();
         String query = "SELECT * FROM Categories WHERE class_id = ?";
         try {
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1,classId);
+            statement.setInt(1,class_id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 String type = rs.getString("name");
-                int upgradWeight = rs.getInt("ugrad_weight");
+                int ugradWeight = rs.getInt("ugrad_weight");
                 int gradWeight = rs.getInt("grad_weight");
-                int id = rs.getInt("category_id");
-                GradableType gradableType = new GradableType(type, upgradWeight, gradWeight);
-                gradableType.setId(id);
-                res.add(gradableType);
+                // int id = rs.getInt("category_id");
+                Category category = new Category(type, gradWeight, ugradWeight);
+                // category.setId(id);
+                res.add(category);
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -51,60 +70,62 @@ public class CategoryService {
         return res;
     }
 
-    public static GradableType getById(int categoryId) {
+    public static Category getByName(String category_name) {
         Connection conn = MySqlConnection.getConnection();
-        GradableType gradableType = null;
-        String query = "SELECT * FROM Categories WHERE category_id = ?";
+        Category category = null;
+        String query = "SELECT * FROM Categories WHERE name = ? AND class_id = ?";
         try {
             PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1,categoryId);
+            statement.setString(1,category_name);
+			statement.setInt(2,Globals.class_id());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 String type = rs.getString("name");
-                int upgradWeight = rs.getInt("ugrad_weight");
+                int ugradWeight = rs.getInt("ugrad_weight");
                 int gradWeight = rs.getInt("grad_weight");
-                int id = rs.getInt("category_id");
-                gradableType = new GradableType(type, upgradWeight, gradWeight);
-                gradableType.setId(id);
+                // int id = rs.getInt("category_id");
+                category = new Category(type, gradWeight, ugradWeight);
+                // category.setId(id);
             }
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return gradableType;
+        return category;
     }
 
-	public static void updateUgradWeight(GradableType gt, int uw) {
+	public static PreparedStatement updateUgradWeight(Category gt, int uw) {
 		Connection conn = MySqlConnection.getConnection();
-		String query = "UPDATE Categories SET ugrad_weight = ? WHERE category_id = ?";
+		String query = "UPDATE Categories SET ugrad_weight = ? WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
 		try {
-			PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, uw);
-			statement.setInt(2,gt.getId());
-			statement.executeUpdate();
-			ResultSet rs = statement.getGeneratedKeys();
-			while (rs.next()) {
-				gt.setId(rs.getInt(1));
-			}
+			statement.setString(2,gt.getType());
+			statement.setInt(3,Globals.class_id());
+			
+			// statement.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return statement;
 	}	
 	
-	public static void updateGradWeight(GradableType gt, int gw) {
+	public static PreparedStatement updateGradWeight(Category gt, int gw) {
 		Connection conn = MySqlConnection.getConnection();
-		String query = "UPDATE Categories SET grad_weight = ? WHERE category_id = ?";
+		String query = "UPDATE Categories SET grad_weight = ? WHERE name = ? AND class_id = ?";
+		PreparedStatement statement = null;
 		try {
-			PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, gw);
-			statement.setInt(2,gt.getId());
-			statement.executeUpdate();
-			ResultSet rs = statement.getGeneratedKeys();
-			while (rs.next()) {
-				gt.setId(rs.getInt(1));
-			}
+			statement.setString(2,gt.getType());
+			statement.setInt(3,Globals.class_id());
+			// statement.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return statement;
 	}	
 	
 	}
