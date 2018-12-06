@@ -39,7 +39,7 @@ public class Category {
 	}
 
 	public int getWeight(String type) {
-		if(type == "Graduate"){
+		if(type.equals("Graduate")){
 			return GraduateWeight;}
 		else {
 			return UndergradWeight;

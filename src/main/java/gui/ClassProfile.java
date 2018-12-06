@@ -295,7 +295,7 @@ public class ClassProfile {
 				
 				gradeTableModel.addColumn(addedCategories.get(i).getType());
 				for(int j=0; j<data.nStudents(); j++){
-				gradeTableModel.setValueAt("0%",i,gradeTableModel.getColumnCount()-1);
+				gradeTableModel.setValueAt("0%",j,gradeTableModel.getColumnCount()-1);
 				}
 				
 				for (int j=0; j<gradeColumnModel.getColumnCount(); j++) {

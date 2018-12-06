@@ -174,6 +174,9 @@ public class Data {
 
         for (Student student : studentList) {
             student.setGradableList(GradeService.getAllGradablesForStudent(student));
+			for (Gradable gradable : student.getGradableList()) {
+				gradable.setType(findCategory(gradable.getType()));
+			}
         }
 
     }

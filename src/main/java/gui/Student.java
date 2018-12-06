@@ -62,6 +62,10 @@ public class Student {
 	public void setGradableList(ArrayList<Gradable> gradableList) {
 		this.gradableList = gradableList;
 	}
+	
+	public ArrayList<Gradable> getGradableList() {
+		return gradableList;
+	}
 
 	public void addGradable(Gradable g) {
 		gradableList.add(g);

@@ -152,23 +152,62 @@ public class GradableProfile {
 		backButton.addActionListener(backListener);
 		
 		
-		ActionListener pointsListener = new ActionListener(){
-		   public void actionPerformed(ActionEvent e){
-			   int p = ((Number)gradablePoints.getValue()).intValue();
-			   g.setPoints(p);
-			   data.addSaveCommand(GradableService.updatePoints(g,p));
-			   }
-			};
-		gradablePoints.addActionListener(pointsListener);
+		// ActionListener pointsListener = new ActionListener(){
+		   // public void actionPerformed(ActionEvent e){
+			   // int p = ((Number)gradablePoints.getValue()).intValue();
+			   // g.setPoints(p);
+			   // data.addSaveCommand(GradableService.updatePoints(g,p));
+			   // }
+			// };
+		// gradablePoints.addActionListener(pointsListener);
 		
-		ActionListener weightListener = new ActionListener(){
-		   public void actionPerformed(ActionEvent e){
-			   int w = ((Number)gradableWeight.getValue()).intValue();
-			   g.setIntraCategoryWeight(w);
-			   data.addSaveCommand(GradableService.updateWeight(g,w));
-			   }
-			};
-		gradableWeight.addActionListener(weightListener);
+		gradablePoints.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+			   update();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				update();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				update();
+			}
+
+			public void update() {
+				int p = ((Number)gradablePoints.getValue()).intValue();
+				g.setPoints(p);
+				data.addSaveCommand(GradableService.updatePoints(g,p));
+			 }
+			  
+		});
+		
+		// ActionListener weightListener = new ActionListener(){
+		   // public void actionPerformed(ActionEvent e){
+			   // int w = ((Number)gradableWeight.getValue()).intValue();
+			   // g.setIntraCategoryWeight(w);
+			   // data.addSaveCommand(GradableService.updateWeight(g,w));
+			   // }
+			// };
+		// gradableWeight.addActionListener(weightListener);
+			
+		gradableWeight.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+			   update();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				update();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				update();
+			}
+
+			public void update() {
+				int w = ((Number)gradableWeight.getValue()).intValue();
+				g.setIntraCategoryWeight(w);
+				data.addSaveCommand(GradableService.updateWeight(g,w));
+			 }
+			  
+		});
+		
 		
 		
 		studentModel.addTableModelListener(new TableModelListener() {

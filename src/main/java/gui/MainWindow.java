@@ -403,19 +403,20 @@ public class MainWindow {
 					final JComboBox<Object> categoryCombo = new JComboBox<Object>(categoryOptions);
 					
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)gradablesTree.getLastSelectedPathComponent();
-					if (node.getUserObject() instanceof Category) {
-						Category selectedCategory = (Category)node.getUserObject();
-						// System.out.println(selectedCategory);
-						categoryCombo.setSelectedItem(selectedCategory);
-					} else{
-						if (node.getUserObject() instanceof Gradable) {
-							Gradable selectedGradable = (Gradable)node.getUserObject();
-							Category selectedCategory = selectedGradable.getType();
+					if(node != null) {
+						if (node.getUserObject() instanceof Category) {
+							Category selectedCategory = (Category)node.getUserObject();
 							// System.out.println(selectedCategory);
 							categoryCombo.setSelectedItem(selectedCategory);
+						} else{
+							if (node.getUserObject() instanceof Gradable) {
+								Gradable selectedGradable = (Gradable)node.getUserObject();
+								Category selectedCategory = selectedGradable.getType();
+								// System.out.println(selectedCategory);
+								categoryCombo.setSelectedItem(selectedCategory);
+							}
 						}
 					}
-					
 					nameInputPanel.add(nameTextField);
 					pointsInputPanel.add(pointsTextField);
 					weightInputPanel.add(weightTextField);
