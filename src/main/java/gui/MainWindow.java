@@ -30,9 +30,7 @@ public class MainWindow {
 			menuBar.add(menu);
 
 			boolean class_open = ClassService.classIsOpen(Globals.class_id());
-
 			JMenuItem menuItem_save = new JMenuItem("Save Class");
-
 			if(class_open){
 				menu.add(menuItem_save);
 			}
@@ -677,22 +675,6 @@ public class MainWindow {
 			};
 			menuItem_close.addActionListener(menuItem_closeListener);
 			//mainframe.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			mainframe.addWindowListener(new WindowAdapter()
-	        {
-	            @Override
-	            public void windowClosing(WindowEvent e)
-	            {
-	            	if(class_open){
-
-	            		CloseAppDialog cad = new CloseAppDialog(data, e);
-						cad.setModal(true);
-						cad.showDialog();
-
-	            	}
-
-	                //e.getWindow().dispose();
-	            }
-	        });
 
 	        //mainframe.setVisible(true);
 			

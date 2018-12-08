@@ -4,6 +4,8 @@ import db.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.lang.Math;
 import java.sql.*;
 
 public class Data {
@@ -302,4 +304,40 @@ public class Data {
 		saveCommand = new ArrayList<PreparedStatement>();
 	}
 
+	public int getClassMean() {
+		int mean = 0;
+		for (Student student : studentList) {
+			mean += student.getOverallPercent(categoryList);
+		}
+		return mean/studentList.size();
+	}
+	
+	public int getClassMedian() {
+		Integer[] gradeList = new Integer[studentList.size()];
+		for (int i=0; i<studentList.size(); i++) {
+			gradeList[i] = studentList.get(i).getOverallPercent(categoryList);
+		}
+		Arrays.sort(gradeList);
+		int median;
+		if (gradeList.length % 2 == 0)
+			median = ((int)gradeList[gradeList.length/2] + (int)gradeList[gradeList.length/2 - 1])/2;
+		else
+			median = (int) gradeList[gradeList.length/2];
+		
+		return median;
+	}
+	
+	public int getClassStandardDeviation() {
+		//public static double stdev(int[] list){
+        int mean = 0;
+        int numi = 0;
+
+        mean = getClassMean();
+
+        for (Student student : studentList) {
+            numi += (student.getOverallPercent(categoryList) - mean)*(student.getOverallPercent(categoryList) - mean);
+        }
+
+        return (int)Math.sqrt(numi/studentList.size());
+    }
 }

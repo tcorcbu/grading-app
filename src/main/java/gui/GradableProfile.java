@@ -122,11 +122,14 @@ public class GradableProfile {
 		
 		// END Gradable Table
 		
+		JPanel backButtonPanel = new JPanel();
 		JButton backButton = new JButton("Back");
+		backButtonPanel.add(backButton);
+		
 		// START Layout 				
 		JPanel botPanel = new JPanel();
 		botPanel.setLayout(new BorderLayout());
-		botPanel.add(backButton,BorderLayout.EAST);
+		botPanel.add(backButtonPanel,BorderLayout.EAST);
 
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));

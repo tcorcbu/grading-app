@@ -98,8 +98,26 @@ public class SelectClass {
                             data = new Data(mySelection);
 							
                         }
+						
+						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+						// mainframe.removeEventListener(WindowListener, listener[, options]);
+						mainframe.addWindowListener(new WindowAdapter()
+							{
+								@Override
+								public void windowClosing(WindowEvent e)
+								{
+									// if(class_open){
 
+										CloseAppDialog cad = new CloseAppDialog(data, e);
+										cad.setModal(true);
+										cad.showDialog();
 
+									// }
+
+								}
+							});
+						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+					
                         mainframe.remove(mainPanel);
                         int width = 750;
                         int height = 500;

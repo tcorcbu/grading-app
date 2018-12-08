@@ -112,7 +112,9 @@ public class StudentProfile {
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// END Gradable Table
 		
+		JPanel backButtonPanel = new JPanel();
 		JButton backButton = new JButton("Back");
+		backButtonPanel.add(backButton);
 		
 		
 		// START Layout 
@@ -128,7 +130,7 @@ public class StudentProfile {
 		// backButton.setAlignmentX(botPanel.RIGHT_ALIGNMENT);
 		// gradeInfo.setAlignmentX(botPanel.LEFT_ALIGNMENT);
 		botPanel.add(gradeInfo,BorderLayout.WEST);
-		botPanel.add(backButton,BorderLayout.EAST);
+		botPanel.add(backButtonPanel,BorderLayout.EAST);
 		
 		
 		// mainPanel.add(upperPanel);

@@ -98,7 +98,7 @@ public class LogIn{
 		
 		jbtLogIn.addActionListener( loginListener );
 		jbtCreateAccount.addActionListener( createAccountListener );
-		
+			
 		mainframe.setVisible( true );
 	}
 	

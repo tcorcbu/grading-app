@@ -47,6 +47,8 @@ public class ClassProfile {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
+		JPanel statsPanel = new JPanel();
+		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 		
@@ -70,6 +72,13 @@ public class ClassProfile {
 		gradeBreakdownOuterPanel.add(gradeBreakdownPanel);
 		
 		// END Panel Setup
+		
+		JLabel meanLabel = new JLabel("  Mean: "+String.valueOf(data.getClassMean())+"%  ");
+		JLabel medianLabel = new JLabel("  Median: "+String.valueOf(data.getClassMedian())+"%  ");
+		JLabel StandardDeviationLabel = new JLabel("  Standard Deviation: "+String.valueOf(data.getClassStandardDeviation())+"%  ");
+		statsPanel.add(meanLabel);
+		statsPanel.add(medianLabel);
+		statsPanel.add(StandardDeviationLabel);
 		
 		// START Grade Table
 		class myTableModel extends DefaultTableModel {
@@ -148,8 +157,6 @@ public class ClassProfile {
 			categoryTableModel.addColumn(data.CategoryList(i).getType());
 		}
 		
-		
-		
 		String[] categoryTableLabels = {"Undergraduate","Graduate"};
 		String[] categoryTotals = {String.valueOf(data.sumUndergradCategories()),String.valueOf(data.sumGradCategories())};
 		String[] categoryTableRow = new String[data.getCategoryList().size()+2];
@@ -182,7 +189,7 @@ public class ClassProfile {
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		Dimension d = categoryTable.getPreferredSize();
-		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*4));
+		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*5));
 		 
 		
 		// END Category Table
@@ -219,6 +226,7 @@ public class ClassProfile {
 		buttonPanel.add(addRemoveCategoryPanel,BorderLayout.WEST);
 		buttonPanel.add(backButtonPanel,BorderLayout.EAST);
 		
+		mainPanel.add(statsPanel);
 		mainPanel.add(topPanel);
 		mainPanel.add(midPanel);
 		mainPanel.add(buttonPanel);
