@@ -18,7 +18,6 @@ public class Data {
 
 
 	public Data() {
-		// add student types for new class
 		studentTypes.add("Graduate");
 		studentTypes.add("Undergraduate");
 	}
@@ -33,7 +32,169 @@ public class Data {
         loadGradables();
         loadStudents();
 	}
+	
+	public void setLoadedClass(String lc) {
+		LoadedClass = lc;
+		Globals.setClassId(ClassService.getId(LoadedClass));
+	}
+	
+	public String getLoadedClass() {
+		return LoadedClass;
+	}
+		
+    public ArrayList<Category> getCategories(){
+	    return this.categoryList;
+    }
+		
+	public ArrayList<Category> copyCategories() {
+		return new ArrayList<Category>(categoryList);
+	}
+	
+	public void setCategories(ArrayList<Category> gt) {
+		categoryList = new ArrayList<Category>(gt);
+	}
+	
+	public void addCategory(Category gt) {
+		categoryList.add(gt);
+		this.addSaveCommand(CategoryService.insert(gt));
+	}
+	
+	public void dropCategory(String gt) {
+		categoryList.remove(gt);
+		// for(int i=0; i<categoryList.size(); i++) {
+			// if(categoryList.get(i).getType().equals(gt)){
+				// categoryList.remove(categoryList.get(i));
+			// }
+		// }
+		this.addSaveCommand(CategoryService.drop(gt));
+	}
 
+	public void setGradables(ArrayList<Gradable> gl) {
+		gradableList = new ArrayList<Gradable>(gl);
+	}
+		
+	public ArrayList<Gradable> getGradables() {
+		return gradableList;
+	}
+
+	public ArrayList<Gradable> copyGradables() {
+		return new ArrayList<Gradable>(gradableList);
+	}
+	
+	public int nGradables() {
+		return gradableList.size();
+	}
+			
+	public Gradable getGradable(int i) {
+		return gradableList.get(i);
+	}
+	
+	public Gradable getGradable(String name) {
+		Gradable g = new Gradable();
+		for (int i = 0; i<gradableList.size(); i++) {
+			if(gradableList.get(i).getName().equals(name)) {
+				g =  gradableList.get(i);
+			}
+		}
+		return g;
+	}
+	
+	public void addGradable(Gradable newGradable) {
+		gradableList.add(newGradable);
+		this.addSaveCommand(GradableService.insert(newGradable));
+		
+		for(Student student : studentList){
+			Gradable gtemp = newGradable.copy();
+			gtemp.setPointsLost(newGradable.getPoints());
+			gtemp.setStudentWeight(100);
+			student.addGradable(gtemp);
+			this.addSaveCommand(GradeService.insert(gtemp,student));
+		}
+							
+	}
+	
+	public void dropGradable(Gradable g) {
+	    this.addSaveCommand(GradableService.drop(g));
+		this.addSaveCommand(GradeService.drop(g));
+		
+		for (Student student : studentList) {
+			student.dropGradable(g);
+		}
+					
+		gradableList.remove(g);
+		// for (int i = 0; i<gradableList.size(); i++) {
+			// if(gradableList.get(i).getName().equals(g.getName())) {
+				// gradableList.remove(gradableList.get(i));
+			// }
+		// }
+	    // loadGradables();
+	}
+		
+	public Student getStudent(int i) {
+		return studentList.get(i);
+	}
+		
+	public void addStudent(Student newStudent) {
+		studentList.add(newStudent);
+		if(!StudentService.studentInDb(newStudent)){
+			this.addSaveCommand(StudentService.insertStudent(newStudent));
+		}
+		
+        this.addSaveCommand(StudentClassService.insertStudentClass(newStudent.getSchoolID()));
+
+		for(int i=0; i<gradableList.size(); i++) {
+			Gradable g = new Gradable(gradableList.get(i).getName(),
+										gradableList.get(i).getPoints(),
+										gradableList.get(i).getType(),
+										gradableList.get(i).getIntraCategoryWeight(),
+										gradableList.get(i).getPoints(),
+										100,"");
+			newStudent.addGradable(g);
+			this.addSaveCommand(GradeService.insert(g,newStudent));
+		}
+	}
+	
+	public void dropStudent(Student s) {
+	    studentList.remove(s);
+        this.addSaveCommand(StudentClassService.deleteStudentClass(s.getSchoolID()));
+		this.addSaveCommand(GradeService.dropStudentGrades(s.getSchoolID()));
+	}
+
+	public int nStudents() {
+		return studentList.size();
+	}
+	
+	public ArrayList<String> studentTypes() {
+		return studentTypes;
+	}
+		
+	public void loadCategories(){
+	    this.categoryList = CategoryService.getAll(Globals.class_id());
+    }
+
+	public void loadGradables(){
+		this.gradableList = GradableService.getAll(Globals.class_id());
+		for (Gradable gradable : gradableList) {
+			gradable.setType(findCategory(gradable.getType()));
+		}
+    }
+	
+	public void loadStudents(){
+        List<String>studentIds = StudentClassService.getAllStudentsId(Globals.class_id());
+
+		this.studentList.clear();
+        for (String id : studentIds) {
+            studentList.add(StudentService.getStudentById(id));
+        }
+
+        for (Student student : studentList) {
+            student.setGradableList(GradeService.getAllGradablesForStudent(student));
+			for (Gradable gradable : student.getGradableList()) {
+				gradable.setType(findCategory(gradable.getType()));
+			}
+        }
+    }
+		
 	public int sumUndergradCategories() {
 		int mysum = 0;
 		for(int i=0; i<categoryList.size(); i++) {
@@ -58,13 +219,6 @@ public class Data {
 		ClassService.closeClass(Globals.class_id());
 	}
 
-	public void loadGradables(){
-		this.gradableList = GradableService.getAll(Globals.class_id());
-		for (Gradable gradable : gradableList) {
-			gradable.setType(findCategory(gradable.getType()));
-		}
-    }
-
     private Category findCategory(Category c) {
 		for (Category category : categoryList) {
 			if (category.getType().equals(c.getType())) {
@@ -74,120 +228,8 @@ public class Data {
 		return null;
 	}
 
-	public void loadCategories(){
-	    this.categoryList = CategoryService.getAll(Globals.class_id());
-    }
-
-    public ArrayList<Category> getCategories(){
-	    return this.categoryList;
-    }
-	// Loaded Class accessors and mutators
-	public void setLoadedClass(String lc) {
-		LoadedClass = lc;
-		Globals.setClassId(ClassService.getId(LoadedClass));
-	}
-	
-	public String getLoadedClass() {
-		return LoadedClass;
-	}
-	
-	// Student accessors and mutators
-	public Student getStudent(int i) {
-		return studentList.get(i);
-	}
-	
-	
 	public ArrayList<String> getStudentTypes() {
 		return studentTypes;
-	}
-	
-	public void addStudent(Student newStudent) {
-		studentList.add(newStudent);
-		if(!StudentService.studentInDb(newStudent)){
-			this.addSaveCommand(StudentService.insertStudent(newStudent));
-		}
-		
-        this.addSaveCommand(StudentClassService.insertStudentClass(newStudent.getSchoolID()));
-
-		for(int i=0; i<gradableList.size(); i++) {
-			Gradable g = new Gradable(gradableList.get(i).getName(),
-										gradableList.get(i).getPoints(),
-										gradableList.get(i).getType(),
-										gradableList.get(i).getIntraCategoryWeight(),
-										gradableList.get(i).getPoints(),
-										100,"");
-			newStudent.addGradable(g);
-			this.addSaveCommand(GradeService.insert(g,newStudent));
-		}
-	}
-	
-	public void dropStudent(Student s) {
-	    // int studentId = StudentService.getId(s);
-	    // if (studentId == -1) {
-	    	// return;
-		// }
-        this.addSaveCommand(StudentClassService.deleteStudentClass(s.getSchoolID()));
-		this.addSaveCommand(GradeService.dropStudentGrades(s.getSchoolID()));
-	    // loadStudents();
-	}
-
-	public void loadStudents(){
-        List<String>studentIds = StudentClassService.getAllStudentsId(Globals.class_id());
-
-		this.studentList.clear();
-        for (String id : studentIds) {
-            studentList.add(StudentService.getStudentById(id));
-        }
-
-        for (Student student : studentList) {
-            student.setGradableList(GradeService.getAllGradablesForStudent(student));
-			for (Gradable gradable : student.getGradableList()) {
-				gradable.setType(findCategory(gradable.getType()));
-			}
-        }
-
-    }
-	
-	public int nStudents() {
-		return studentList.size();
-	}
-	
-	public ArrayList<String> studentTypes() {
-		return studentTypes;
-	}
-	
-	public Gradable getGradable(int i) {
-		return gradableList.get(i);
-	}
-	
-	public Gradable getGradableByName(String name) {
-		Gradable g = new Gradable();
-		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).getName().equals(name)) {
-				g =  gradableList.get(i);
-			}
-		}
-		return g;
-	}
-	
-	public void addGradable(Gradable newGradable) {
-		gradableList.add(newGradable);
-	}
-	
-	public void dropGradable(Gradable g) {
-	    this.addSaveCommand(GradableService.drop(g));
-		this.addSaveCommand(GradeService.drop(g));
-		
-		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).getName().equals(g.getName())) {
-				gradableList.remove(gradableList.get(i));
-			}
-		}
-	    // loadGradables();
-	}
-	
-	public int nGradables() {
-		return gradableList.size();
 	}
 	
 	public ArrayList<Category> getCategoryList() {
@@ -206,38 +248,6 @@ public class Data {
 			}
 		}
 		return gt;
-	}
-	
-	public ArrayList<Gradable> copyGradables() {
-		return new ArrayList<Gradable>(gradableList);
-	}
-	
-	public ArrayList<Gradable> getGradables() {
-		return gradableList;
-	}
-	
-	public void setGradables(ArrayList<Gradable> gl) {
-		gradableList = new ArrayList<Gradable>(gl);
-	}
-	
-	public ArrayList<Category> copyCategories() {
-		return new ArrayList<Category>(categoryList);
-	}
-	
-	public void setCategories(ArrayList<Category> gt) {
-		categoryList = new ArrayList<Category>(gt);
-	}
-	
-	public void addCategory(Category gt) {
-		categoryList.add(gt);
-	}
-	
-	public void removeCategory(String gt) {
-		for(int i=0; i<categoryList.size(); i++) {
-			if(categoryList.get(i).getType().equals(gt)){
-				categoryList.remove(categoryList.get(i));
-			}
-		}
 	}
 
 	public ArrayList<String> copyStudentTypes() {

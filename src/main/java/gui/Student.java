@@ -31,6 +31,10 @@ public class Student {
 		return firstName;
 	}
 	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}	
+	
 	public String getLastName() {
 		return lastName;
 	}
@@ -39,24 +43,20 @@ public class Student {
 		return firstName + " " + lastName;
 	}
 	
+	public void setSchoolID(String schoolID) {
+		this.schoolID = schoolID;
+	}
+	
 	public String getSchoolID() {
 		return schoolID;
 	}
 	
-	public String getYear() {
-		return year;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public void setSchoolID(String schoolID) {
-		this.schoolID = schoolID;
-	}
-
 	public void setYear(String year) {
 		this.year = year;
+	}
+	
+	public String getYear() {
+		return year;
 	}
 
 	public void setGradableList(ArrayList<Gradable> gradableList) {
@@ -69,7 +69,6 @@ public class Student {
 
 	public void addGradable(Gradable g) {
 		gradableList.add(g);
-		
 	}
 	
 	public void dropGradable(Gradable g) {
@@ -126,7 +125,6 @@ public class Student {
 		int total = 0;
 		for(int i=0; i<categoryList.size(); i++) {
 			total += getCategoryAverage(categoryList.get(i).getType())*categoryList.get(i).getWeight(year);
-		
 		}
 		return total/100;
 	}
@@ -134,7 +132,7 @@ public class Student {
 	public String toString(){
 		return firstName + " " + lastName;
 	}
-	public boolean is(String type) {
+	public boolean isYear(String type) {
 		return this.year.equals(type);
 	}	
 

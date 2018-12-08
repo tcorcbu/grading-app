@@ -13,36 +13,11 @@ import java.lang.Math.*;
 import db.CategoryService;
 
 public class ClassProfile {
-		
-	public ClassProfile(final JFrame mainframe,final Data data) {
 
+	public static void drawClassProfile(final JFrame mainframe,final Data data) {
 		mainframe.setTitle(data.getLoadedClass() + " Profile");
+		MainWindow.drawMenuBar(mainframe,data);
 		
-		// START Menu toolbar
-			mainframe.setJMenuBar(null);
-			JMenuBar menuBar = new JMenuBar();
-			JMenu menu = new JMenu("File");
-			menu.getAccessibleContext().setAccessibleDescription("File Menu");
-			menuBar.add(menu);
-			
-			JMenuItem menuItem_save = new JMenuItem("Save Class");
-			menu.add(menuItem_save);
-			
-			JMenuItem menuItem_load = new JMenuItem("Load Class");
-			menu.add(menuItem_load);
-			
-			JMenuItem menuItem_new = new JMenuItem("New Class");
-			menu.add(menuItem_new);
-			
-			JMenuItem menuItem_close = new JMenuItem("Close Class");
-			menu.add(menuItem_close);
-			
-			JMenuItem menuItem_exit = new JMenuItem("Exit");
-			menu.add(menuItem_exit);
-			
-			mainframe.setJMenuBar(menuBar);
-			// END Menu Toolbar
-			
 		// START Panel Setup
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -64,12 +39,6 @@ public class ClassProfile {
 		JPanel curvePanel = new JPanel();
 		
 		JPanel buttonPanel = new JPanel(new BorderLayout());
-		
-		JPanel gradeBreakdownPanel = new JPanel();
-		gradeBreakdownPanel.setLayout(new GridLayout(5,2));
-		
-		JPanel gradeBreakdownOuterPanel = new JPanel();
-		gradeBreakdownOuterPanel.add(gradeBreakdownPanel);
 		
 		// END Panel Setup
 		
@@ -134,20 +103,16 @@ public class ClassProfile {
 		BoundedRangeModel gradeTablePaneModel = gradeTablePane.getVerticalScrollBar().getModel();
 		breakoutTablePane.getVerticalScrollBar().setModel( gradeTablePaneModel );
 		
-		// Dimension d = breakoutTable.getPreferredSize();
-		// breakoutTablePane.setPreferredSize(new Dimension(50*breakoutColumnModel.getColumnCount(),d.height));
-		
 		// END Breakout Table
 		
 		// START Category Table
 		final DefaultTableModel categoryTableModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
 				if (colIndex < 2){
-				return false;
-				} 
-				else {
+					return false;
+				} else {
 					return true;
-					}
+				}
 			}
 		};
 		
@@ -189,15 +154,14 @@ public class ClassProfile {
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
 		Dimension d = categoryTable.getPreferredSize();
-		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*5));
-		 
-		
+		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*4+3));
+
 		// END Category Table
 		
 		// START buttons
 		JLabel curveLabel = new JLabel("Curve");
 		JTextField curveField = new JTextField(10);
-		// JButton curveApply = new JButton("Add Percent");
+		
 		JButton addCategoryButton = new JButton("Add Category");
 		JButton removeCategoryButton = new JButton("Remove Category");
 		JButton backButton = new JButton("Back");
@@ -206,6 +170,8 @@ public class ClassProfile {
 		
 		
 		// START Layout
+		
+		topPanel.add(categoryTablePanel);
 		
 		midPanel.add(gradeTablePane);
 		
@@ -216,8 +182,6 @@ public class ClassProfile {
 		backButtonPanel.add(backButton);
 		
 		// categoryTablePanel.add(addRemoveCategoryPanel);
-		
-		topPanel.add(categoryTablePanel);		
 		
 		curvePanel.add(curveLabel);
 		curvePanel.add(curveField);
@@ -238,20 +202,16 @@ public class ClassProfile {
 		mainframe.repaint();
 		
 		// START Action Listeners
-		ActionListener backListener = new ActionListener(){
-		   public void actionPerformed(ActionEvent e){
-			   mainframe.remove(mainPanel);
-			   mainframe.setTitle(data.getLoadedClass());
-			   MainWindow m = new MainWindow(mainframe,data);
-			   }
-			};
-		backButton.addActionListener(backListener);
+		backButton.addActionListener(new ActionListener(){
+		    public void actionPerformed(ActionEvent e){
+				mainframe.remove(mainPanel);
+				MainWindow.drawMainWindow(mainframe,data);
+			}
+		});
 		
 		TableModelListener categoryTableListener = new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
-				System.out.println(e.getType());
 				if(e.getType() == 0) {
-
 					int row = categoryTable.getSelectedRow();
 					int column = categoryTable.getSelectedColumn();
 					String categoryType = categoryTable.getColumnName(column);
@@ -260,7 +220,6 @@ public class ClassProfile {
 					if (row == 1) {
 						gt.setGraduateWeight(tableValue);
 						data.addSaveCommand(CategoryService.updateGradWeight(gt, tableValue));
-						
 					} else {
 						gt.setUndergradWeight(tableValue);
 						data.addSaveCommand(CategoryService.updateUgradWeight(gt, tableValue));
@@ -268,12 +227,9 @@ public class ClassProfile {
 					categoryTableModel.removeTableModelListener(this);
 					categoryTableModel.setValueAt(String.valueOf(data.sumUndergradCategories()),0,1);
 					categoryTableModel.setValueAt(String.valueOf(data.sumGradCategories()),1,1);
-					// categoryTableModel.fireTableDataChanged();
 					categoryTableModel.addTableModelListener(this);
-					
-					// categoryTable.repaint();
 				}
-		  }
+			}
 		};
 		categoryTableModel.addTableModelListener(categoryTableListener);
 		
@@ -283,60 +239,53 @@ public class ClassProfile {
 				ncd.setModal(true);
 				ncd.showDialog();
 				ArrayList<Category> addedCategories = ncd.getCategories();
-				for (int i=0;i<addedCategories.size(); i++) {
-					// categoryTableModel.addRow(new String[]{addedCategories.get(i).getType(),
-														// String.valueOf(addedCategories.get(i).getWeight("Graduate")),
-														// String.valueOf(addedCategories.get(i).getWeight("Undergraduate"))});
 				categoryTableModel.removeTableModelListener(categoryTableListener);
-				categoryTableModel.addColumn(addedCategories.get(i).getType());
-				categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Undergraduate")),0,categoryTableModel.getColumnCount()-1);
-				categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Graduate")),1,categoryTableModel.getColumnCount()-1);
-				for (int j=0; j<categoryColumnModel.getColumnCount(); j++) {
-					TableColumn column = categoryTable.getColumnModel().getColumn(j);
-					if (j==0){
-						column.setPreferredWidth(125);
-					}else{
-						column.setPreferredWidth(75);
+				for (int i=0;i<addedCategories.size(); i++) {
+					categoryTableModel.addColumn(addedCategories.get(i).getType());
+					categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Undergraduate")),0,categoryTableModel.getColumnCount()-1);
+					categoryTableModel.setValueAt(String.valueOf(addedCategories.get(i).getWeight("Graduate")),1,categoryTableModel.getColumnCount()-1);
+					for (int j=0; j<categoryColumnModel.getColumnCount(); j++) {
+						TableColumn column = categoryTable.getColumnModel().getColumn(j);
+						if (j==0){
+							column.setPreferredWidth(125);
+						}else{
+							column.setPreferredWidth(75);
+						}
 					}
+
+					gradeTableModel.addColumn(addedCategories.get(i).getType());
+					for(int j=0; j<data.nStudents(); j++){
+						gradeTableModel.setValueAt("0%",j,gradeTableModel.getColumnCount()-1);
+					}
+					
+					for (int j=0; j<gradeColumnModel.getColumnCount(); j++) {
+						TableColumn column = gradeTable.getColumnModel().getColumn(j);
+						if (j==0){
+							column.setPreferredWidth(125);
+						}else{
+							column.setPreferredWidth(75);
+						}
+					}
+				
 				}
 				categoryTableModel.addTableModelListener(categoryTableListener);
-				
-				gradeTableModel.addColumn(addedCategories.get(i).getType());
-				for(int j=0; j<data.nStudents(); j++){
-				gradeTableModel.setValueAt("0%",j,gradeTableModel.getColumnCount()-1);
-				}
-				
-				for (int j=0; j<gradeColumnModel.getColumnCount(); j++) {
-					TableColumn column = gradeTable.getColumnModel().getColumn(j);
-					if (j==0){
-						column.setPreferredWidth(125);
-					}else{
-						column.setPreferredWidth(75);
-					}
-				}
-				
-				}
 				categoryTable.repaint();
 			   }
 			};
 		addCategoryButton.addActionListener(addCategoryListener);
 		
-		ActionListener removeCategoryListener = new ActionListener(){
+		removeCategoryButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			    String gt = (String)categoryTable.getColumnName(categoryTable.getSelectedColumn());
-				data.addSaveCommand(CategoryService.drop(gt));
-				data.removeCategory(gt);
+				data.dropCategory(gt);
 				gradeTable.removeColumn(gradeTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
 				categoryTable.removeColumn(categoryTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
-				
-			   }
-			};
-		removeCategoryButton.addActionListener(removeCategoryListener);
+			}
+		});
 		
 		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				Point clickPoint = e.getPoint();
-				int column = gradeTable.columnAtPoint(clickPoint);
+				int column = gradeTable.columnAtPoint(e.getPoint());
 				if(column>1){
 					TableColumnModel columnModel = gradeTable.getColumnModel();
 					
@@ -348,7 +297,6 @@ public class ClassProfile {
 					breakoutTableModel.setColumnCount(0);
 					breakoutTableModel.setRowCount(0);
 					
-					// breakoutTableModel.addColumn("Student");
 					int nInCategory = 0;
 					ArrayList<Gradable> breakoutGradables = new ArrayList<Gradable>();
 					for (int i=0; i< data.nGradables(); i++) {
@@ -356,21 +304,17 @@ public class ClassProfile {
 							breakoutTableModel.addColumn(data.getGradable(i).getName());
 							breakoutGradables.add(data.getGradable(i));
 							nInCategory += 1;
-							// breakoutTable.getColumnModel().getColumn(0).setMinWidth(500);
 						}
 					}
 					
 					for (int i=0; i<data.nStudents(); i++){
 						Student stmp = data.getStudent(i);
-						
-						
+
 						String[] rowValues = new String[nInCategory+1];
-						// rowValues[0] = stmp.getName();
 						for (int j=0; j<nInCategory; j++) {
 							Gradable gtmp = stmp.getGradable(breakoutGradables.get(j).getName());
 							rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%";
 						}
-						
 						breakoutTableModel.addRow(rowValues);
 					}
 					
@@ -380,9 +324,7 @@ public class ClassProfile {
 					}
 					Dimension d = breakoutTable.getPreferredSize();
 					breakoutTablePane.setPreferredSize(new Dimension(Math.min(60*(breakoutColumnModel.getColumnCount()),200),d.height));
-					
 					midPanel.add(breakoutTablePane);
-		
 				}else{
 					midPanel.remove(breakoutTablePane);
 				}
@@ -390,76 +332,9 @@ public class ClassProfile {
 				mainframe.repaint();
 			}
 		};
-		
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
 		gradeHeader.addMouseListener(TableHeaderMouseListener);
 
-		
-
-		
 		// END Action Listeners 
-			
-			ActionListener menuItem_saveListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					data.saveClass();
-				}
-			};
-			menuItem_save.addActionListener(menuItem_saveListener);
-			
-			ActionListener menuItem_loadListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					mainframe.remove(mainPanel);
-					
-					// load select class panel
-					SelectClass s = new SelectClass(mainframe);
-				}
-			};
-			menuItem_load.addActionListener(menuItem_loadListener);
-			
-			ActionListener menuItem_newListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Data data = new Data();
-					NewClassDialog ncd = new NewClassDialog(data);
-					ncd.setModal(true);
-					ncd.showDialog();
-					
-					mainframe.remove(mainPanel);
-					
-					int width = 750;
-					int height = 500;
-
-					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
-					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
-
-					mainframe.setLocation(x, y);
-					mainframe.setSize( width, height );
-
-					mainframe.setTitle(data.getLoadedClass());
-					MainWindow m = new MainWindow(mainframe,data);
-				}
-			};
-			menuItem_new.addActionListener(menuItem_newListener);
-			
-			ActionListener menuItem_closeListener = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.out.println("Close Class");
-					// add dialog
-					// ask for class name
-					// if the class name matches to the current class,
-					// set the class status in the db to closed
-					CloseClassDialog ccd = new CloseClassDialog(data);
-					ccd.setModal(true);
-					ccd.showDialog();
-				}
-			};
-			menuItem_close.addActionListener(menuItem_closeListener);
-			
-			ActionListener exitListener = new ActionListener(){
-				   public void actionPerformed(ActionEvent e){
-					   System.exit(0);
-					   }
-					};
-			menuItem_exit.addActionListener(exitListener);
 	}
-
 } 

@@ -10,31 +10,8 @@ public class Gradable {
 	private String note;
 	
 	public Gradable() {
-		
 	}
 	
-	// public Gradable(Gradable g) {
-		// this.name = g.getName();
-		// this.total = g.getPoints();
-		// this.type = g.getType();
-		// this.pointsLost = g.getPointsLost;
-		// this.IntraCategoryWeight = g.getIntraCategoryWeight();
-		// this.StudentWeight = g.getStudentWeight();
-		// this.String note = g.getNote();
-	// }
-
-	public int getTotal() {
-		return total;
-	}
-
-	public void setTotal(int total) {
-		this.total = total;
-	}
-
-	public void setType(Category type) {
-		this.type = type;
-	}
-
 	public Gradable(String name, int total, Category type, int IntraCategoryWeight) {
 		this.name = name;
 		this.total = total;
@@ -53,11 +30,31 @@ public class Gradable {
 		this.pointsLost = pointsLost;
 		this.note = note;
 	}
-		
+	
+	public void setTotal(int total) {
+		this.total = total;
+	}
+	
+	public int getTotal() {
+		return total;
+	}
+
+	public void setType(Category type) {
+		this.type = type;
+	}
+
+	public Category getType() {
+		return type;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public void setPointsLost(int pointsLost) {
 		this.pointsLost = pointsLost;
 	}
@@ -66,48 +63,40 @@ public class Gradable {
 		return pointsLost;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	public int getCategoryWeight(String studentType) {
-		return type.getWeight(studentType);
-	}
+	public void setIntraCategoryWeight(int weight) {
+		IntraCategoryWeight = weight;
+	}	
 	
 	public int getIntraCategoryWeight() {
 		return IntraCategoryWeight;
 	}
 	
-	public int getStudentWeight() {
-		return StudentWeight;
-	}
-	
-	public void setIntraCategoryWeight(int weight) {
-		IntraCategoryWeight = weight;
-	}
-	
 	public void setStudentWeight(int weight) {
 		StudentWeight = weight;
-	}
+	}	
 	
-	public int getPoints() {
-		return total;
+	public int getStudentWeight() {
+		return StudentWeight;
 	}
 	
 	public void setPoints(int p) {
 		total = p;
 	}
 
-	public Category getType() {
-		return type;
+	public int getPoints() {
+		return total;
+	}
+	
+	public void setNote(String n) {
+		note = n;
 	}
 
 	public String getNote() {
 		return note;
 	}
 	
-	public void setNote(String n) {
-		note = n;
+	public int getCategoryWeight(String studentType) {
+		return type.getWeight(studentType);
 	}
 	
 	public String toString() {
@@ -122,14 +111,6 @@ public class Gradable {
 		return this.type.getType().equals(type);
 	}	
 	
-	// public int getID() {
-		// return gradableId;
-	// }
-
-	// public void setID(int id) {
-		// gradableId = id;
-	// }
-
 	public Gradable copy() {
 		Gradable g = new Gradable(this.getName(),
 									this.getPoints(),
