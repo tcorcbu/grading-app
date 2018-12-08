@@ -45,6 +45,7 @@ public class SelectClass {
 		private void drawSelectClass(final JFrame mainframe) {
 			mainframe.setJMenuBar(null);
             mainframe.setTitle("Select Class");
+			
 			int width = 275;
 			int height = 150;
 			int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
@@ -85,7 +86,6 @@ public class SelectClass {
                 public void actionPerformed(ActionEvent e){
                     String mySelection = (String)classCombo.getSelectedItem();
                     if (!mySelection.equals("Select a class")){
-                    // } else {
 
                         Data data;
                         if (mySelection.equals("New Class")) {
@@ -100,22 +100,44 @@ public class SelectClass {
                         }
 						
 						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-						// mainframe.removeEventListener(WindowListener, listener[, options]);
-						mainframe.addWindowListener(new WindowAdapter()
-							{
-								@Override
-								public void windowClosing(WindowEvent e)
+						boolean class_open = ClassService.classIsOpen(Globals.class_id());
+						if(class_open) {
+							mainframe.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+							mainframe.addWindowListener(new WindowAdapter()
 								{
-									// if(class_open){
+									@Override
+									public void windowClosing(WindowEvent e)
+									{
+										Object[] options = {"Yes",
+															"No",
+															"Cancel"};
+										int n = JOptionPane.showOptionDialog(mainframe,
+											"Would you like to save before exiting?",
+											"Save",
+											JOptionPane.YES_NO_CANCEL_OPTION,
+											JOptionPane.QUESTION_MESSAGE,
+											null,
+											options,
+											options[0]);
+										
+										switch(n) {
+											case 0:
+												data.saveClass();
+												mainframe.dispose();
+												System.exit(0);
+											break;
+											case 1:
+												mainframe.dispose();
+												System.exit(0);
+											break;
 
-										CloseAppDialog cad = new CloseAppDialog(data, e);
-										cad.setModal(true);
-										cad.showDialog();
+										}
 
-									// }
-
-								}
-							});
+									}
+								});
+						} else {
+							mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						}
 						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 					
                         mainframe.remove(mainPanel);
