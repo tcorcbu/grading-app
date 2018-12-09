@@ -1,5 +1,5 @@
 package gui;
-// comment
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -9,34 +9,30 @@ import javax.swing.table.DefaultTableModel;
 
 public class LogIn{
 		
-		private String username = "";
-		private String password = "";
+		private static String username = "";
+		private static String password = "";
 		
 	public static void main(String[] args) {
-		LogIn li = new LogIn(new JFrame());
-	}
-		public LogIn(JFrame mainframe) {
-			drawLogIn(mainframe);
-		}
-		
+		JFrame mainframe = new JFrame();
+		drawLogIn(mainframe);
+	}		
 	
-	private void drawLogIn(final JFrame mainframe) {
-		System.out.println("LogIn to do list:");
-		System.out.println("> Change password getter to getPassword");
-		System.out.println("> Figure out how to set up a user profile");
-		System.out.println("> Figure out how to do authentication");
-		System.out.println();
-		
-		mainframe.setTitle("Log In");
-		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public static void sizeLogIn(final JFrame mainframe) {
 		mainframe.setSize( 275, 150 );
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - mainframe.getWidth()) / 2);
 		int y = (int) ((dimension.getHeight() - mainframe.getHeight()) / 2);
 		mainframe.setLocation(x, y);
+	}
+	
+	private static void drawLogIn(final JFrame mainframe) {
+		sizeLogIn(mainframe);
+		mainframe.setTitle("Log In");
+		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		final JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		
+		final JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		JLabel usernameLabel = new JLabel("Username");
 		final JTextField usernameField = new JTextField(10);
@@ -45,10 +41,10 @@ public class LogIn{
 		final JPasswordField passwordField = new JPasswordField(10);
 		
 		JButton jbtLogIn = new JButton("Log In");
-		jbtLogIn.setAlignmentX(panel.CENTER_ALIGNMENT);
+		jbtLogIn.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
 		
 		JButton jbtCreateAccount = new JButton( "Create Account" );
-		jbtCreateAccount.setAlignmentX(panel.CENTER_ALIGNMENT);
+		jbtCreateAccount.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
 		
 		JPanel unamePanel = new JPanel();
 		unamePanel.add(usernameLabel);
@@ -60,45 +56,40 @@ public class LogIn{
 		
 		final JLabel wrongpwd = new JLabel();
 		wrongpwd.setForeground (Color.red);
-		wrongpwd.setAlignmentX(panel.CENTER_ALIGNMENT);
+		wrongpwd.setAlignmentX(mainPanel.CENTER_ALIGNMENT);
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.add( jbtLogIn );
 		buttonPanel.add( jbtCreateAccount );		
 		
-		panel.add(unamePanel);
-		panel.add(pwordPanel);
-		panel.add(wrongpwd);
-		panel.add(buttonPanel);
+		mainPanel.add(unamePanel);
+		mainPanel.add(pwordPanel);
+		mainPanel.add(wrongpwd);
+		mainPanel.add(buttonPanel);
 		
-		mainframe.add(panel);
+		mainframe.add(mainPanel);
 		
 		ActionListener loginListener = new ActionListener(){
-			   public void actionPerformed(ActionEvent e){
-				   // System.out.println("Log In Pressed");
-				   // System.out.println( usernameField.getText() );
-				   // System.out.println( passwordField.getPassword() );
-				   
-				   if (username.equals(usernameField.getText()) && password.equals(passwordField.getText())) {
-					    mainframe.remove(panel);
-						SelectClass s = new SelectClass(mainframe);
-				   }else {
-					   wrongpwd.setText("Incorrect Username or Password");
-					   }
-				   }
-				};
-				
-		ActionListener createAccountListener = new ActionListener(){
-			   public void actionPerformed(ActionEvent e){
-				   System.out.println("Create Account Pressed");
-				   System.out.println( usernameField.getText() );
-				   System.out.println( passwordField.getPassword() );
-				   }
-				};
-		
+			public void actionPerformed(ActionEvent e){
+				if (username.equals(usernameField.getText()) && password.equals(passwordField.getText())) {
+					mainframe.remove(mainPanel);
+					SelectClass.drawSelectClass(mainframe);
+				}else {
+					wrongpwd.setText("Incorrect Username or Password");
+				}
+			}
+		};
 		jbtLogIn.addActionListener( loginListener );
-		jbtCreateAccount.addActionListener( createAccountListener );
 		
+		ActionListener createAccountListener = new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				System.out.println("Create Account Pressed");
+				System.out.println( usernameField.getText() );
+				System.out.println( passwordField.getPassword() );
+			}
+		};
+		jbtCreateAccount.addActionListener( createAccountListener );
+			
 		mainframe.setVisible( true );
 	}
 	

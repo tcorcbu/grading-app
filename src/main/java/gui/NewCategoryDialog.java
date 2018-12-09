@@ -15,9 +15,7 @@ public class NewCategoryDialog extends JDialog{
 	private ArrayList<Category> newCategories = new ArrayList<Category>();
 	
 	public NewCategoryDialog(final Data data) {
-		
 		this.setTitle("New Category");
-
 		this.setSize( 400, 250 );
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
@@ -38,20 +36,17 @@ public class NewCategoryDialog extends JDialog{
 		JPanel addPanel = new JPanel();
 		JPanel botPanel = new JPanel();
 		
-		
 		// END setup layout
 		
 		final JTextField nameTextField = new JTextField(10);
 		NumberFormat gWeightFormat;
 		gWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField gWeightTextField = new JFormattedTextField(gWeightFormat);
-		// gWeightTextField.setValue(new Integer(0));
 		gWeightTextField.setColumns(10);
 
 		NumberFormat uWeightFormat;
 		uWeightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField uWeightTextField = new JFormattedTextField(uWeightFormat);
-		// uWeightTextField.setValue(new Integer(0));
 		uWeightTextField.setColumns(10);
 				
 		nameInputPanel.add(nameTextField);
@@ -83,34 +78,14 @@ public class NewCategoryDialog extends JDialog{
 				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
 				
-				// Check student ID against the database and error if there is a conflict
 				newCategory = new Category(name,gWeight,uWeight);
-				data.addSaveCommand(CategoryService.insert(newCategory));
 				newCategories.add(newCategory);
 				data.addCategory(newCategory);
 				nameTextField.setText("");
-				// gWeightTextField.setText("");
-				// uWeightTextField.setText("");
 			}
 		};
 		addButton.addActionListener(addButtonListener);
-		
-		ActionListener addAndCloseButtonListener = new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				String name = nameTextField.getText();
-				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
-				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
-				// Check student ID against the database and error if there is a conflict
-				newCategory = new Category(name,gWeight,uWeight);
-				data.addSaveCommand(CategoryService.insert(newCategory));
-				// data.getCategories();
-				data.addCategory(newCategory);
-				newCategories.add(newCategory);
-				setVisible(false);
-			}
-		};
-		addAndClose.addActionListener(addAndCloseButtonListener);
-		
+
 		ActionListener CloseButtonListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -118,6 +93,8 @@ public class NewCategoryDialog extends JDialog{
 		};
 		closeButton.addActionListener(CloseButtonListener);
 		
+		addAndClose.addActionListener(addButtonListener);
+		addAndClose.addActionListener(CloseButtonListener);
 	}
 	
 	public void showDialog() {
