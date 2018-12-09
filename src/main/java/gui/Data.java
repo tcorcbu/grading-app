@@ -64,9 +64,16 @@ public class Data {
 	public void dropCategory(String gt) {
 		for(int i=0; i<categoryList.size(); i++) {
 			if(categoryList.get(i).getType().equals(gt)){
-				categoryList.remove(categoryList.get(i));
+				for(int j=0; j<gradableList.size(); j++){
+					if (gradableList.get(j).isType(categoryList.get(i).getType())) {
+						dropGradable(gradableList.get(j));
+						j-=1;
+					}
+				}
+				categoryList.remove(i);
 			}
 		}
+		
 		this.addSaveCommand(CategoryService.drop(gt));
 	}
 
@@ -105,11 +112,8 @@ public class Data {
 		this.addSaveCommand(GradableService.insert(newGradable));
 		
 		for(Student student : studentList){
-			Gradable gtemp = newGradable.copy();
-			gtemp.setPointsLost(newGradable.getPoints());
-			gtemp.setStudentWeight(100);
-			student.addGradable(gtemp);
-			this.addSaveCommand(GradeService.insert(gtemp,student));
+			student.addGrade(newGradable);
+			this.addSaveCommand(GradeService.insert(student.getGrade(newGradable.getName()),student));
 		}
 							
 	}
@@ -119,7 +123,7 @@ public class Data {
 		this.addSaveCommand(GradeService.drop(g));
 		
 		for (Student student : studentList) {
-			student.dropGradable(g);
+			student.dropGrade(g);
 		}
 					
 		gradableList.remove(g);
@@ -128,7 +132,6 @@ public class Data {
 				// gradableList.remove(gradableList.get(i));
 			// }
 		// }
-	    // loadGradables();
 	}
 		
 	public Student getStudent(int i) {
@@ -153,15 +156,9 @@ public class Data {
 		
         this.addSaveCommand(StudentClassService.insertStudentClass(newStudent.getSchoolID()));
 
-		for(int i=0; i<gradableList.size(); i++) {
-			Gradable g = new Gradable(gradableList.get(i).getName(),
-										gradableList.get(i).getPoints(),
-										gradableList.get(i).getType(),
-										gradableList.get(i).getIntraCategoryWeight(),
-										gradableList.get(i).getPoints(),
-										100,"");
-			newStudent.addGradable(g);
-			this.addSaveCommand(GradeService.insert(g,newStudent));
+		for(Gradable gradable : gradableList) {
+			newStudent.addGrade(gradable);
+			this.addSaveCommand(GradeService.insert(newStudent.getGrade(gradable.getName()),newStudent));
 		}
 	}
 	
@@ -208,9 +205,9 @@ public class Data {
         }
 
         for (Student student : studentList) {
-            student.setGradableList(GradeService.getAllGradablesForStudent(student));
-			for (Gradable gradable : student.getGradableList()) {
-				gradable.setType(findCategory(gradable.getType()));
+            student.setGradeList(GradeService.getAllGradablesForStudent(student));
+			for (Grade grade : student.getGradeList()) {
+				grade.setGradable(findGradable(grade.getGradable()));
 			}
         }
     }
@@ -239,6 +236,15 @@ public class Data {
 		ClassService.closeClass(Globals.class_id());
 	}
 
+    private Gradable findGradable(Gradable g) {
+		for (Gradable gradable : gradableList) {
+			if (gradable.getName().equals(g.getName())) {
+				return gradable;
+			}
+		}
+		return null;
+	}
+	
     private Category findCategory(Category c) {
 		for (Category category : categoryList) {
 			if (category.getType().equals(c.getType())) {
@@ -247,7 +253,7 @@ public class Data {
 		}
 		return null;
 	}
-
+	
 	public ArrayList<String> getStudentTypes() {
 		return studentTypes;
 	}
@@ -308,55 +314,70 @@ public class Data {
 	}
 
 	public int getClassMean() {
-		int mean = 0;
-		for (Student student : studentList) {
-			mean += student.getOverallPercent(categoryList);
+		if(studentList.size() == 0) {
+			return 0;
+		} else {
+			int mean = 0;
+			for (Student student : studentList) {
+				mean += student.getOverallPercent(categoryList);
+			}
+			return mean/studentList.size()+classCurve;
 		}
-		return mean/studentList.size()+classCurve;
 	}
 	
 	public int getClassMedian() {
-		Integer[] gradeList = new Integer[studentList.size()];
-		for (int i=0; i<studentList.size(); i++) {
-			gradeList[i] = studentList.get(i).getOverallPercent(categoryList);
+		if(studentList.size() == 0) {
+			return 0; 
+		}else{
+			Integer[] gradeList = new Integer[studentList.size()];
+			for (int i=0; i<studentList.size(); i++) {
+				gradeList[i] = studentList.get(i).getOverallPercent(categoryList);
+			}
+			Arrays.sort(gradeList);
+			int median;
+			if (gradeList.length % 2 == 0)
+				median = ((int)gradeList[gradeList.length/2] + (int)gradeList[gradeList.length/2 - 1])/2;
+			else
+				median = (int) gradeList[gradeList.length/2];
+			
+			return median+classCurve;
 		}
-		Arrays.sort(gradeList);
-		int median;
-		if (gradeList.length % 2 == 0)
-			median = ((int)gradeList[gradeList.length/2] + (int)gradeList[gradeList.length/2 - 1])/2;
-		else
-			median = (int) gradeList[gradeList.length/2];
-		
-		return median+classCurve;
 	}
 	
 	public int getClassStandardDeviation() {
-		//public static double stdev(int[] list){
-        int mean = 0;
-        int numi = 0;
+		if(studentList.size() == 0) {
+			return 0;
+		} else {
+			int mean = 0;
+			int numi = 0;
 
-        mean = getClassMean()-classCurve;
+			mean = getClassMean()-classCurve;
 
-        for (Student student : studentList) {
-            numi += (student.getOverallPercent(categoryList) - mean)*(student.getOverallPercent(categoryList) - mean);
-        }
-
-        return (int)Math.sqrt(numi/studentList.size());
+			for (Student student : studentList) {
+				numi += (student.getOverallPercent(categoryList) - mean)*(student.getOverallPercent(categoryList) - mean);
+			}
+		
+			return (int)Math.sqrt(numi/studentList.size());
+		}
     }
 
 	public int getGradableAverage(Gradable g) {
-		int sum = 0;
-		int total = 0;
-		for(Student s : studentList) {
-			Gradable gtmp = s.getGradable(g.getName());
-			sum += gtmp.getPointsLost();
-			total += gtmp.getPoints();
-		}
-		
-		if(total == 0){
+		if(studentList.size() == 0) {
 			return 0;
 		}else{
-		return (total-sum)*100/total;
+			int sum = 0;
+			int total = 0;
+			for(Student s : studentList) {
+				Grade gtmp = s.getGrade(g.getName());
+				sum += gtmp.getPointsLost();
+				total += gtmp.getPoints();
+			}
+			
+			if(total == 0){
+				return 0;
+			}else{
+			return (total-sum)*100/total;
+			}
 		}
 	}
 	

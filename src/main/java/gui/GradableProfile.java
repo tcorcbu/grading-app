@@ -95,7 +95,7 @@ public class GradableProfile {
 		
 		for (int i=0; i<data.nStudents(); i++){
 			Student stmp = data.getStudent(i);
-			Gradable gtmp = stmp.getGradable(g.getName());
+			Grade gtmp = stmp.getGrade(g.getName());
 			studentModel.addRow(new Object[]{stmp,gtmp.getPointsLost(),gtmp.getNote()});
 		}
 
@@ -183,17 +183,17 @@ public class GradableProfile {
 				int column = studentTable.getSelectedColumn();
 				
 				Student s = data.getStudent(row);
-				Gradable gradable = s.getGradable(g.getName());
+				Grade grade = s.getGrade(g.getName());
 				switch(column) {
 				case 1:
 					Integer tablePoints = Integer.parseInt(studentTable.getValueAt(row, column).toString());
-					gradable.setPointsLost(tablePoints);
-					data.addSaveCommand(GradeService.updatePointsLost(gradable, s.getSchoolID(),tablePoints));
+					grade.setPointsLost(tablePoints);
+					data.addSaveCommand(GradeService.updatePointsLost(grade, s.getSchoolID(),tablePoints));
 					break;
 				case 2:
 					String tableNote = studentTable.getValueAt(row,column).toString();
-					gradable.setNote(tableNote);
-					data.addSaveCommand(GradeService.updateComment(gradable,s.getSchoolID(),tableNote));
+					grade.setNote(tableNote);
+					data.addSaveCommand(GradeService.updateComment(grade,s.getSchoolID(),tableNote));
 					break;
 				}	
 		  }

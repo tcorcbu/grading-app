@@ -86,14 +86,13 @@ public class StudentProfile {
 			}
 		}
 		
-		for (int i=0; i<data.nGradables(); i++){
-			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g,g.getPointsLost(),g.getStudentWeight(),g.getNote()});
+		for (Grade grade : s.getGradeList()){
+			gradableModel.addRow(new Object[]{grade,grade.getPointsLost(),grade.getStudentWeight(),grade.getNote()});
 		}
 
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		JLabel gradeInfo = new JLabel("  Current Grade: A");
+		JLabel gradeInfo = new JLabel("  Current Grade: "+String.valueOf(s.getOverallPercent(data.getCategoryList())+data.getCurve()) + "%");
 		JButton backButton = new JButton("Home");
 		
 		// START Layout 
@@ -137,9 +136,9 @@ public class StudentProfile {
 			public void tableChanged(TableModelEvent e) {
 				int row = gradableTable.getSelectedRow();
 				int column = gradableTable.getSelectedColumn();
-				String gradableName = gradableTable.getValueAt(row,0).toString();
+				Grade g = (Grade)gradableTable.getValueAt(row,0);
 
-				Gradable g = s.getGradable(gradableName);
+				// Grade g = s.getGrade(gradableName);
 				switch(column) {
 				case 1:
 					Integer tablePoints = Integer.parseInt(gradableTable.getValueAt(row, column).toString());
@@ -157,6 +156,7 @@ public class StudentProfile {
 					data.addSaveCommand(GradeService.updateComment(g,s.getSchoolID(),tableNote));
 					break;
 				}	
+				gradeInfo.setText("  Current Grade: "+String.valueOf(s.getOverallPercent(data.getCategoryList())+data.getCurve()) + "%");
 			}
 		});
 		
@@ -166,9 +166,9 @@ public class StudentProfile {
 				int column = gradableTable.getSelectedColumn();
 				
 				if (e.getClickCount() == 2 && column == 0) {
-					Gradable gradable = (Gradable)gradableTable.getValueAt(row,column);
+					Grade grade = (Grade)gradableTable.getValueAt(row,column);
 					mainframe.remove(mainPanel);
-					GradableProfile.drawGradableProfile(mainframe,data,data.getGradable(gradable.getName()));
+					GradableProfile.drawGradableProfile(mainframe,data,grade.getGradable());
 				}
 			}
 		});

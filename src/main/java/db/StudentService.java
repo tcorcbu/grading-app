@@ -5,6 +5,7 @@ import gui.Student;
 import java.sql.*;
 
 public class StudentService {
+	
     public static PreparedStatement insertStudent(Student student){
         Connection conn = MySqlConnection.getConnection();
         String sql = "INSERT INTO Students (school_id,name,type) VALUES(?,?,?)";
@@ -25,11 +26,11 @@ public class StudentService {
     public static PreparedStatement dropStudent(Student student) {
         Connection conn = MySqlConnection.getConnection();
         String sql = "DELETE FROM Students WHERE school_id = ?";
+		// Should we delete all records from the grades table too? (yes)
         PreparedStatement statement = null;
         try{
             statement = conn.prepareStatement(sql);
             statement.setString(1, student.getSchoolID());
-            // statement.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
         }

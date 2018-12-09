@@ -44,7 +44,6 @@ public class Category {
 		} else {
 			return UndergradWeight;
 		}
-
 	}
 
 	public String toString() {

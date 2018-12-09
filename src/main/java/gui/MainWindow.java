@@ -334,6 +334,20 @@ public class MainWindow {
 				final JTextField sidTextField = new JTextField(10);
 				final JComboBox<Object> yearCombo = new JComboBox<Object>(yearOptions);
 				
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)studentsTree.getLastSelectedPathComponent();
+				if(node != null) {
+					if (node.getUserObject() instanceof String) {
+						String selectedYear = (String)node.getUserObject();
+						yearCombo.setSelectedItem(selectedYear);
+					} else{
+						if (node.getUserObject() instanceof Student) {
+							Student selectedStudent = (Student)node.getUserObject();
+							String selectedYear = selectedStudent.getYear();
+							yearCombo.setSelectedItem(selectedYear);
+						}
+					}
+				}
+				
 				fnameInputPanel.add(fnameTextField);
 				lnameInputPanel.add(lnameTextField);
 				sidInputPanel.add(sidTextField);

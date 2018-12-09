@@ -1,6 +1,7 @@
 package db;
 
 import gui.Gradable;
+import gui.Grade;
 import gui.Student;
 import db.Globals;
 
@@ -15,7 +16,7 @@ public class GradeService {
 
     private GradeService(){};
 
-    public static PreparedStatement insert(Gradable gradable, Student student) {
+    public static PreparedStatement insert(Grade grade, Student student) {
 
         Connection conn = MySqlConnection.getConnection();
         String query = "INSERT INTO Grades (school_id, gradable_name, class_id, points_lost, student_weight, comment) VALUES(?,?,?,?,?,?)";
@@ -23,12 +24,11 @@ public class GradeService {
         try {
             statement = conn.prepareStatement(query);
             statement.setString(1,student.getSchoolID());
-            statement.setString(2,gradable.getName());
+            statement.setString(2,grade.getGradable().getName());
 			statement.setInt(3,Globals.class_id());
-            statement.setInt(4,gradable.getPoints());
-            statement.setInt(5,100);
-            statement.setString(6,"");
-            // statement.executeUpdate();
+            statement.setInt(4,grade.getPoints());
+            statement.setInt(5,grade.getStudentWeight());
+            statement.setString(6,grade.getNote());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,15 +43,15 @@ public class GradeService {
             statement = conn.prepareStatement(sql);
 			statement.setString(1,gradable.getName());
             statement.setInt(2,Globals.class_id());
-            // statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 		return statement;
     }
 	
-    public static ArrayList<Gradable> getAllGradablesForStudent(Student student) {
+    public static ArrayList<Grade> getAllGradablesForStudent(Student student) {
         ArrayList<Gradable>res = GradableService.getAll(Globals.class_id());
+		ArrayList<Grade>gradeList = new ArrayList<Grade>();
         Connection conn = MySqlConnection.getConnection();
         for (Gradable gradable : res) {
             String query = "SELECT * FROM Grades WHERE school_id = ? AND gradable_name = ? AND class_id = ?";
@@ -62,43 +62,44 @@ public class GradeService {
 				statement.setInt(3, Globals.class_id());
 				
                 ResultSet rs = statement.executeQuery();
+				Grade grade = new Grade(gradable);
                 while (rs.next()) {
-                    gradable.setPointsLost(rs.getInt("points_lost"));
-                    gradable.setStudentWeight(rs.getInt("student_weight"));
-                    gradable.setNote(rs.getString("comment"));
+                    grade.setPointsLost(rs.getInt("points_lost"));
+                    grade.setStudentWeight(rs.getInt("student_weight"));
+                    grade.setNote(rs.getString("comment"));
                 }
+				gradeList.add(grade);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return res;
+        return gradeList;
     }
 
-	public static PreparedStatement updatePointsLost(Gradable gradable, String school_id, int pl) {
+	public static PreparedStatement updatePointsLost(Grade grade, String school_id, int pl) {
 		Connection conn = MySqlConnection.getConnection();
         String query = "UPDATE Grades SET points_lost = ? WHERE gradable_name = ? AND school_id = ? AND class_id = ?";
 		PreparedStatement statement = null;
         try {
             statement = conn.prepareStatement(query);
             statement.setInt(1, pl);
-            statement.setString(2,gradable.getName());
+            statement.setString(2,grade.getGradable().getName());
 			statement.setString(3,school_id);
 			statement.setInt(4,Globals.class_id());
-            // statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 		return statement;
 	}
 	
-	public static PreparedStatement updateStudentWeight(Gradable gradable, String school_id, int sw) {
+	public static PreparedStatement updateStudentWeight(Grade grade, String school_id, int sw) {
 		Connection conn = MySqlConnection.getConnection();
         String query = "UPDATE Grades SET student_weight = ? WHERE gradable_name = ? AND school_id = ? AND class_id = ?";
 		PreparedStatement statement = null;
         try {
             statement = conn.prepareStatement(query);
             statement.setInt(1, sw);
-            statement.setString(2,gradable.getName());
+            statement.setString(2,grade.getGradable().getName());
 			statement.setString(3,school_id);
 			statement.setInt(4,Globals.class_id());
             // statement.executeUpdate();
@@ -108,17 +109,16 @@ public class GradeService {
 		return statement;
 	}
 	
-	public static PreparedStatement updateComment(Gradable gradable, String school_id, String c) {
+	public static PreparedStatement updateComment(Grade grade, String school_id, String c) {
 		Connection conn = MySqlConnection.getConnection();
         String query = "UPDATE Grades SET comment = ? WHERE gradable_name = ? AND school_id = ? AND class_id = ?";
 		PreparedStatement statement = null;
         try {
             statement = conn.prepareStatement(query);
             statement.setString(1, c);
-            statement.setString(2,gradable.getName());
+            statement.setString(2,grade.getGradable().getName());
 			statement.setString(3,school_id);
 			statement.setInt(4,Globals.class_id());
-            // statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -132,7 +132,6 @@ public class GradeService {
         try {
             statement = conn.prepareStatement(query);
             statement.setString(1, school_id);
-            // statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

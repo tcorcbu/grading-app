@@ -4,10 +4,7 @@ public class Gradable {
 	private String name;
 	private int total;
 	private Category type;
-	private int pointsLost;
 	private int IntraCategoryWeight;
-	private int StudentWeight;
-	private String note;
 	
 	public Gradable() {
 	}
@@ -16,20 +13,9 @@ public class Gradable {
 		this.name = name;
 		this.total = total;
 		this.type = type;
-		this.IntraCategoryWeight = IntraCategoryWeight;
-		this.pointsLost = total;
 		this.IntraCategoryWeight = 100;
 	}
 		
-	public Gradable(String name, int total, Category type,int IntraCategoryWeight,int pointsLost,int StudentWeight,String note) {
-		this.name = name;
-		this.total = total;
-		this.type = type;
-		this.IntraCategoryWeight = IntraCategoryWeight;
-		this.StudentWeight = StudentWeight;
-		this.pointsLost = pointsLost;
-		this.note = note;
-	}
 	
 	public void setTotal(int total) {
 		this.total = total;
@@ -54,14 +40,6 @@ public class Gradable {
 	public String getName() {
 		return name;
 	}
-
-	public void setPointsLost(int pointsLost) {
-		this.pointsLost = pointsLost;
-	}
-	
-	public int getPointsLost() {
-		return pointsLost;
-	}
 	
 	public void setIntraCategoryWeight(int weight) {
 		IntraCategoryWeight = weight;
@@ -69,14 +47,6 @@ public class Gradable {
 	
 	public int getIntraCategoryWeight() {
 		return IntraCategoryWeight;
-	}
-	
-	public void setStudentWeight(int weight) {
-		StudentWeight = weight;
-	}	
-	
-	public int getStudentWeight() {
-		return StudentWeight;
 	}
 	
 	public void setPoints(int p) {
@@ -87,32 +57,12 @@ public class Gradable {
 		return total;
 	}
 	
-	public void setNote(String n) {
-		note = n;
-	}
-
-	public String getNote() {
-		return note;
-	}
-	
-	public boolean hasNote() {
-		if(note == null || note.length()<1) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
 	public int getCategoryWeight(String studentType) {
 		return type.getWeight(studentType);
 	}
 	
 	public String toString() {
 		return name;
-	}
-
-	public int getPercentage() {
-		return (total-pointsLost)*100/total;
 	}
 	
 	public boolean isType(String type) {
@@ -123,10 +73,7 @@ public class Gradable {
 		Gradable g = new Gradable(this.getName(),
 									this.getPoints(),
 									this.getType(),
-									this.getIntraCategoryWeight(),
-									this.getPointsLost(),
-									this.getStudentWeight(),
-									this.getNote());
+									this.getIntraCategoryWeight());
 		return g;
 	}
 }

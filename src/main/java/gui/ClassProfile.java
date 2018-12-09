@@ -114,7 +114,7 @@ public class ClassProfile {
 
 				Student student = (Student)gradeTable.getValueAt(row,0);
 				String gradableName = getColumnName(column);
-				Gradable gtmp = student.getGradable(gradableName);
+				Grade gtmp = student.getGrade(gradableName);
 				
 				if(gtmp.getNote() != null && gtmp.getNote().length() > 0) {
 					tip = student.getName() + ": " + gtmp.getNote();
@@ -284,10 +284,8 @@ public class ClassProfile {
 						}
 					}
 
-					categoryTableModel.removeTableModelListener(categoryTableListener);
 					categoryTableModel.setValueAt(String.valueOf(data.sumUndergradCategories()),0,1);
 					categoryTableModel.setValueAt(String.valueOf(data.sumGradCategories()),1,1);
-					categoryTableModel.addTableModelListener(categoryTableListener);
 					
 					gradeTableModel.addColumn(addedCategories.get(i).getType());
 					for(int j=0; j<data.nStudents(); j++){
@@ -350,7 +348,7 @@ public class ClassProfile {
 
 						Object[] rowValues = new Object[nInCategory+1];
 						for (int j=0; j<nInCategory; j++) {
-							Gradable gtmp = stmp.getGradable(breakoutGradables.get(j).getName());
+							Grade gtmp = stmp.getGrade(breakoutGradables.get(j).getName());
 							if(gtmp.hasNote()){
 								rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%*";
 							} else {
