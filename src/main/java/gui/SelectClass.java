@@ -92,7 +92,7 @@ public class SelectClass {
 						mainframe.addWindowListener(new WindowAdapter(){
 							@Override
 							public void windowClosing(WindowEvent e){
-								if (data.needSave()){
+								if (data.needSave() && ClassService.classIsOpen(Globals.class_id())){
 									Object[] options = {"Yes","No","Cancel"};
 									int n = JOptionPane.showOptionDialog(mainframe,
 										"Would you like to save before exiting?","Save",
@@ -130,6 +130,15 @@ public class SelectClass {
                     String mySelection = (String)oldClassCombo.getSelectedItem();
                     if (!mySelection.equals("Select an old class")){
                         Data data = new Data(mySelection);
+						
+						mainframe.addWindowListener(new WindowAdapter(){
+							@Override
+							public void windowClosing(WindowEvent e){
+								mainframe.dispose();
+								System.exit(0);
+							}
+						});
+						
                         mainframe.remove(mainPanel);
 						MainWindow.sizeMainWindow(mainframe);
                         MainWindow.drawMainWindow(mainframe,data);
