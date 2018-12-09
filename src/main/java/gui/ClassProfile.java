@@ -180,6 +180,7 @@ public class ClassProfile {
 		final TableColumnModel categoryTableColumnModel = categoryTableHeader.getColumnModel();
 		
 		JScrollPane categoryTablePane = new JScrollPane(categoryTable);
+		categoryTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 		Dimension d = categoryTable.getPreferredSize();
 		categoryTablePane.setPreferredSize(new Dimension(d.width,categoryTable.getRowHeight()*4+3));
 
