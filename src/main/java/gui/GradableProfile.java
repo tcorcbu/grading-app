@@ -18,16 +18,21 @@ public class GradableProfile {
 		mainframe.setTitle("Gradable Profile");
 		MainWindow.drawMenuBar(mainframe,data);
 			
+		JPanel classSummaryPanel = new JPanel();
+		classSummaryPanel.setLayout(new GridLayout(1,1));
+		
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
 		JPanel infoPanel = new JPanel();
-		infoPanel.setLayout(new GridLayout(2,7));
+		infoPanel.setLayout(new GridLayout(2,6));
 		
 		JPanel botPanel = new JPanel();
 		botPanel.setLayout(new BorderLayout());
 		
 		JPanel backButtonPanel = new JPanel();
+		
+		JButton classSummary = new JButton("View Class Summary");
 		
 		infoPanel.add(new JLabel("Title: "));
 		infoPanel.add(new JLabel("Category: "));
@@ -35,7 +40,6 @@ public class GradableProfile {
 		infoPanel.add(new JLabel("Graduate Weight:"));
 		infoPanel.add(new JLabel("Total Points: "));
 		infoPanel.add(new JLabel("Gradable Weight: "));
-		infoPanel.add(new JLabel("Average: "));
 		infoPanel.add(new JLabel(g.getName()));
 		infoPanel.add(new JLabel(g.getType().getType()));
 		infoPanel.add(new JLabel(String.valueOf(g.getType().getWeight("Undergraduate"))+"%"));
@@ -45,17 +49,15 @@ public class GradableProfile {
 		pointsFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField gradablePoints = new JFormattedTextField(pointsFormat);
 		gradablePoints.setValue(g.getPoints());
-		gradablePoints.setColumns(10);	
+		gradablePoints.setColumns(8);	
 		infoPanel.add(gradablePoints);
 		
 		NumberFormat weightFormat;
 		weightFormat = NumberFormat.getNumberInstance();
 		final JFormattedTextField gradableWeight = new JFormattedTextField(weightFormat);
 		gradableWeight.setValue(g.getIntraCategoryWeight());
-		gradableWeight.setColumns(10);
+		gradableWeight.setColumns(8);
 		infoPanel.add(gradableWeight);
-		
-		infoPanel.add(new JLabel("NEED AVG"));
 
 		DefaultTableModel studentModel = new DefaultTableModel() {
 			public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -94,17 +96,25 @@ public class GradableProfile {
 		for (int i=0; i<data.nStudents(); i++){
 			Student stmp = data.getStudent(i);
 			Gradable gtmp = stmp.getGradable(g.getName());
-			studentModel.addRow(new Object[]{stmp.getFirstName()+" "+stmp.getLastName(),gtmp.getPointsLost(),gtmp.getNote()});
+			studentModel.addRow(new Object[]{stmp,gtmp.getPointsLost(),gtmp.getNote()});
 		}
 
 		final JScrollPane studentTablePane = new JScrollPane(studentTable);
+		
+		JLabel gradeInfo = new JLabel("  Gradable Average: "+String.valueOf(data.getGradableAverage(g))+"%");		
+		
+		JButton backButton = new JButton("Home");
 
-		JButton backButton = new JButton("Back");
-
-		// START Layout 				
+		// START Layout 
+		
 		backButtonPanel.add(backButton);
+		
+		botPanel.add(gradeInfo,BorderLayout.WEST);
 		botPanel.add(backButtonPanel,BorderLayout.EAST);
 
+		classSummaryPanel.add(classSummary);
+		
+		mainPanel.add(classSummaryPanel);
 		mainPanel.add(infoPanel);
 		mainPanel.add(studentTablePane);
 		mainPanel.add(botPanel);
@@ -116,6 +126,14 @@ public class GradableProfile {
 		// END Layout
 		
 		// START Action Listeners
+		
+		classSummary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainframe.remove(mainPanel);
+				ClassProfile.drawClassProfile(mainframe, data);
+			}
+		});
+		
 		backButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				mainframe.remove(mainPanel);
@@ -179,6 +197,19 @@ public class GradableProfile {
 					break;
 				}	
 		  }
+		});
+		
+		studentTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = studentTable.getSelectedRow();
+				int column = studentTable.getSelectedColumn();
+				
+				if (e.getClickCount() == 2 && column == 0) {
+					Student student = (Student)studentTable.getValueAt(row,column);
+					mainframe.remove(mainPanel);
+					StudentProfile.drawStudentProfile(mainframe,data,student);
+				}
+			}
 		});
 		// END Action Listeners
 	}

@@ -131,6 +131,7 @@ public class SelectClass {
                     if (!mySelection.equals("Select an old class")){
                         Data data = new Data(mySelection);
                         mainframe.remove(mainPanel);
+						MainWindow.sizeMainWindow(mainframe);
                         MainWindow.drawMainWindow(mainframe,data);
                     }
                 }

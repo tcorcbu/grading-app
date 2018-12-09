@@ -44,11 +44,12 @@ public class ClassService {
     //insert a new class into db
     public static void insertClass(String className){
         Connection conn = MySqlConnection.getConnection();
-        String query = "INSERT INTO Classes (name,status) VALUES(?,?)";
+        String query = "INSERT INTO Classes (name,status,curve) VALUES(?,?,?)";
         try {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, className);
             statement.setString(2, "open");
+			statement.setInt(3,0);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,6 +66,37 @@ public class ClassService {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 res = new Integer(rs.getInt("class_id"));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+	
+	public static PreparedStatement setCurve(int curve) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE classes SET curve = ? WHERE class_id = ?";
+		PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(query);
+            statement.setInt(1, curve);
+            statement.setInt(2,Globals.class_id());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		return statement;
+	}
+	
+    public static Integer getCurve(){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT curve FROM Classes WHERE class_id = ?";
+        Integer res = null;
+        try{
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1,Globals.class_id());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res = new Integer(rs.getInt("curve"));
             }
         } catch (SQLException e){
             e.printStackTrace();

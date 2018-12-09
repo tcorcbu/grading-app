@@ -15,6 +15,7 @@ public class Data {
 	private ArrayList<String> studentTypes = new ArrayList<String>();
 	private ArrayList<Category> categoryList = new ArrayList<Category>();
 	private ArrayList<PreparedStatement> saveCommand = new ArrayList<PreparedStatement>();
+	private int classCurve;
 
 
 	public Data() {
@@ -31,6 +32,7 @@ public class Data {
         loadCategories();
         loadGradables();
         loadStudents();
+		classCurve = ClassService.getCurve();
 	}
 	
 	public void setLoadedClass(String lc) {
@@ -60,12 +62,11 @@ public class Data {
 	}
 	
 	public void dropCategory(String gt) {
-		categoryList.remove(gt);
-		// for(int i=0; i<categoryList.size(); i++) {
-			// if(categoryList.get(i).getType().equals(gt)){
-				// categoryList.remove(categoryList.get(i));
-			// }
-		// }
+		for(int i=0; i<categoryList.size(); i++) {
+			if(categoryList.get(i).getType().equals(gt)){
+				categoryList.remove(categoryList.get(i));
+			}
+		}
 		this.addSaveCommand(CategoryService.drop(gt));
 	}
 
@@ -133,7 +134,17 @@ public class Data {
 	public Student getStudent(int i) {
 		return studentList.get(i);
 	}
-		
+	
+	public Student getStudent(String name) {
+		Student s = new Student();
+		for (int i = 0; i<studentList.size(); i++) {
+			if(studentList.get(i).getName().equals(name)) {
+				s =  studentList.get(i);
+			}
+		}
+		return s;
+	}
+	
 	public void addStudent(Student newStudent) {
 		studentList.add(newStudent);
 		if(!StudentService.studentInDb(newStudent)){
@@ -168,6 +179,15 @@ public class Data {
 		return studentTypes;
 	}
 		
+	public void setCurve(int c) {
+		classCurve = c;
+		this.addSaveCommand(ClassService.setCurve(c));
+	}
+	
+	public int getCurve() {
+		return classCurve;
+	}
+	
 	public void loadCategories(){
 	    this.categoryList = CategoryService.getAll(Globals.class_id());
     }
@@ -292,7 +312,7 @@ public class Data {
 		for (Student student : studentList) {
 			mean += student.getOverallPercent(categoryList);
 		}
-		return mean/studentList.size();
+		return mean/studentList.size()+classCurve;
 	}
 	
 	public int getClassMedian() {
@@ -307,7 +327,7 @@ public class Data {
 		else
 			median = (int) gradeList[gradeList.length/2];
 		
-		return median;
+		return median+classCurve;
 	}
 	
 	public int getClassStandardDeviation() {
@@ -315,7 +335,7 @@ public class Data {
         int mean = 0;
         int numi = 0;
 
-        mean = getClassMean();
+        mean = getClassMean()-classCurve;
 
         for (Student student : studentList) {
             numi += (student.getOverallPercent(categoryList) - mean)*(student.getOverallPercent(categoryList) - mean);
@@ -323,4 +343,21 @@ public class Data {
 
         return (int)Math.sqrt(numi/studentList.size());
     }
+
+	public int getGradableAverage(Gradable g) {
+		int sum = 0;
+		int total = 0;
+		for(Student s : studentList) {
+			Gradable gtmp = s.getGradable(g.getName());
+			sum += gtmp.getPointsLost();
+			total += gtmp.getPoints();
+		}
+		
+		if(total == 0){
+			return 0;
+		}else{
+		return (total-sum)*100/total;
+		}
+	}
+	
 }

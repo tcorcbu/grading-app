@@ -19,6 +19,9 @@ public class StudentProfile {
 		final JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		
+		JPanel classSummaryPanel = new JPanel();
+		classSummaryPanel.setLayout(new GridLayout(1,1));
+		
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,4));
 
@@ -27,7 +30,7 @@ public class StudentProfile {
 		JPanel botPanel = new JPanel();
 		botPanel.setLayout(new BorderLayout());
 		
-		
+		JButton classSummary = new JButton("View Class Summary");
 		
 		infoPanel.add(new JLabel("First Name: "));
 		infoPanel.add(new JLabel("Last Name: "));
@@ -85,16 +88,13 @@ public class StudentProfile {
 		
 		for (int i=0; i<data.nGradables(); i++){
 			Gradable g = s.getGradable(i);
-			gradableModel.addRow(new Object[]{g.getName(),g.getPointsLost(),g.getStudentWeight(),g.getNote()});
+			gradableModel.addRow(new Object[]{g,g.getPointsLost(),g.getStudentWeight(),g.getNote()});
 		}
 
 		JScrollPane gradableTablePane = new JScrollPane(gradableTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		JLabel gradeInfo = new JLabel("  Current Grade: A");
-		JButton backButton = new JButton("Back");
-		
-		
-		
+		JButton backButton = new JButton("Home");
 		
 		// START Layout 
 		
@@ -103,6 +103,9 @@ public class StudentProfile {
 		botPanel.add(gradeInfo,BorderLayout.WEST);
 		botPanel.add(backButtonPanel,BorderLayout.EAST);
 
+		classSummaryPanel.add(classSummary);
+		
+		mainPanel.add(classSummaryPanel);
 		mainPanel.add(infoPanel);
 		// mainPanel.add(Box.createHorizontalStrut(50));
 		mainPanel.add(gradableTablePane);
@@ -115,6 +118,14 @@ public class StudentProfile {
 		// END Layout
 		
 		// START Action Listeners
+		
+		classSummary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainframe.remove(mainPanel);
+				ClassProfile.drawClassProfile(mainframe, data);
+			}
+		});
+		
 		backButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				mainframe.remove(mainPanel);
@@ -146,6 +157,19 @@ public class StudentProfile {
 					data.addSaveCommand(GradeService.updateComment(g,s.getSchoolID(),tableNote));
 					break;
 				}	
+			}
+		});
+		
+		gradableTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = gradableTable.getSelectedRow();
+				int column = gradableTable.getSelectedColumn();
+				
+				if (e.getClickCount() == 2 && column == 0) {
+					Gradable gradable = (Gradable)gradableTable.getValueAt(row,column);
+					mainframe.remove(mainPanel);
+					GradableProfile.drawGradableProfile(mainframe,data,data.getGradable(gradable.getName()));
+				}
 			}
 		});
 		// END Action Listeners

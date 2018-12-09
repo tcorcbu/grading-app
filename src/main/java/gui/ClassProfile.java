@@ -9,6 +9,7 @@ import javax.swing.table.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.lang.Math.*;
+import java.text.*;
 
 import db.CategoryService;
 
@@ -45,9 +46,13 @@ public class ClassProfile {
 		JLabel meanLabel = new JLabel("  Mean: "+String.valueOf(data.getClassMean())+"%  ");
 		JLabel medianLabel = new JLabel("  Median: "+String.valueOf(data.getClassMedian())+"%  ");
 		JLabel StandardDeviationLabel = new JLabel("  Standard Deviation: "+String.valueOf(data.getClassStandardDeviation())+"%  ");
-		statsPanel.add(meanLabel);
-		statsPanel.add(medianLabel);
-		statsPanel.add(StandardDeviationLabel);
+		
+		JLabel curveLabel = new JLabel("Curve");
+		NumberFormat curveFormat;
+		curveFormat = NumberFormat.getNumberInstance();
+		final JFormattedTextField curveField = new JFormattedTextField(curveFormat);
+		curveField.setValue(data.getCurve());
+		curveField.setColumns(5);
 		
 		// START Grade Table
 		class myTableModel extends DefaultTableModel {
@@ -68,14 +73,18 @@ public class ClassProfile {
 		}
 		
 		// Add rows
-		String[] gradeTableRow = new String[data.getCategoryList().size()+2];
+		Object[] gradeTableRow = new Object[data.getCategoryList().size()+2];
 		
 		for (int i=0; i<data.nStudents(); i++){
 			Student stmp = data.getStudent(i);
-			gradeTableRow[0] = stmp.getFirstName()+" "+stmp.getLastName();
-			gradeTableRow[1] = String.valueOf(stmp.getOverallPercent(data.getCategoryList())) + "%";
+			gradeTableRow[0] = stmp;
+			gradeTableRow[1] = String.valueOf(stmp.getOverallPercent(data.getCategoryList())+data.getCurve()) + "%";
 			for (int j=2; j<gradeTableRow.length; j++) {
-				gradeTableRow[j] = String.valueOf(stmp.getCategoryAverage(data.CategoryList(j-2).getType()))+"%";
+				if(stmp.hasCategoryNote(data.CategoryList(j-2))) {
+					gradeTableRow[j] = String.valueOf(stmp.getCategoryAverage(data.CategoryList(j-2).getType()))+"%*";
+				}else{
+					gradeTableRow[j] = String.valueOf(stmp.getCategoryAverage(data.CategoryList(j-2).getType()))+"%";
+				}
 			}
 			gradeTableModel.addRow(gradeTableRow);
 		}
@@ -95,7 +104,25 @@ public class ClassProfile {
 		// START Breakout Table
 		
 		final myTableModel breakoutTableModel = new myTableModel();
-		final JTable breakoutTable = new JTable(breakoutTableModel);
+		
+		final JTable breakoutTable = new JTable(breakoutTableModel) {
+			public String getToolTipText(MouseEvent e) {
+				ToolTipManager.sharedInstance().setInitialDelay(0);
+                String tip = null;
+                int row = rowAtPoint(e.getPoint());
+                int column = columnAtPoint(e.getPoint());
+
+				Student student = (Student)gradeTable.getValueAt(row,0);
+				String gradableName = getColumnName(column);
+				Gradable gtmp = student.getGradable(gradableName);
+				
+				if(gtmp.getNote() != null && gtmp.getNote().length() > 0) {
+					tip = student.getName() + ": " + gtmp.getNote();
+				}
+				
+                return tip;
+            }
+		};
 		breakoutTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JScrollPane breakoutTablePane = new JScrollPane(breakoutTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -159,12 +186,10 @@ public class ClassProfile {
 		// END Category Table
 		
 		// START buttons
-		JLabel curveLabel = new JLabel("Curve");
-		JTextField curveField = new JTextField(10);
 		
 		JButton addCategoryButton = new JButton("Add Category");
 		JButton removeCategoryButton = new JButton("Remove Category");
-		JButton backButton = new JButton("Back");
+		JButton backButton = new JButton("Home");
 		
 		//END buttons
 		
@@ -179,6 +204,8 @@ public class ClassProfile {
 		
 		addRemoveCategoryPanel.add(addCategoryButton);
 		addRemoveCategoryPanel.add(removeCategoryButton);
+		
+		
 		backButtonPanel.add(backButton);
 		
 		// categoryTablePanel.add(addRemoveCategoryPanel);
@@ -186,7 +213,11 @@ public class ClassProfile {
 		curvePanel.add(curveLabel);
 		curvePanel.add(curveField);
 		
-		// buttonPanel.add(curvePanel,BorderLayout.WEST);
+		statsPanel.add(meanLabel);
+		statsPanel.add(medianLabel);
+		statsPanel.add(StandardDeviationLabel);
+		statsPanel.add(curvePanel);
+		
 		buttonPanel.add(addRemoveCategoryPanel,BorderLayout.WEST);
 		buttonPanel.add(backButtonPanel,BorderLayout.EAST);
 		
@@ -233,7 +264,7 @@ public class ClassProfile {
 		};
 		categoryTableModel.addTableModelListener(categoryTableListener);
 		
-		ActionListener addCategoryListener = new ActionListener(){
+		addCategoryButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				NewCategoryDialog ncd = new NewCategoryDialog(data);
 				ncd.setModal(true);
@@ -253,6 +284,11 @@ public class ClassProfile {
 						}
 					}
 
+					categoryTableModel.removeTableModelListener(categoryTableListener);
+					categoryTableModel.setValueAt(String.valueOf(data.sumUndergradCategories()),0,1);
+					categoryTableModel.setValueAt(String.valueOf(data.sumGradCategories()),1,1);
+					categoryTableModel.addTableModelListener(categoryTableListener);
+					
 					gradeTableModel.addColumn(addedCategories.get(i).getType());
 					for(int j=0; j<data.nStudents(); j++){
 						gradeTableModel.setValueAt("0%",j,gradeTableModel.getColumnCount()-1);
@@ -271,8 +307,7 @@ public class ClassProfile {
 				categoryTableModel.addTableModelListener(categoryTableListener);
 				categoryTable.repaint();
 			   }
-			};
-		addCategoryButton.addActionListener(addCategoryListener);
+			});
 		
 		removeCategoryButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -280,10 +315,15 @@ public class ClassProfile {
 				data.dropCategory(gt);
 				gradeTable.removeColumn(gradeTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
 				categoryTable.removeColumn(categoryTable.getColumnModel().getColumn(categoryTable.getSelectedColumn()));
+				
+				categoryTableModel.removeTableModelListener(categoryTableListener);
+				categoryTableModel.setValueAt(String.valueOf(data.sumUndergradCategories()),0,1);
+				categoryTableModel.setValueAt(String.valueOf(data.sumGradCategories()),1,1);
+				categoryTableModel.addTableModelListener(categoryTableListener);
 			}
 		});
 		
-		MouseAdapter TableHeaderMouseListener = new MouseAdapter() {
+		MouseAdapter gradeTableBreakoutListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int column = gradeTable.columnAtPoint(e.getPoint());
 				if(column>1){
@@ -292,8 +332,6 @@ public class ClassProfile {
 					String category = gradeTable.getColumnName(column);
 					int nColumns = gradeTable.getColumnCount();
 					
-					TableColumnModel breakoutModel = breakoutTable.getColumnModel();
-
 					breakoutTableModel.setColumnCount(0);
 					breakoutTableModel.setRowCount(0);
 					
@@ -301,7 +339,7 @@ public class ClassProfile {
 					ArrayList<Gradable> breakoutGradables = new ArrayList<Gradable>();
 					for (int i=0; i< data.nGradables(); i++) {
 						if (data.getGradable(i).isType(category)) {
-							breakoutTableModel.addColumn(data.getGradable(i).getName());
+							breakoutTableModel.addColumn(data.getGradable(i));
 							breakoutGradables.add(data.getGradable(i));
 							nInCategory += 1;
 						}
@@ -310,10 +348,15 @@ public class ClassProfile {
 					for (int i=0; i<data.nStudents(); i++){
 						Student stmp = data.getStudent(i);
 
-						String[] rowValues = new String[nInCategory+1];
+						Object[] rowValues = new Object[nInCategory+1];
 						for (int j=0; j<nInCategory; j++) {
 							Gradable gtmp = stmp.getGradable(breakoutGradables.get(j).getName());
-							rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%";
+							if(gtmp.hasNote()){
+								rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%*";
+							} else {
+								rowValues[j] = String.valueOf((gtmp.getPoints() - gtmp.getPointsLost())*100/(gtmp.getPoints()))+"%";
+							}
+							
 						}
 						breakoutTableModel.addRow(rowValues);
 					}
@@ -333,8 +376,73 @@ public class ClassProfile {
 			}
 		};
 		JTableHeader gradeHeader = gradeTable.getTableHeader();
-		gradeHeader.addMouseListener(TableHeaderMouseListener);
+		gradeHeader.addMouseListener(gradeTableBreakoutListener);
+		gradeTable.addMouseListener(gradeTableBreakoutListener);
+		
+		JTableHeader breakoutHeader = breakoutTable.getTableHeader();
+		breakoutHeader.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					int column = breakoutTable.columnAtPoint(e.getPoint());
+					String gradableName = breakoutTable.getColumnName(column);
+					mainframe.remove(mainPanel);
+					GradableProfile.drawGradableProfile(mainframe,data,data.getGradable(gradableName));
+				}
+			}
+		});
+		
+		curveField.getDocument().addDocumentListener(new DocumentListener() {
+			public void changedUpdate(DocumentEvent e) {
+				update();
+			}
+			public void removeUpdate(DocumentEvent e) {
+				update();
+			}
+			public void insertUpdate(DocumentEvent e) {
+				update();
+			}
 
+			public void update() {
+				int c = ((Number)curveField.getValue()).intValue();
+				data.setCurve(c);
+				meanLabel.setText("  Mean: "+String.valueOf(data.getClassMean())+"%  ");
+				medianLabel.setText("  Median: "+String.valueOf(data.getClassMedian())+"%  ");
+				StandardDeviationLabel.setText("  Standard Deviation: "+String.valueOf(data.getClassStandardDeviation())+"%  ");
+				
+				for (int i=0; i<data.nStudents(); i++){
+					Student stmp = data.getStudent(i);
+					gradeTableModel.setValueAt(String.valueOf(stmp.getOverallPercent(data.getCategoryList())+data.getCurve()) + "%",i,1);
+				}
+				
+			}
+		});
+		
+		curveField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int c = ((Number)curveField.getValue()).intValue();
+				data.setCurve(c);
+				meanLabel.setText("  Mean: "+String.valueOf(data.getClassMean())+"%  ");
+				medianLabel.setText("  Median: "+String.valueOf(data.getClassMedian())+"%  ");
+				StandardDeviationLabel.setText("  Standard Deviation: "+String.valueOf(data.getClassStandardDeviation())+"%  ");
+				
+				for (int i=0; i<data.nStudents(); i++){
+					Student stmp = data.getStudent(i);
+					gradeTableModel.setValueAt(String.valueOf(stmp.getOverallPercent(data.getCategoryList())+data.getCurve()) + "%",i,1);
+				}
+			}
+		});
+		
+		gradeTable.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = gradeTable.getSelectedRow();
+				
+				if (e.getClickCount() == 2) {
+					Student student = (Student)gradeTable.getValueAt(row,0);
+					mainframe.remove(mainPanel);
+					StudentProfile.drawStudentProfile(mainframe,data,student);
+				}
+			}
+		});
 		// END Action Listeners 
 	}
 } 

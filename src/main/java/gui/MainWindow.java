@@ -50,7 +50,9 @@ public class MainWindow {
 		menu.add(menuItem_new);
 		
 		JMenuItem menuItem_close = new JMenuItem("Close Class");
-		menu.add(menuItem_close);
+		if(class_open){
+			menu.add(menuItem_close);
+		}
 		
 		JMenuItem menuItem_exit = new JMenuItem("Exit");
 		menu.add(menuItem_exit);
@@ -61,6 +63,28 @@ public class MainWindow {
 			menuItem_save.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					data.saveClass();
+				}
+			});
+			
+			menuItem_close.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					// add dialog
+					// ask for class name
+					// if the class name matches to the current class,
+					// set the class status in the db to closed
+					
+					Object[] options = {"Yes","Cancel"};
+					int n = JOptionPane.showOptionDialog(mainframe,
+						"This can not be undone, are you sure?","Close Class",
+						JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
+						null,options,options[1]);
+					
+					if(n == 0) {
+						data.closeClass();
+						mainframe.getContentPane().removeAll();
+						LogIn.sizeLogIn(mainframe);
+						SelectClass.drawSelectClass(mainframe);
+					}
 				}
 			});
 		}
@@ -96,23 +120,6 @@ public class MainWindow {
 					mainframe.setTitle(data.getLoadedClass());
 					MainWindow.drawMainWindow(mainframe,data2);
 				}
-			}
-		});
-		
-		menuItem_close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// add dialog
-				// ask for class name
-				// if the class name matches to the current class,
-				// set the class status in the db to closed
-				CloseClassDialog ccd = new CloseClassDialog(data);
-				ccd.setModal(true);
-				ccd.showDialog();
-
-				mainframe.getContentPane().removeAll();
-				// load select class panel
-				LogIn.sizeLogIn(mainframe);
-				SelectClass.drawSelectClass(mainframe);
 			}
 		});
 		

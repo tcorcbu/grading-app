@@ -93,6 +93,15 @@ public class Student {
 		return gtmp;
 	}
 	
+	public boolean hasCategoryNote(Category c) {
+		for(Gradable g : gradableList) {
+			if(g.hasNote() && g.isType(c.getType())) { // 
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public int getCategoryAverage(String type) {
 		int total = 0;
 		int sumWeights = 0;
@@ -132,6 +141,7 @@ public class Student {
 	public String toString(){
 		return firstName + " " + lastName;
 	}
+	
 	public boolean isYear(String type) {
 		return this.year.equals(type);
 	}	

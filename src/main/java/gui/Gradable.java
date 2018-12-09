@@ -95,6 +95,14 @@ public class Gradable {
 		return note;
 	}
 	
+	public boolean hasNote() {
+		if(note == null || note.length()<1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	public int getCategoryWeight(String studentType) {
 		return type.getWeight(studentType);
 	}
