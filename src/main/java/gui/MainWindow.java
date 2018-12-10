@@ -387,6 +387,10 @@ public class MainWindow {
 						String lastName = lnameTextField.getText();
 						String schoolID = sidTextField.getText();
 						String year = (String)yearCombo.getSelectedItem();
+
+						if(firstName.replaceAll("\\s+","").equals("") || lastName.replaceAll("\\s+","").equals("") || schoolID.replaceAll("\\s+","").equals("") || year.replaceAll("\\s+","").equals("")){
+							return;
+						}
 						
 						Student newStudent = new Student(firstName,lastName,schoolID,year);
 						data.addStudent(newStudent);
@@ -520,6 +524,10 @@ public class MainWindow {
 						Integer points = ((Number)pointsTextField.getValue()).intValue();
 						Integer weight = ((Number)weightTextField.getValue()).intValue();
 						Category category = (Category)categoryCombo.getSelectedItem();
+
+						if(name.replaceAll("\\s+","").equals("")){
+							return;
+						}
 						
 						Gradable newGradable = new Gradable(name,points,category,weight);
 						data.addGradable(newGradable);
