@@ -25,6 +25,22 @@ public class ClassService {
         return res;
     }
 
+    public static ArrayList<String> getAllClassNames(){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT name FROM Classes";
+        ArrayList<String>res = new ArrayList<String>();
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res.add(rs.getString("name"));
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     public static ArrayList<String> getOldClassNames(){
         Connection conn = MySqlConnection.getConnection();
         String query = "SELECT name FROM Classes WHERE status='closed'";

@@ -16,7 +16,7 @@ public class NewClassDialog extends JDialog{
 		private boolean res;
 
 		private void intitalClassList(){
-			java.util.List<String>classNames = ClassService.getClassNames();
+			java.util.List<String>classNames = ClassService.getAllClassNames();
 			classNames.add(0,"Empty Class");
 			classList = new String[classNames.size()];
 			int count = 0;
