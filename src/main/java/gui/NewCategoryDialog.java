@@ -77,6 +77,10 @@ public class NewCategoryDialog extends JDialog{
 				String name = nameTextField.getText();
 				Integer gWeight = ((Number)gWeightTextField.getValue()).intValue();
 				Integer uWeight = ((Number)uWeightTextField.getValue()).intValue();
+
+				if(name.replaceAll("\\s+","").equals("")){
+					return;
+				}	
 				
 				newCategory = new Category(name,gWeight,uWeight);
 				newCategories.add(newCategory);
