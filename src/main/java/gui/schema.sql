@@ -6,6 +6,7 @@ CREATE TABLE Classes (
   class_id int4 AUTO_INCREMENT,
   name varchar(255) UNIQUE,
   status varchar(255),
+  curve int4,
   CONSTRAINT classes_pk PRIMARY KEY (class_id)
 );
 

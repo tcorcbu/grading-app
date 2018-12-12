@@ -1,4 +1,4 @@
-package gui;
+package objects;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ public class Student {
 	private String lastName;
 	private String schoolID;
 	private String year;
-	private ArrayList<Gradable> gradableList = new ArrayList<Gradable>();
+	private ArrayList<Grade> gradeList = new ArrayList<Grade>();
 	
 	public Student() {
 	}
@@ -31,6 +31,10 @@ public class Student {
 		return firstName;
 	}
 	
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}	
+	
 	public String getLastName() {
 		return lastName;
 	}
@@ -39,55 +43,64 @@ public class Student {
 		return firstName + " " + lastName;
 	}
 	
+	public void setSchoolID(String schoolID) {
+		this.schoolID = schoolID;
+	}
+	
 	public String getSchoolID() {
 		return schoolID;
+	}
+	
+	public void setYear(String year) {
+		this.year = year;
 	}
 	
 	public String getYear() {
 		return year;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public void setSchoolID(String schoolID) {
-		this.schoolID = schoolID;
-	}
-
-	public void setYear(String year) {
-		this.year = year;
-	}
-
-	public void setGradableList(ArrayList<Gradable> gradableList) {
-		this.gradableList = gradableList;
-	}
-
-	public void addGradable(Gradable g) {
-		gradableList.add(g);
-		
+	public void setGradeList(ArrayList<Grade> gradeList) {
+		this.gradeList = gradeList;
 	}
 	
-	public void dropGradable(Gradable g) {
-		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).getName().equals(g.getName())) {
-				gradableList.remove(gradableList.get(i));
+	public ArrayList<Grade> getGradeList() {
+		return gradeList;
+	}
+
+	public void addGrade(Gradable g) {
+		gradeList.add(new Grade(g, g.getPoints(), 100, ""));
+	}
+	
+	public void dropGrade(Gradable g) {
+		for(int i=0; i<gradeList.size(); i++) {
+			if(gradeList.get(i).isGradable(g)) {
+				gradeList.remove(gradeList.get(i));
+				GradeService.drop(g);
 			}
 		}
 	}
 	
-	public Gradable getGradable(int i) {
-		return gradableList.get(i);
+	public Grade getGrade(int i) {
+		return gradeList.get(i);
 	}
 	
-	public Gradable getGradable(String name) {
-		Gradable gtmp = new Gradable();
-		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).getName().equals(name)) {
-				gtmp =  gradableList.get(i);
+	public Grade getGrade(String name) {
+		Grade gtmp = new Grade();
+		for (Grade grade : gradeList) {
+			if(grade.getGradable().getName().equals(name)) {
+				gtmp =  grade;
 			}
 		}
 		return gtmp;
+	}
+	
+	public boolean hasCategoryNote(Category c) {
+		for(Grade g : gradeList) {
+			if(g.hasNote() && g.isType(c.getType())) { // 
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getCategoryAverage(String type) {
@@ -96,13 +109,11 @@ public class Student {
 		int assignmentTotal;
 		int assignmentPointsLost;
 		int assignmentIntraCategoryWeight;
-		Gradable gtmp;
-		for (int i = 0; i<gradableList.size(); i++) {
-			if(gradableList.get(i).isType(type)) {
-				gtmp = gradableList.get(i);
-				assignmentTotal = gtmp.getPoints();
-				assignmentPointsLost = gtmp.getPointsLost();
-				assignmentIntraCategoryWeight = gtmp.getIntraCategoryWeight();
+		for (Grade grade : gradeList) {
+			if(grade.isType(type)) {
+				assignmentTotal = grade.getPoints();
+				assignmentPointsLost = grade.getPointsLost();
+				assignmentIntraCategoryWeight = grade.getGradable().getIntraCategoryWeight();
 				if (assignmentTotal == 0) {
 					total += 0;
 				}else {
@@ -120,9 +131,8 @@ public class Student {
 	
 	public int getOverallPercent(ArrayList<Category> categoryList) {
 		int total = 0;
-		for(int i=0; i<categoryList.size(); i++) {
-			total += getCategoryAverage(categoryList.get(i).getType())*categoryList.get(i).getWeight(year);
-		
+		for(Category category : categoryList) {
+			total += getCategoryAverage(category.getType())*category.getWeight(year);
 		}
 		return total/100;
 	}
@@ -130,7 +140,8 @@ public class Student {
 	public String toString(){
 		return firstName + " " + lastName;
 	}
-	public boolean is(String type) {
+	
+	public boolean isYear(String type) {
 		return this.year.equals(type);
 	}	
 

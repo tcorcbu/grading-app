@@ -5,15 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ClassService {
     private ClassService(){}
     //get All class names
-    public static List<String> getClassNames(){
+    public static ArrayList<String> getClassNames(){
         Connection conn = MySqlConnection.getConnection();
         String query = "SELECT name FROM Classes WHERE status='open'";
-        List<String>res = new ArrayList<String>();
+        ArrayList<String>res = new ArrayList<String>();
         try {
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
@@ -26,10 +25,26 @@ public class ClassService {
         return res;
     }
 
-    public static List<String> getOldClassNames(){
+    public static ArrayList<String> getAllClassNames(){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT name FROM Classes";
+        ArrayList<String>res = new ArrayList<String>();
+        try {
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res.add(rs.getString("name"));
+            }
+        }  catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public static ArrayList<String> getOldClassNames(){
         Connection conn = MySqlConnection.getConnection();
         String query = "SELECT name FROM Classes WHERE status='closed'";
-        List<String>res = new ArrayList<String>();
+        ArrayList<String>res = new ArrayList<String>();
         try {
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
@@ -45,11 +60,12 @@ public class ClassService {
     //insert a new class into db
     public static void insertClass(String className){
         Connection conn = MySqlConnection.getConnection();
-        String query = "INSERT INTO Classes (name,status) VALUES(?,?)";
+        String query = "INSERT INTO Classes (name,status,curve) VALUES(?,?,?)";
         try {
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, className);
             statement.setString(2, "open");
+			statement.setInt(3,0);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,6 +82,37 @@ public class ClassService {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 res = new Integer(rs.getInt("class_id"));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return res;
+    }
+	
+	public static PreparedStatement setCurve(int curve) {
+		Connection conn = MySqlConnection.getConnection();
+        String query = "UPDATE classes SET curve = ? WHERE class_id = ?";
+		PreparedStatement statement = null;
+        try {
+            statement = conn.prepareStatement(query);
+            statement.setInt(1, curve);
+            statement.setInt(2,Globals.class_id());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		return statement;
+	}
+	
+    public static Integer getCurve(){
+        Connection conn = MySqlConnection.getConnection();
+        String query = "SELECT curve FROM Classes WHERE class_id = ?";
+        Integer res = null;
+        try{
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1,Globals.class_id());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                res = new Integer(rs.getInt("curve"));
             }
         } catch (SQLException e){
             e.printStackTrace();

@@ -8,14 +8,16 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ClassService;
 import db.Globals;
+import objects.Data;
 
 
 public class NewClassDialog extends JDialog{
 		
 		private String[] classList;
+		private boolean res;
 
 		private void intitalClassList(){
-			java.util.List<String>classNames = ClassService.getClassNames();
+			java.util.List<String>classNames = ClassService.getAllClassNames();
 			classNames.add(0,"Empty Class");
 			classList = new String[classNames.size()];
 			int count = 0;
@@ -25,9 +27,9 @@ public class NewClassDialog extends JDialog{
 		}
 
 		public NewClassDialog(final Data data) {
+			res = false;
 			intitalClassList();
 			this.setTitle("Create Class");
-			// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.setSize( 275, 150 );
 			Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 			int x = (int) ((dimension.getWidth() - this.getWidth()) / 2);
@@ -57,7 +59,6 @@ public class NewClassDialog extends JDialog{
 			mainPanel.add(createButton);
 			
 			this.add(mainPanel);
-			// this.setVisible( true );
 			
 			ActionListener createListener = new ActionListener(){
 				public void actionPerformed(ActionEvent e){
@@ -69,20 +70,12 @@ public class NewClassDialog extends JDialog{
 						System.out.println((String)useTemplateCombo.getSelectedItem());
 						// instantiate new Data using other class
 						// copy assignments over
-						System.out.print("class id before copyClass: ");
-						System.out.println(Globals.class_id());
 						Data copyClass = new Data((String)useTemplateCombo.getSelectedItem());
-						System.out.print("class id after copyClass: ");
-						System.out.println(Globals.class_id());
 						ClassService.insertClass(classNameTextField.getText());
 						data.setLoadedClass(classNameTextField.getText());
-						System.out.print("class id after data.setLoadedClass: ");
-						System.out.println(Globals.class_id());
-						// Globals.setClassId(ClassService.getId(classNameTextField.getText()));
 						data.clone(copyClass);
-					}
-					//save class to db
-					
+					}			
+					res = true;
 					setVisible(false);
 				}
 			};
@@ -93,7 +86,9 @@ public class NewClassDialog extends JDialog{
 		public void showDialog() {
 			this.setVisible( true );
 		}
-	
 		
+		public boolean returned() {
+			return res;
+		}
 	
 }

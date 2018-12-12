@@ -1,10 +1,11 @@
 package db;
 
-import gui.Student;
+import objects.Student;
 
 import java.sql.*;
 
 public class StudentService {
+	
     public static PreparedStatement insertStudent(Student student){
         Connection conn = MySqlConnection.getConnection();
         String sql = "INSERT INTO Students (school_id,name,type) VALUES(?,?,?)";
@@ -25,33 +26,16 @@ public class StudentService {
     public static PreparedStatement dropStudent(Student student) {
         Connection conn = MySqlConnection.getConnection();
         String sql = "DELETE FROM Students WHERE school_id = ?";
+		// Should we delete all records from the grades table too? (yes)
         PreparedStatement statement = null;
         try{
             statement = conn.prepareStatement(sql);
             statement.setString(1, student.getSchoolID());
-            // statement.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
         }
 		return statement;
     }
-
-    // public static int getId(Student student) {
-        // Connection conn = MySqlConnection.getConnection();
-        // String sql = "SELECT school_id FROM Students WHERE school_id = ?";
-        // int res = -1;
-        // try{
-            // PreparedStatement statement = conn.prepareStatement(sql);
-            // statement.setString(1, student.getSchoolID());
-            // ResultSet rs = statement.executeQuery();
-            // while (rs.next()) {
-                // res = rs.getInt("student_id");
-            // }
-        // }catch (SQLException e) {
-            // e.printStackTrace();
-        // }
-        // return res;
-    // }
 
     public static Student getStudentById(String id) {
         Connection conn = MySqlConnection.getConnection();
