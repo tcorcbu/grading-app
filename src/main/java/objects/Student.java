@@ -1,4 +1,4 @@
-package gui;
+package objects;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,7 +113,7 @@ public class Student {
 			if(grade.isType(type)) {
 				assignmentTotal = grade.getPoints();
 				assignmentPointsLost = grade.getPointsLost();
-				assignmentIntraCategoryWeight = grade.getIntraCategoryWeight();
+				assignmentIntraCategoryWeight = grade.getGradable().getIntraCategoryWeight();
 				if (assignmentTotal == 0) {
 					total += 0;
 				}else {

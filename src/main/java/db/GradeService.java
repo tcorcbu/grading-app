@@ -1,8 +1,6 @@
 package db;
 
-import gui.Gradable;
-import gui.Grade;
-import gui.Student;
+import objects.*;
 import db.Globals;
 
 import java.sql.Connection;

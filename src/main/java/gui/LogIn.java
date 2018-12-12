@@ -9,8 +9,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class LogIn{
 		
-		private static String username = "";
-		private static String password = "";
+		private static String username = "username";
+		private static String password = "password";
 		
 	public static void main(String[] args) {
 		JFrame mainframe = new JFrame();
@@ -71,12 +71,12 @@ public class LogIn{
 		
 		ActionListener loginListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if (username.equals(usernameField.getText()) && password.equals(passwordField.getText())) {
+				// if (username.equals(usernameField.getText()) && password.equals(passwordField.getText())) {
 					mainframe.remove(mainPanel);
 					SelectClass.drawSelectClass(mainframe);
-				}else {
-					wrongpwd.setText("Incorrect Username or Password");
-				}
+				// }else {
+					// wrongpwd.setText("Incorrect Username or Password");
+				// }
 			}
 		};
 		jbtLogIn.addActionListener( loginListener );

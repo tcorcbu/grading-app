@@ -1,4 +1,4 @@
-package gui;
+package objects;
 
 import db.*;
 

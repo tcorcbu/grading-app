@@ -1,4 +1,4 @@
-package gui;
+package objects;
 public class Category {
 	private String type;
 	private int GraduateWeight;

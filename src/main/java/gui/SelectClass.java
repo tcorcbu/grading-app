@@ -2,6 +2,7 @@ package gui;
 
 import db.ClassService;
 import db.Globals;
+import objects.Data;
 
 import javax.swing.*;
 import javax.swing.tree.*;

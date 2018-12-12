@@ -1,6 +1,6 @@
 package db;
 
-import gui.Gradable;
+import objects.Gradable;
 
 import java.sql.*;
 import java.util.ArrayList;

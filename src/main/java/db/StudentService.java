@@ -1,6 +1,6 @@
 package db;
 
-import gui.Student;
+import objects.Student;
 
 import java.sql.*;
 

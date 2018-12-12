@@ -1,6 +1,6 @@
 package db;
 
-import gui.Category;
+import objects.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
