@@ -1,4 +1,4 @@
-package gui;
+package objects;
 
 public class Gradable {
 	private String name;

@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.text.*;
 import db.*;
+import objects.*;
 
 import db.GradableService;
 import db.GradeService;
@@ -91,10 +92,31 @@ public class MainWindow {
 		
 		menuItem_load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainframe.getContentPane().removeAll();
-				
-				LogIn.sizeLogIn(mainframe);
-				SelectClass.drawSelectClass(mainframe);
+				if (data.needSave() && class_open){
+					Object[] options = {"Yes","No","Cancel"};
+					int n = JOptionPane.showOptionDialog(mainframe,
+						"Would you like to save before exiting?","Save",
+						JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,
+						null,options,options[0]);
+					
+					switch(n) {
+						case 0:
+							data.saveClass();
+							mainframe.getContentPane().removeAll();
+							LogIn.sizeLogIn(mainframe);
+							SelectClass.drawSelectClass(mainframe);
+						break;
+						case 1:
+							mainframe.getContentPane().removeAll();
+							LogIn.sizeLogIn(mainframe);
+							SelectClass.drawSelectClass(mainframe);
+						break;
+					}
+				} else {
+					mainframe.getContentPane().removeAll();
+					LogIn.sizeLogIn(mainframe);
+					SelectClass.drawSelectClass(mainframe);
+				}
 			}
 		});
 		
@@ -107,17 +129,7 @@ public class MainWindow {
 				
 				if(ncd.returned()){
 					mainframe.getContentPane().removeAll();
-					
-					int width = 750;
-					int height = 500;
-
-					int x = (int) mainframe.getLocation().x - ((width - mainframe.getWidth()) / 2);
-					int y = (int) mainframe.getLocation().y - ((height - mainframe.getHeight()) / 2);
-
-					mainframe.setLocation(x, y);
-					mainframe.setSize( width, height );
-
-					mainframe.setTitle(data.getLoadedClass());
+					MainWindow.sizeMainWindow(mainframe);
 					MainWindow.drawMainWindow(mainframe,data2);
 				}
 			}
@@ -125,7 +137,7 @@ public class MainWindow {
 		
 		menuItem_exit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if (data.needSave()){
+				if (data.needSave() && class_open){
 					Object[] options = {"Yes","No","Cancel"};
 					int n = JOptionPane.showOptionDialog(mainframe,
 						"Would you like to save before exiting?","Save",
@@ -377,9 +389,7 @@ public class MainWindow {
 				mainframe.revalidate();
 				mainframe.repaint();
 				
-				for(int i=0;i<studentsTree.getRowCount();i++){
-					studentsTree.expandRow(i);
-				}	
+				fnameTextField.requestFocus();
 				
 				ActionListener addStudentListener = new ActionListener(){
 					public void actionPerformed(ActionEvent e) {
@@ -409,6 +419,8 @@ public class MainWindow {
 						for(int i=0;i<studentsTree.getRowCount();i++){
 							studentsTree.expandRow(i);
 						}
+						
+						fnameTextField.requestFocus();
 					}
 				};
 				addButton.addActionListener(addStudentListener);
@@ -514,6 +526,8 @@ public class MainWindow {
 				mainframe.revalidate();
 				mainframe.repaint();
 				
+				nameTextField.requestFocus();
+				
 				for(int i=0;i<gradablesTree.getRowCount();i++){
 					gradablesTree.expandRow(i);
 				}
@@ -553,6 +567,7 @@ public class MainWindow {
 						for(int i=0;i<gradablesTree.getRowCount();i++){
 							gradablesTree.expandRow(i);
 						}
+						nameTextField.requestFocus();
 					}
 				};
 				addButton.addActionListener(addGradableButtonListener);

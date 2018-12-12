@@ -8,6 +8,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.text.*;
+import objects.*;
 
 
 public class NewCategoryDialog extends JDialog{
@@ -72,6 +73,8 @@ public class NewCategoryDialog extends JDialog{
 		mainPanel.add(botPanel);
 		this.add(mainPanel);
 		
+		nameTextField.requestFocus();
+		
 		ActionListener addButtonListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				String name = nameTextField.getText();
@@ -86,6 +89,7 @@ public class NewCategoryDialog extends JDialog{
 				newCategories.add(newCategory);
 				data.addCategory(newCategory);
 				nameTextField.setText("");
+				nameTextField.requestFocus();
 			}
 		};
 		addButton.addActionListener(addButtonListener);

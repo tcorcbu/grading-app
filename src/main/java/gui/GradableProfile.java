@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.awt.*;
 import javax.swing.table.*;
 import java.text.*;
+import objects.*;
 
 import db.GradeService;
 import db.StudentService;
@@ -196,6 +197,7 @@ public class GradableProfile {
 					data.addSaveCommand(GradeService.updateComment(grade,s.getSchoolID(),tableNote));
 					break;
 				}	
+				gradeInfo.setText("  Gradable Average: "+String.valueOf(data.getGradableAverage(g))+"%");
 		  }
 		});
 		

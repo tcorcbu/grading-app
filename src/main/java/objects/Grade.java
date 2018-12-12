@@ -1,4 +1,4 @@
-package gui;
+package objects;
 
 public class Grade {
 	private Gradable gradable;

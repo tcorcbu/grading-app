@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 import db.ClassService;
 import db.Globals;
+import objects.Data;
 
 
 public class NewClassDialog extends JDialog{

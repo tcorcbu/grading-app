@@ -9,6 +9,7 @@ import javax.swing.table.*;
 
 import db.GradeService;
 import db.StudentService;
+import objects.*;
 
 public class StudentProfile {
 		
